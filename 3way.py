@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: iso-8859-1 -*-
 __doc__ = """
  Probabilistic Cross-Identification of Astronomical Sources
  [2012-11-08] Tamas Budavari <budavari@jhu.edu>
@@ -62,7 +63,7 @@ def log_bf3(p12,p23,p31, s1,s2,s3):
 
 import sys
 
-import scipy, scipy.optimize
+import scipy, scipy.optimize, scipy.interpolate
 # fit functions to ratio function shape
 
 def plot_fit(bin_mag, bin_n, func, name):
@@ -86,6 +87,8 @@ def fitfunc(bin_mag, bin_n):
 	c = 2.2
 	d = 0.8
 	a,b,c,d = 0.157358, 17.000000, 1.668907, 0.767761
+	interpfunc = scipy.interpolate.interp1d(bin_mag, bin_n, bounds_error=False, fill_value=1)
+	return lambda mag: log(interpfunc(mag))	
 	
 	def minfunc((a,b,c,d)): # function to minimize
 		# simple chi^2
@@ -129,34 +132,44 @@ import pyfits
 xcat = pyfits.open(sys.argv[1])[1].data
 outfilename = sys.argv[1] + '_prob.csv'
 
-xpos = xcat['separation_X_irac']
-pos1 = xcat['separation_irac_opt']
-pos2 = xcat['separation_x_opt']
-xacc = xcat['ERROR_RADIUS']
+pos0 = xcat['Separation_xmm_irac']
+pos1 = xcat['Separation_irac_optical']
+pos2 = xcat['Separation_xmm_opt']
+xacc = xcat['xradecerr']
 
-ln_bf = log_bf3(xpos, pos1, pos2, xacc, 0.5, 0.1)
+print pos0[0], pos1[0], pos2[0], xacc[0]
+ln_bf_0 = log_bf3(pos0, pos1, pos2, xacc, 0.5, 0.1)
+print ln_bf_0[0]
 
-assert not numpy.any(numpy.isnan(ln_bf))
+#assert not numpy.any(numpy.isnan(ln_bf))
 
 mag1 = xcat['I'] # I-band
-mag2 = xcat['I'] # TODO: which column 
+mag2 = xcat['mag_ch1'] # TODO: which column 
 
-ln_bf_i = ln_bf + numpy.where(mag1 > -99, func1(mag1), 0) + numpy.where(mag2 > -99, func2(mag2), 0)
+ln_bf_1 = numpy.where(mag1 > -99, func1(mag1), 0)
+ln_bf_2 = numpy.where(mag2 > -99, func2(mag2), 0)
 
-assert not numpy.any(numpy.isnan(ln_bf_i))
-assert not numpy.any(numpy.isinf(ln_bf_i))
+ln_bf = ln_bf_0 + ln_bf_1 + ln_bf_2
+
+#assert not numpy.any(numpy.isnan(ln_bf_i))
+#assert not numpy.any(numpy.isinf(ln_bf_i))
 
 # TODO: do the computation of 15e+18 explicitly here for documentation
-log_prob = log_posterior(nx/(1887*15e+18), ln_bf)
-log_post = log_posterior(1/15e+18, ln_bf_i)
+#log_prob = log_posterior(nx/(1887*15e+18), ln_bf)
+frac = 1/15e+18
 
 print 'writing output'
 fout = file(outfilename, 'w')
 # TODO: give nicer names
-fout.write('NAME,BF,prob,bf_i,posterior\n')
+fout.write('xid,bf0,post0,bf1,post1,bf2,post2,bf,post\n')
 
-for row in zip(xcat['NAME'], ln_bf/log(10), log_prob/log(10), ln_bf_i/log(10), log_post/log(10)):
-	fout.write('%s,%g,%g,%g,%g\n' % row)
+for row in zip(xcat['xid'], 
+	ln_bf_0/log(10), exp(log_posterior(frac, ln_bf_0)), 
+	ln_bf_1/log(10), exp(log_posterior(frac, ln_bf_0 + ln_bf_1)), 
+	ln_bf_2/log(10), exp(log_posterior(frac, ln_bf_0 + ln_bf_2)), 
+	ln_bf/log(10), exp(log_posterior(frac, ln_bf)), 
+	):
+	fout.write('%s,%g,%g,%g,%g,%g,%g,%g,%g\n' % row)
 
 print 'all done. see %s' % outfilename
 
