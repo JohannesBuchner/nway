@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# -*- coding: iso-8859-1 -*-
 __doc__ = """
  Probabilistic Cross-Identification of Astronomical Sources
  [2012-11-08] Tamas Budavari <budavari@jhu.edu>
@@ -33,7 +33,7 @@ log_arcsec2rad4 = 4 * log_arcsec2rad
 log_2_arcsec2rad2 = log(2) + log_arcsec2rad2
 log_4_arcsec2rad4 = log(4) + log_arcsec2rad4
 
-nx = 1887
+nx = 350
 sum_prob = 0
 
 def posterior(prior, bf):
@@ -136,10 +136,11 @@ import pyfits
 xcat = pyfits.open(sys.argv[1])[1].data
 outfilename = sys.argv[1] + '_prob.csv'
 
-pos0 = xcat['Separation_xmm_irac']
-pos1 = xcat['Separation_irac_optical']
-pos2 = xcat['Separation_xmm_opt']
-xacc = xcat['xradecerr']
+pos0 = xcat['Separation_imp3_irac']
+pos1 = xcat['Separation_irac_gs']
+pos2 = xcat['Separation_imp3_gs']
+xacc = xcat['Pos_error']
+
 
 ln_bf_0_012 = log_bf3(pos0, pos1, pos2, xacc, 0.5, 0.1)
 
@@ -151,13 +152,13 @@ mask012 = logical_and(logical_and(pos0 >= 0, pos1 >= 0), pos2 >= 0)
 ln_bf_0 = where(mask012, ln_bf_0_012, where(pos0 >= 0, ln_bf_0_0, ln_bf_0_2))
 
 #assert not numpy.any(numpy.isnan(ln_bf))
-
  
-mag1 = xcat['mag_ch1'] #  
-mag2 = xcat['I'] # I-band
+mag1 = xcat['mag_H'] # I-bandopty
+mag2 = xcat['mag_irac1'] # TODO: which column 
 
 ln_bf_1 = where(mag1 > 0, func1(mag1), 0)
 ln_bf_2 = where(mag2 > 0, func2(mag2), 0)
+
 
 ln_bf = ln_bf_0 + ln_bf_1 + ln_bf_2
 
@@ -166,7 +167,7 @@ ln_bf = ln_bf_0 + ln_bf_1 + ln_bf_2
 
 # TODO: do the computation of 15e+18 explicitly here for documentation
 #log_prob = log_posterior(nx/(1887*15e+18), ln_bf)
-frac = 1/15e+18
+frac = 0.95/6.4e+20
 
 
 print 'writing output'
@@ -206,53 +207,30 @@ out_cat['post1'] = list(exp(log_posterior(frac, ln_bf_0 + ln_bf_1)))
 out_cat['bf2'] = list(ln_bf_2/log(10))
 out_cat['post2'] = list(exp(log_posterior(frac, ln_bf_0 + ln_bf_2)))
 out_cat['bf'] = list(ln_bf/log(10))
-out_cat['post'] = list(exp(log_posterior(frac, ln_bf)))
-out_cat['best_match'] = [0]*len(out_cat['post'])
+out_cat['post'] = exp(log_posterior(frac, ln_bf))
+out_cat['best_match'] = numpy.zeros_like(out_cat['post'])
 #####################################################
 # flag best match (highest 'post')
-def unique(seq):
-    """ unique list of elements from peterbe.com"""
-    seen = set()
-    seen_add = seen.add
-    return [ x for x in seq if x not in seen and not seen_add(x)]
 
-ids = unique(xcat['xid'])    
+ids = set(xcat['xid'])
 
 # second counterpart
 diff_post = 0.005
 
 for xid in ids:
     """ assumes ordered xid """
-    indices = numpy.where(xcat['xid'] == xid)[0]
-    #temp_post = out_cat['post'][indices[0]:indices[-1]+1]
-    temp_post = out_cat['post'][indices]
+    mask = xcat['xid'] == xid
+    temp_post = out_cat['post'][mask]
+    index_best = temp_post.argmax()
+    max_val = temp_post[index_best]
     
-    if len(indices)>1:
-        max_val = max(temp_post)
-#	print max_val
-    else:
-        max_val = out_cat['post'][indices[0]]
+    # flag second best ( max('post') - post < diff_post )
+    mask1 = logical_and(mask, max_val == out_cat['post'])
+    mask2 = logical_and(mask, max_val - out_cat['post'] < diff_post)
+    out_cat['best_match'][mask2] = 2
+    # flag best
+    out_cat['best_match'][mask1] = 1
 
-
-    index_best = out_cat['post'].index(max_val)
-    
-#    print index_best
-#   test for correct index    
-    if xcat['xid'][index_best] != xid:
-        print 'index error for source xid=', xid,'/n contact Sotiria.'
-#    
-    out_cat['best_match'].pop(index_best)
-    out_cat['best_match'].insert(index_best, 1)
-
-#   flag second best ( max('post') - post < diff_post )
-        
-    for element in temp_post: 
-	#print element    
-        if max_val - element < diff_post and max_val != element:
-            index = out_cat['post'].index(element)
-            out_cat['best_match'].pop(index)
-            out_cat['best_match'].insert(index, 2)
-#           print "found second"
 new_cols = ['bf0','post0','bf1','post1','bf2','post2','bf','post','best_match']
 #print out_cat['best_match']
 # update column names
@@ -266,4 +244,6 @@ out_table = pyfits.new_table(pyfits.ColDefs([ pyfits.Column(name = key,
                                                         array = out_cat[key]) for key in key_list] ))
 
 
-out_table.writeto('output_association.fits', clobber=True)
+out_table.writeto('CANDELS_output_association.fits', clobber=True)
+
+print 'all done. see output_association.fits'
