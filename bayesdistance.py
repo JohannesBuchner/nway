@@ -4,7 +4,6 @@ Probabilistic Cross-Identification of Astronomical Sources
 Reference: Budavari & Szalay (2008), ApJ, 679:301-309
 Authors: Johannes Buchner (C) 2013
 Authors: Tamas Budavari (C) 2012
-
 """
 
 import numpy

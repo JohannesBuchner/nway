@@ -1,8 +1,8 @@
 3way catalogue matcher
 ======================================
 
-3way is a catalogue matching program for arbitrarily many catalogues. 
-It is useful for astronomical sky coordinates.
+3way is a catalogue association program for arbitrarily many catalogues. 
+It is useful for astronomical sky coordinates (RA, DEC).
 
 It uses 3 methods for matching:
 
@@ -19,7 +19,7 @@ It uses 3 methods for matching:
      
      *--prior* specifies the density of false positives. E.g. nx/(1887*15e+18)
   
-3) weighting based on properties of close objects versus distant objects (optional)
+3) optional: weighting based on properties of close objects versus distant objects 
   
      A magnitude histogram of input catalogue matches is compared to the 
      magnitude histogram of the full input catalogue.

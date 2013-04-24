@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
 
-__doc__ = """Probabilistic Cross-Identification of Astronomical Sources
-
-The program performs multiway matching between catalogue. Use --help for usage."""
+__doc__ = """Multiway association between astrometric catalogue. Use --help for usage."""
 
 
 import sys
