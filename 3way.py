@@ -3,6 +3,7 @@
 
 __doc__ = """Multiway association between astrometric catalogue. Use --help for usage."""
 
+import sys
 import numpy
 from numpy import log, pi, exp, logical_and
 import matplotlib.pyplot as plt
@@ -14,33 +15,43 @@ import magnitudeweights
 
 # set up program arguments
 
-parser = argparse.ArgumentParser(description=__doc__,
+class HelpfulParser(argparse.ArgumentParser):
+	def error(self, message):
+		sys.stderr.write('error: %s\n' % message)
+		self.print_help()
+		sys.exit(2)
+
+parser = HelpfulParser(description=__doc__,
 	epilog="Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--radius', default=10, type=float,
 	help='exclusive search radius in arcsec for initial matching')
 
-parser.add_argument('--mag-radius', default=5, type=float,
+parser.add_argument('--mag-radius', default=3, type=float,
 	help='search radius for magnitude histograms')
 
 #nx/(1887*15e+18)
 parser.add_argument('--prior', default=0.95/6.4e+20, type=float,
 	help='prior: density of sources expected')
 
-parser.add_argument('--mag', type=str, action='append',
-	help='name of <table>_<column> for magnitude biasing', default=[])
+parser.add_argument('--mag', type=str, action='append', default=[],
+	help="""name of <table>_<column> for magnitude biasing.
+	Example: --mag GOODS:mag_H --mag IRAC:mag_irac1""")
 
 parser.add_argument('--acceptable-prob', type=float, default=0.005,
 	help='limit up to which secondary solutions are flagged')
 
 parser.add_argument('--min-prob', type=float, default=0,
-	help='lowest probability allowed')
+	help='lowest probability allowed in final catalogue. If 0, no trimming is performed.')
 
 parser.add_argument('--out', help='output file name', required=True)
 
 parser.add_argument('catalogues', type=str, nargs='+',
-	help='input catalogue fits files')
+	help="""input catalogue fits files and position errors.
+	Example: cdfs4Ms_srclist_v3.fits :Pos_error CANDELS_irac1.fits 0.5 gs_short.fits 0.1
+	""")
+
 
 # parsing arguments
 args = parser.parse_args()
