@@ -38,6 +38,7 @@ The input catalogues need to specially prepared, as FITS files.
 In each file, the first table is used, and its extension name/table name is very important! 
 This name is used for column specification and as a prefix in the merged catalogue.
 It can be set in Table Parameters -> Name in TOPCAT.
+The columns for matching are automatically searched by name.
 
 The final catalogue is also a FITS table (table "multimatch").
 
