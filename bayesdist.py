@@ -1,24 +1,10 @@
 """
- Probabilistic Cross-Identification of Astronomical Sources
- [2012-11-08] Tamas Budavari <budavari@jhu.edu>
+Probabilistic Cross-Identification of Astronomical Sources
 
 Reference: Budavari & Szalay (2008), ApJ, 679:301-309
+Authors: Johannes Buchner (C) 2013
 Authors: Tamas Budavari (C) 2012
-Authors: Johannes Buchner (C) 2012
 
-The functions implement the static Bayes factor
-formulas for high-accuracy detections, see Figure 1 and
-Table 1 of Budavari & Szalay (2008)
-
-The program performs 3-way matching
-Usage: python 3way.py <association.fits> <hist_ratio_1> <hist_ratio_2>
-
-association.fits is a fits file containing all possible cross matches (cross product)
-
-The hist_ratio file is a (csv) table containing magnitude bins and the 
-a-priori ratio in the last column.
-
-The output is association.fits_out.csv, a csv file containing the cross matches.
 """
 
 import numpy
@@ -53,6 +39,7 @@ def log_bf3(p12,p23,p31, s1,s2,s3):
 	q = ss3 * p12**2 + ss1 * p23**2 + ss2 * p31**2
 	return log(4) + 4 * log_arcsec2rad - log(s) - q / 2 / s
 
+# Natural log of the multi-way Bayes factor, see eq.(18)
 def log_bf(p, s):
 	n = len(s)
 	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]

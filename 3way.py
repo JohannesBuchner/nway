@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
 
-__doc__ = """
-Probabilistic Cross-Identification of Astronomical Sources
+__doc__ = """Probabilistic Cross-Identification of Astronomical Sources
 
-Authors: 
-   Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>
-   Tamas Budavari (C) 2012 <budavari@jhu.edu>
-Reference: Budavari & Szalay (2008), ApJ, 679:301-309
+The program performs multiway matching between catalogue. Use --help for usage."""
 
-The program performs multiway matching between catalogue. Use --help for usage.
-"""
 
 import sys
 import scipy, scipy.optimize, scipy.interpolate, scipy.signal, scipy.integrate
@@ -23,14 +17,18 @@ import match
 import bayesdist
 
 parser = argparse.ArgumentParser(description=__doc__,
-	epilog="Johannes Buchner (C) 2013",
+	epilog="Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--radius', default=10, type=float,
 	help='exclusive search radius in arcsec for initial matching')
 
-parser.add_argument('--n', default=350, type=float,
-	help='nx: number of x-ray sources expected')
+parser.add_argument('--mag-radius', default=5, type=float,
+	help='search radius for magnitude histograms')
+
+#nx/(1887*15e+18)
+parser.add_argument('--prior', default=0.95/6.4e+20, type=float,
+	help='prior: density of sources expected')
 
 parser.add_argument('--mag', type=str, action='append',
 	help='name of <table>_<column> for magnitude biasing', default=[])
@@ -48,8 +46,6 @@ parser.add_argument('catalogues', type=str, nargs='+',
 
 args = parser.parse_args()
 
-frac = 0.95/6.4e+20
-
 diff_secondary = args.acceptable_prob
 outfile = args.out
 
@@ -62,6 +58,7 @@ tables = [t.data for t in tables]
 min_prob = args.min_prob
 
 match_radius = args.radius / 60. / 60 # in degrees
+mag_radius = args.mag_radius / 60. / 60 # in degrees
 
 # match input catalogues
 
@@ -72,12 +69,16 @@ table = pyfits.new_table(pyfits.ColDefs(columns)).data
 # compute magnitude distributions
 # use adaptive binning for that
 
-nx = args.n
 
-def plot_fit(bin_mag, bin_n, func, name):
+def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	plt.figure()
-	plt.plot(bin_mag[:-1], bin_n / bin_n.sum(), '--', 
-		drawstyle='steps-pre', label='histogram')
+	hist_n = (hist_sel + 1e-3) / (hist_all + 1e-3)
+	plt.plot(bin_mag[:-1], hist_all / hist_all.sum(), '--', 
+		drawstyle='steps-pre', label='all')
+	plt.plot(bin_mag[:-1], hist_sel / hist_sel.sum(), '--', 
+		drawstyle='steps-pre', label='selected')
+	plt.plot(bin_mag[:-1], hist_n / hist_n.sum(), '--', 
+		drawstyle='steps-pre', label='ratio histogram')
 	mags = numpy.linspace(bin_mag.min(), bin_mag.max(), 400)
 	plt.plot(mags, exp(func(mags)), '-', drawstyle='steps-pre', label='fit')
 	plt.legend(loc='best')
@@ -86,7 +87,8 @@ def plot_fit(bin_mag, bin_n, func, name):
 	plt.savefig(name.replace(':', '_') + '_fit.pdf', bbox_inches='tight')
 	plt.close()
 
-def fitfunc_histogram(bin_mag, bin_n):
+def fitfunc_histogram(bin_mag, hist_sel, hist_all):
+	bin_n = (hist_sel + 1e-3) / (hist_all + 1e-3)
 	w = scipy.signal.flattop(4) #, 1)
 	w /= w.sum()
 	bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
@@ -104,7 +106,7 @@ def fitfunc(mag_all, mag_sel):
 	x = func_sel(numpy.linspace(0, 1, 20))
 	hist_sel, bins = numpy.histogram(mag_sel, bins=x,    normed=True)
 	hist_all, bins = numpy.histogram(mag_all, bins=bins, normed=True)
-	return bins, (hist_sel + 1e-3) / (hist_all + 1e-3)
+	return bins, hist_sel, hist_all
 
 
 biases = {}
@@ -122,14 +124,18 @@ for mag in args.mag:
 	
 	# get magnitudes of selected
 	mask_all = -numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
-	mag_sel = mag_all[list(set(results[table_name]))]
+	
+	rows = list(set(results[table_name][table['Separation_max'] < mag_radius]))
+	mag_sel = mag_all[rows]
+	mask_radius = table['Separation_max'] < mag_radius
 	mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
+	col = "%s_%s" % (table_name, col_name)
+	print 'selected %d matches for magnitude histogramming: %d magnitude values for %s' % (mask_radius.sum(), len(mag_sel), col)
 	
 	# make function fitting to ratio shape
-	bins, hist = fitfunc(mag_all[mask_all], mag_sel[mask_sel])
-	func = fitfunc_histogram(bins, hist)
-	plot_fit(bins, hist, func, mag)
-	col = "%s_%s" % (table_name, col_name)
+	bins, hist_sel, hist_all = fitfunc(mag_all[mask_all], mag_sel[mask_sel])
+	func = fitfunc_histogram(bins, hist_sel, hist_all)
+	plot_fit(bins, hist_sel, hist_all, func, mag)
 	weights = func(table[col])
 	biases[col] = weights
 
@@ -163,15 +169,15 @@ for ti, a in enumerate(table_names):
 ln_bf = bayesdist.log_bf(separations, errors)
 
 columns.append(pyfits.Column(name='bf', format='E', array=ln_bf/log(10)))
-columns.append(pyfits.Column(name='bfpost', format='E', array=bayesdist.posterior(frac, ln_bf)))
+columns.append(pyfits.Column(name='bfpost', format='E', array=bayesdist.posterior(prior, ln_bf)))
 
 for col, weights in biases.iteritems():
 	columns.append(pyfits.Column(name='bias_%s' % col, format='E', array=weights))
 
 total = ln_bf + sum(biases.values())
-columns.append(pyfits.Column(name='post', format='E', array=bayesdist.posterior(frac, total)))
+columns.append(pyfits.Column(name='post', format='E', array=bayesdist.posterior(prior, total)))
 
-post = bayesdist.posterior(frac, total)
+post = bayesdist.posterior(prior, total)
 index = numpy.zeros_like(post)
 
 primary_id_key = match.get_tablekeys(tables[0], 'ID')

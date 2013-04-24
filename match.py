@@ -3,15 +3,30 @@ import itertools
 import os, sys
 import pyfits
 import progressbar
-from numpy import sin, cos, arccos, pi, exp, log
+from numpy import sin, cos, arccos, arcsin, pi, exp, log
 
-# angular dist = arccos(  cos(90 - d1) + sin(90 - d1)*sin(90 - d2)*cos(a1 - a2) )
+"""
+From topcat: Haversine formula for spherical trigonometry.
+     * This does not have the numerical instabilities of the cosine formula
+     * at small angles.
+     * <p>
+     * This implementation derives from Bob Chamberlain's contribution
+     * to the comp.infosystems.gis FAQ; he cites
+     * R.W.Sinnott, "Virtues of the Haversine", Sky and Telescope vol.68,
+     * no.2, 1984, p159.
+     *
+     * @see  <http://www.census.gov/geo/www/gis-faq.txt>
+currently hosted at http://www.ciesin.org/gisfaq/gis-faq.txt
+"""
 def dist((a_ra, a_dec), (b_ra, b_dec)):
-	a1 = a_ra / 180 * pi
-	d1 = a_dec / 180 * pi
-	a2 = b_ra / 180 * pi
-	d2 = b_dec / 180 * pi
-	return arccos(sin(d1) * sin(d2) + cos(d1)*cos(d2)*cos(a1 - a2)) * 180 / pi
+	ra1 = a_ra / 180 * pi
+	dec1 = a_dec / 180 * pi
+	ra2 = b_ra / 180 * pi
+	dec2 = b_dec / 180 * pi
+        sd2 = sin(0.5 * (dec2 - dec1));
+        sr2 = sin(0.5 * (ra2 - ra1));
+        a = sd2 * sd2 + sr2 * sr2 * cos(dec1) * cos(dec2);
+        return numpy.where(a < 1.0, 2.0 * arcsin(a**0.5), pi) * 180 / pi;
 
 def get_tablekeys(table, name):
 	keys = sorted(table.dtype.names, key=lambda k: 0 if k.upper() == name else 1 if k.upper().startswith(name) else 2)
@@ -46,31 +61,15 @@ def match_multiple(tables, table_names, err):
 			ra, dec = e[ra_key], e[dec_key]
 			i, j = int(ra / err), int(dec / err)
 			
-			#for jj, ii in (j-1,i-1), (j-1,i), (j-1,i+1), (j,i-1), (j,i), (j,i+1), (j+1,i-1), (j+1,i), (j+1, i+1):
 			for jj, ii in (j,i), (j,i+1), (j+1,i), (j+1, i+1):
-				#k = int(ii + 10000*jj)
 				k = (ii, jj)
 				if k not in buckets:
 					buckets[k] = [[] for _ in range(len(tables))]
-				#print ' bucket', k, 'table', ti, e
 				buckets[k][ti].append(ei)
 			pbar.update(pbar.currval + 1)
 	pbar.finish()
 
 	results = []
-	def are_close(*l):
-		# all pairs
-		for i, a in enumerate(l):
-			for j, b in enumerate(l[:i]):
-				if numpy.abs(a[ra_keys[i]] - b[ra_keys[j]]) > err or \
-					numpy.abs(a[dec_keys[i]] - b[dec_keys[j]]) > err:
-					return False
-				#if dist((a[ra_keys[i]], a[dec_keys[i]]),
-				#	(b[ra_keys[j]], b[dec_keys[j]])) > err:
-				#	return False
-				
-		return True
-	
 	# now combine in buckets
 	print 'matching: %6d matches after hashing' % numpy.sum([numpy.product([len(li) for li in lists]) for lists in buckets.values()])
 
@@ -81,7 +80,6 @@ def match_multiple(tables, table_names, err):
 	for lists in buckets.values():
 		if any([len(li) == 0 for li in lists]):
 			continue
-		#results += [tuple(pair) for pair in itertools.product(*lists) if are_close(*pair)]
 		results += itertools.product(*lists)
 		pbar.update(pbar.currval + 1)
 	pbar.finish()
@@ -97,7 +95,7 @@ def match_multiple(tables, table_names, err):
 	
 	results = numpy.array(results, dtype=[(table_name, 'i') for table_name in table_names])
 	
-	print 'merging...'
+	print 'merging columns ...'
 	cat_columns = []
 	pbar = progressbar.ProgressBar(widgets=[
 		progressbar.Percentage(), progressbar.Counter('%3d'), 
@@ -115,9 +113,10 @@ def match_multiple(tables, table_names, err):
 	
 	tbhdu = pyfits.new_table(pyfits.ColDefs(cat_columns))
 	
-	print 'merging: adding angular separation columns'
+	print 'merging columns: adding angular separation columns'
 	cols = []
 	mask = numpy.zeros(len(results)) == 0
+	max_separation = numpy.zeros(len(results))
 	for i in range(len(tables)):
 		a_ra  = tbhdu.data["%s_%s" % (table_names[i], ra_keys[i])]
 		a_dec = tbhdu.data["%s_%s" % (table_names[i], dec_keys[i])]
@@ -129,16 +128,22 @@ def match_multiple(tables, table_names, err):
 			b_dec = tbhdu.data["%s_%s" % (table_names[j], dec_keys[j])]
 			
 			col = dist((a_ra, a_dec), (b_ra, b_dec))
+			assert not numpy.isnan(col).any(), ['%d distances are nan' % numpy.isnan(col).sum(), 
+				a_ra[numpy.isnan(col)], a_dec[numpy.isnan(col)], 
+				b_ra[numpy.isnan(col)], b_dec[numpy.isnan(col)]]
 			
+			max_separation = numpy.max([col, max_separation], axis=0)
 			mask = numpy.logical_and(mask, col < err)
 			cat_columns.append(pyfits.Column(name=k, format='E', array=col))
 	
+	cat_columns.append(pyfits.Column(name="Separation_max", format='E', array=max_separation))
+	keys.append("Separation_max")
 	for c in cat_columns:
 		c.array = c.array[mask]
 	
 	print 'matching: %6d matches after filtering' % mask.sum()
 	
-	return results, cat_columns
+	return results[mask], cat_columns
 
 def wraptable2fits(cat_columns, extname):
 	tbhdu = pyfits.new_table(pyfits.ColDefs(cat_columns))
@@ -205,3 +210,19 @@ if __name__ == '__main__':
 	plt.savefig('matchtest.pdf')
 
 
+
+def test_dist():
+	
+	d = dist((53.15964508, -27.92927742), (53.15953445, -27.9313736))
+	print 'distance', d
+	assert not numpy.isnan(d)
+	
+	ra = numpy.array([ 53.14784241,  53.14784241,  53.14749908, 53.16559982,     53.19423676,  53.1336441 ])
+	dec = numpy.array([-27.79363823, -27.79363823, -27.81790352, -27.79622459,      -27.70860672, -27.76327515])
+	ra2 = numpy.array([ 53.14907837,  53.14907837,  53.1498642 , 53.16150284,     53.19681549,  53.13626862])
+	dec2 = numpy.array([-27.79297447, -27.79297447, -27.81404877, -27.79223251,  -27.71365929, -27.76314735])
+
+	d = dist((ra, dec), (ra2, dec2))
+	print 'distance', d
+	assert not numpy.isnan(d).any()
+	
