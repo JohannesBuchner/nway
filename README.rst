@@ -29,7 +29,7 @@ It uses 3 methods for matching:
      *--mag-radius* specifies the search radius in arcsec.
 
 The final catalogue (*--out*) contains all input catalogues, and additional separation and probability columns.
-It can be trimmed using *--min-prob*. 
+The catalogue can be trimmed using *--min-prob*.
 A flag is added for the most probable match for the primary catalogue (1), and secondary, comparably good solutions (2, *--acceptable-prob*)
 
 

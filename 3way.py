@@ -13,8 +13,8 @@ from numpy import log, pi, exp, logical_and
 import matplotlib.pyplot as plt
 import pyfits
 import argparse
-import match
-import bayesdist
+import fastskymatch as match
+import bayesdistance as bayesdist
 
 parser = argparse.ArgumentParser(description=__doc__,
 	epilog="Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>",
@@ -46,19 +46,27 @@ parser.add_argument('catalogues', type=str, nargs='+',
 
 args = parser.parse_args()
 
+print '3way with arguments:'
+
 diff_secondary = args.acceptable_prob
 outfile = args.out
 
 filenames = args.catalogues[::2] # args.catalogues # sys.argv[1:]
+print '   catalogues: ', ', '.join(filenames)
 pos_errors = args.catalogues[1::2]
+print '   position errors/columns: ', ', '.join(pos_errors)
 
 tables = [pyfits.open(fitsname)[1] for fitsname in filenames]
 table_names = [t.name for t in tables]
 tables = [t.data for t in tables]
 min_prob = args.min_prob
+prior = args.prior
 
 match_radius = args.radius / 60. / 60 # in degrees
 mag_radius = args.mag_radius / 60. / 60 # in degrees
+
+magnitude_columns = args.mag
+print '   magnitude columns: ', ', '.join(magnitude_columns)
 
 # match input catalogues
 
@@ -94,7 +102,8 @@ def fitfunc_histogram(bin_mag, hist_sel, hist_all):
 	bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
 	interpfunc = scipy.interpolate.interp1d(bin_mag[:-1], 
 		bin_n_smooth, bounds_error=False, fill_value=bin_n.min(), kind='quadratic')
-	norm, err = scipy.integrate.quadrature(interpfunc, bin_mag.min(), bin_mag.max())
+	norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
+		epsrel=1e-2)
 	return lambda mag: log(interpfunc(mag) / norm)
 
 def fitfunc(mag_all, mag_sel):
@@ -111,7 +120,7 @@ def fitfunc(mag_all, mag_sel):
 
 biases = {}
 
-for mag in args.mag:
+for mag in magnitude_columns:
 	table_name, col_name = mag.split(':', 1)
 	assert table_name in table_names, 'table name specified for magnitude (%s) unknown. Known tables: %s' % (table_name, ', '.join(table_names))
 	ti = table_names.index(table_name)
@@ -184,26 +193,31 @@ primary_id_key = match.get_tablekeys(tables[0], 'ID')
 print 'grouping by %s from %s' % (primary_id_key, table_names[0])
 primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
 
-for primary_id in set(table[primary_id_key]):
+primary_ids = sorted(set(table[primary_id_key]))
+
+for primary_id in primary_ids:
 	# group
 	mask = table[primary_id_key] == primary_id
 	group_posterior = post[mask]
 	best_index = group_posterior.argmax()
 	best_val = group_posterior[best_index]
 	
-	# flag second best ( max('post') - post < diff_post )
-	mask1 = mask.copy()
-	mask1[best_val != group_posterior] = False
-	mask2 = mask.copy()
-	mask2[best_val - group_posterior > diff_secondary] = False
+	# flag second best
+	mask2 = logical_and(mask, best_val - post > diff_secondary)
 	index[mask2] = 2
 	# flag best
+	mask1 = logical_and(mask, best_val == post)
 	index[mask1] = 1
-	maskbad = mask.copy()
-	maskbad[group_posterior < min_prob] = False
-	index[maskbad] = -1
 
 columns.append(pyfits.Column(name='match_flag', format='I', array=index))
+
+# cut poor posteriors
+if min_prob > 0:
+	mask = -(post < min_prob)
+	print 'cutting away %d (below minimum)' % mask.sum()
+
+	for c in columns:
+		c.array = c.array[mask]
 
 tbhdu = pyfits.new_table(pyfits.ColDefs(columns))
 hdulist = match.wraptable2fits(tbhdu, 'MULTIMATCH')
@@ -215,7 +229,7 @@ for k, v in args.__dict__.iteritems():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
 hdulist.writeto(outfile, clobber=True)
 
-print 'wrote %s (%d rows, %d columns)' % (outfile, len(table), len(columns))
+print 'wrote %s (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns))
 
 
 
