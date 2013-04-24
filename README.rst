@@ -40,7 +40,14 @@ This name is used for column specification and as a prefix in the merged catalog
 It can be set in Table Parameters -> Name in TOPCAT.
 The columns for matching are automatically searched by name.
 
-The final catalogue is also a FITS table (table "multimatch").
+The final catalogue is also a FITS table (table "multimatch"). Some columns deserve explaination:
+
+* bf: Bayes factor for this association being a single source. (ln)
+* bfpost: Bayesian posterior for this association being a single source.
+* bias_*: individual weightings added by magnitude histogramming (ln)
+* post: bfpost + biases
+* match_flag: flagging of solutions: 1 for best, 2 for similarly good, 0 otherwise
+*
 
 Authors
 ---------
