@@ -1,3 +1,9 @@
+"""
+Functions for finding pairs within a certain search distance "err".
+
+Very fast method based on hashing.
+"""
+
 import numpy
 import itertools
 import os, sys

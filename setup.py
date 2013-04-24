@@ -5,7 +5,7 @@ setup(
 	version='0.7',
 	author='Johannes Buchner',
 	author_email='jbuchner@mpe.mpg.de',
-	py_modules=['fastskymatch', 'bayesdistance'],
+	py_modules=['fastskymatch', 'bayesdistance', 'magnitudeweights'],
 	scripts=['3way.py'],
 	url='http://pypi.python.org/pypi/3way/',
 	license='LICENSE',

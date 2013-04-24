@@ -11,25 +11,24 @@ from numpy import log, pi, exp, logical_and, where
 
 log_arcsec2rad = log(3600 * 180 / pi)
 
-def posterior(prior, bf):
-	return 1 / ( 1 + (1-prior) / prior / bf)
-
-# for numerical stability, the same in log:
 def log_posterior(prior, log_bf):
 	return -log( 1 + (1 - prior) * exp(-log_bf - log(prior)))
 
 def posterior(prior, log_bf):
-	return exp(log_posterior(prior, log_bf))
+	return 1. / (1 + (1 - prior) * exp(-log_bf - log(prior)))
 
-# Natural log of the 2-way Bayes factor, see eq.(16)
-# psi=separation s1 and s2=accuracy of coordinates
+"""
+Natural log of the 2-way Bayes factor, see eq.(16)
+psi separation 
+s1 and s2=accuracy of coordinates
+"""
 def log_bf2(psi, s1, s2):
 	s = s1*s1 + s2*s2;
-	#print
-	#print 'bf2:', log(2), 2 * log_arcsec2rad, - log(s), 1. / s2, psi*psi, psi*psi
 	return log(2) + 2 * log_arcsec2rad - log(s) - psi*psi / 2 / s
 
-# Natural log of the 3-way Bayes factor, see eq.(17)
+"""
+Natural log of the 3-way Bayes factor, see eq.(17)
+"""
 def log_bf3(p12,p23,p31, s1,s2,s3):
 	ss1 = s1*s1
 	ss2 = s2*s2
@@ -38,7 +37,9 @@ def log_bf3(p12,p23,p31, s1,s2,s3):
 	q = ss3 * p12**2 + ss1 * p23**2 + ss2 * p31**2
 	return log(4) + 4 * log_arcsec2rad - log(s) - q / 2 / s
 
-# Natural log of the multi-way Bayes factor, see eq.(18)
+"""
+Natural log of the multi-way Bayes factor, see eq.(18)
+"""
 def log_bf(p, s):
 	n = len(s)
 	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]

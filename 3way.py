@@ -3,9 +3,6 @@
 
 __doc__ = """Multiway association between astrometric catalogue. Use --help for usage."""
 
-
-import sys
-import scipy, scipy.optimize, scipy.interpolate, scipy.signal, scipy.integrate
 import numpy
 from numpy import log, pi, exp, logical_and
 import matplotlib.pyplot as plt
@@ -13,6 +10,9 @@ import pyfits
 import argparse
 import fastskymatch as match
 import bayesdistance as bayesdist
+import magnitudeweights
+
+# set up program arguments
 
 parser = argparse.ArgumentParser(description=__doc__,
 	epilog="Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>",
@@ -42,14 +42,15 @@ parser.add_argument('--out', help='output file name', required=True)
 parser.add_argument('catalogues', type=str, nargs='+',
 	help='input catalogue fits files')
 
+# parsing arguments
 args = parser.parse_args()
 
-print '3way with arguments:'
+print '3way arguments:'
 
 diff_secondary = args.acceptable_prob
 outfile = args.out
 
-filenames = args.catalogues[::2] # args.catalogues # sys.argv[1:]
+filenames = args.catalogues[::2]
 print '   catalogues: ', ', '.join(filenames)
 pos_errors = args.catalogues[1::2]
 print '   position errors/columns: ', ', '.join(pos_errors)
@@ -66,58 +67,13 @@ mag_radius = args.mag_radius / 60. / 60 # in degrees
 magnitude_columns = args.mag
 print '   magnitude columns: ', ', '.join(magnitude_columns)
 
-# match input catalogues
-
+# first match input catalogues, compute possible combinations in match_radius
 results, columns = match.match_multiple(tables, table_names, match_radius)
 table = pyfits.new_table(pyfits.ColDefs(columns)).data
 
 
-# compute magnitude distributions
-# use adaptive binning for that
-
-
-def plot_fit(bin_mag, hist_sel, hist_all, func, name):
-	plt.figure()
-	hist_n = (hist_sel + 1e-3) / (hist_all + 1e-3)
-	plt.plot(bin_mag[:-1], hist_all / hist_all.sum(), '--', 
-		drawstyle='steps-pre', label='all')
-	plt.plot(bin_mag[:-1], hist_sel / hist_sel.sum(), '--', 
-		drawstyle='steps-pre', label='selected')
-	plt.plot(bin_mag[:-1], hist_n / hist_n.sum(), '--', 
-		drawstyle='steps-pre', label='ratio histogram')
-	mags = numpy.linspace(bin_mag.min(), bin_mag.max(), 400)
-	plt.plot(mags, exp(func(mags)), '-', drawstyle='steps-pre', label='fit')
-	plt.legend(loc='best')
-	plt.ylabel('normalized weight')
-	plt.xlabel('magnitude')
-	plt.savefig(name.replace(':', '_') + '_fit.pdf', bbox_inches='tight')
-	plt.close()
-
-def fitfunc_histogram(bin_mag, hist_sel, hist_all):
-	bin_n = (hist_sel + 1e-3) / (hist_all + 1e-3)
-	w = scipy.signal.flattop(4) #, 1)
-	w /= w.sum()
-	bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
-	interpfunc = scipy.interpolate.interp1d(bin_mag[:-1], 
-		bin_n_smooth, bounds_error=False, fill_value=bin_n.min(), kind='quadratic')
-	norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
-		epsrel=1e-2)
-	return lambda mag: log(interpfunc(mag) / norm)
-
-def fitfunc(mag_all, mag_sel):
-	# make histogram
-	func_sel = scipy.interpolate.interp1d(
-		numpy.linspace(0, 1, len(mag_sel)), 
-		sorted(mag_sel))
-	#x = numpy.linspace(numpy.nanmin(mag_all), numpy.nanmax(mag_all), 10)
-	x = func_sel(numpy.linspace(0, 1, 20))
-	hist_sel, bins = numpy.histogram(mag_sel, bins=x,    normed=True)
-	hist_all, bins = numpy.histogram(mag_all, bins=bins, normed=True)
-	return bins, hist_sel, hist_all
-
-
+# find magnitude biasing functions
 biases = {}
-
 for mag in magnitude_columns:
 	table_name, col_name = mag.split(':', 1)
 	assert table_name in table_names, 'table name specified for magnitude (%s) unknown. Known tables: %s' % (table_name, ', '.join(table_names))
@@ -140,16 +96,13 @@ for mag in magnitude_columns:
 	print 'selected %d matches for magnitude histogramming: %d magnitude values for %s' % (mask_radius.sum(), len(mag_sel), col)
 	
 	# make function fitting to ratio shape
-	bins, hist_sel, hist_all = fitfunc(mag_all[mask_all], mag_sel[mask_sel])
-	func = fitfunc_histogram(bins, hist_sel, hist_all)
-	plot_fit(bins, hist_sel, hist_all, func, mag)
+	bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
+	func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
+	magnitudeweights.plot_fit(bins, hist_sel, hist_all, func, mag)
 	weights = func(table[col])
 	biases[col] = weights
 
-# add the additional columns
-
-# compute n-way position evidence of merged catalogue
-
+# get the separation and error columns for the bayesian weighting
 errors    = []
 for table_name, pos_error in zip(table_names, pos_errors):
 	if pos_error[0] == ':':
@@ -173,18 +126,25 @@ for ti, a in enumerate(table_names):
 			row.append(numpy.ones(len(table)) * numpy.nan)
 	separations.append(row)
 
+# compute n-way position evidence
+
 ln_bf = bayesdist.log_bf(separations, errors)
 
+# add the additional columns
 columns.append(pyfits.Column(name='bf', format='E', array=ln_bf/log(10)))
 columns.append(pyfits.Column(name='bfpost', format='E', array=bayesdist.posterior(prior, ln_bf)))
 
+# add the bias columns
 for col, weights in biases.iteritems():
 	columns.append(pyfits.Column(name='bias_%s' % col, format='E', array=weights))
 
-total = ln_bf + sum(biases.values())
-columns.append(pyfits.Column(name='post', format='E', array=bayesdist.posterior(prior, total)))
 
+# add the posterior column
+total = ln_bf + sum(biases.values())
 post = bayesdist.posterior(prior, total)
+columns.append(pyfits.Column(name='post', format='E', array=post)
+
+# flagging of solutions. Go through groups by primary id (IDs in first catalogue)
 index = numpy.zeros_like(post)
 
 primary_id_key = match.get_tablekeys(tables[0], 'ID')
@@ -207,9 +167,10 @@ for primary_id in primary_ids:
 	mask1 = logical_and(mask, best_val == post)
 	index[mask1] = 1
 
+# add the flagging column
 columns.append(pyfits.Column(name='match_flag', format='I', array=index))
 
-# cut poor posteriors
+# cut away poor posteriors if requested
 if min_prob > 0:
 	mask = -(post < min_prob)
 	print 'cutting away %d (below minimum)' % mask.sum()
@@ -217,6 +178,7 @@ if min_prob > 0:
 	for c in columns:
 		c.array = c.array[mask]
 
+# write out fits file
 tbhdu = pyfits.new_table(pyfits.ColDefs(columns))
 hdulist = match.wraptable2fits(tbhdu, 'MULTIMATCH')
 hdulist[0].header.update('METHOD', 'multi-way matching')
