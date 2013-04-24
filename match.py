@@ -2,21 +2,139 @@ import numpy
 import itertools
 import os, sys
 import pyfits
+import progressbar
+from numpy import sin, cos, arccos, pi, exp, log
 
-filenames = sys.argv[1:]
+# angular dist = arccos(  cos(90 - d1) + sin(90 - d1)*sin(90 - d2)*cos(a1 - a2) )
+def dist((a_ra, a_dec), (b_ra, b_dec)):
+	a1 = a_ra / 180 * pi
+	d1 = a_dec / 180 * pi
+	a2 = b_ra / 180 * pi
+	d2 = b_dec / 180 * pi
+	return arccos(sin(d1) * sin(d2) + cos(d1)*cos(d2)*cos(a1 - a2)) * 180 / pi
 
-numpy.random.seed(0)
-#tables = [numpy.loadtxt(t) for t in tables]
+def get_tablekeys(table, name):
+	keys = sorted(table.dtype.names, key=lambda k: 0 if k.upper() == name else 1 if k.upper().startswith(name) else 2)
+	assert len(keys) > 0 and name in keys[0].upper(), 'ERROR: No "%s"  column found in input catalogue. Only have: %s' % (name, ', '.join(table.dtype.names))
+	return keys[0]
 
-def gen():
-	ra  = numpy.random.uniform(size=200)
-	dec = numpy.random.uniform(size=200)
-	return numpy.array(zip(ra, dec), dtype=[('ra', 'f'), ('dec', 'f')])
+def match_multiple(tables, table_names, err):
+	buckets = {}
 
-def array2fits(table, extname):
-	cat_columns = pyfits.ColDefs([pyfits.Column(name=n, format='E',array=table[n]) 
-		for n in table.dtype.names])
-	tbhdu = pyfits.new_table(cat_columns)
+	print 'matching with %f arcsec radius' % err
+	print 'matching: %6d naive possibilities' % numpy.product([len(t) for t in tables])
+
+	print 'matching: hashing'
+
+	ra_keys = [get_tablekeys(table, 'RA') for table in tables]
+	print 'using RA  columns: %s' % ', '.join(ra_keys)
+	dec_keys = [get_tablekeys(table, 'DEC') for table in tables]
+	print 'using DEC columns: %s' % ', '.join(dec_keys)
+	#ra_min = min([table[k].min() for k, table in zip(ra_keys, tables)])
+	#ra_max = max([table[k].max() for k, table in zip(ra_keys, tables)])
+	#dec_min = min([table[k].min() for k, table in zip(dec_keys, tables)])
+	#dec_max = max([table[k].max() for k, table in zip(dec_keys, tables)])
+	#print ra_min, ra_max, dec_min, dec_max
+
+	pbar = progressbar.ProgressBar(widgets=[
+		progressbar.Percentage(), progressbar.Counter('%3d'),
+		progressbar.Bar(), progressbar.ETA()], maxval=sum([len(t) for t in tables])).start()
+	for ti, table in enumerate(tables):
+		ra_key = ra_keys[ti]
+		dec_key = dec_keys[ti]
+		for ei, e in enumerate(table):
+			ra, dec = e[ra_key], e[dec_key]
+			i, j = int(ra / err), int(dec / err)
+			
+			#for jj, ii in (j-1,i-1), (j-1,i), (j-1,i+1), (j,i-1), (j,i), (j,i+1), (j+1,i-1), (j+1,i), (j+1, i+1):
+			for jj, ii in (j,i), (j,i+1), (j+1,i), (j+1, i+1):
+				#k = int(ii + 10000*jj)
+				k = (ii, jj)
+				if k not in buckets:
+					buckets[k] = [[] for _ in range(len(tables))]
+				#print ' bucket', k, 'table', ti, e
+				buckets[k][ti].append(ei)
+			pbar.update(pbar.currval + 1)
+	pbar.finish()
+
+	results = []
+	def are_close(*l):
+		# all pairs
+		for i, a in enumerate(l):
+			for j, b in enumerate(l[:i]):
+				if numpy.abs(a[ra_keys[i]] - b[ra_keys[j]]) > err or \
+					numpy.abs(a[dec_keys[i]] - b[dec_keys[j]]) > err:
+					return False
+				#if dist((a[ra_keys[i]], a[dec_keys[i]]),
+				#	(b[ra_keys[j]], b[dec_keys[j]])) > err:
+				#	return False
+				
+		return True
+	
+	# now combine in buckets
+	print 'matching: %6d matches after hashing' % numpy.sum([numpy.product([len(li) for li in lists]) for lists in buckets.values()])
+
+	print 'matching: collecting from buckets'
+	pbar = progressbar.ProgressBar(widgets=[
+		progressbar.Percentage(), progressbar.Counter('%3d'), 
+		progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
+	for lists in buckets.values():
+		if any([len(li) == 0 for li in lists]):
+			continue
+		#results += [tuple(pair) for pair in itertools.product(*lists) if are_close(*pair)]
+		results += itertools.product(*lists)
+		pbar.update(pbar.currval + 1)
+	pbar.finish()
+
+	# now make results unique by sorting
+	print 'matching: %6d matches from hashing' % len(results)
+	results = list(set(results))
+	print 'matching: %6d unique matches' % len(results)
+
+	keys = []
+	for table_name, table in zip(table_names, tables):
+		keys += ["%s_%s" % (table_name, n) for n in table.dtype.names]
+	
+	results = numpy.array(results, dtype=[(table_name, 'i') for table_name in table_names])
+	
+	print 'merging...'
+	cat_columns = []
+	for table, table_name in zip(tables, table_names):
+		tbl = table[results[table_name]]
+		for n in table.dtype.names:
+			k = "%s_%s" % (table_name, n)
+			keys.append(k)
+			cat_columns.append(pyfits.Column(name=k, format='E', array=tbl[n]))
+		
+	tbhdu = pyfits.new_table(pyfits.ColDefs(cat_columns))
+	
+	print 'merging: adding angular separation columns'
+	cols = []
+	mask = numpy.zeros(len(results)) == 0
+	for i in range(len(tables)):
+		a_ra  = tbhdu.data["%s_%s" % (table_names[i], ra_keys[i])]
+		a_dec = tbhdu.data["%s_%s" % (table_names[i], dec_keys[i])]
+		for j in range(i):
+			k = "Separation_%s_%s" % (table_names[i], table_names[j])
+			keys.append(k)
+			
+			b_ra  = tbhdu.data["%s_%s" % (table_names[j], ra_keys[j])]
+			b_dec = tbhdu.data["%s_%s" % (table_names[j], dec_keys[j])]
+			
+			col = dist((a_ra, a_dec), (b_ra, b_dec))
+			
+			mask = numpy.logical_and(mask, col < err)
+			cat_columns.append(pyfits.Column(name=k, format='E', array=col))
+	
+	for c in cat_columns:
+		c.array = c.array[mask]
+	
+	print 'matching: %6d matches after filtering' % mask.sum()
+	
+	return results, cat_columns
+
+def wraptable2fits(cat_columns, extname):
+	tbhdu = pyfits.new_table(pyfits.ColDefs(cat_columns))
 	hdu = pyfits.PrimaryHDU()
 	import datetime, time
 	now = datetime.datetime.fromtimestamp(time.time())
@@ -29,143 +147,54 @@ def array2fits(table, extname):
 	hdulist = pyfits.HDUList([hdu, tbhdu])
 	return hdulist
 
-for fitsname in filenames:
-	if os.path.exists(fitsname):
-		continue
-	print 'generating toy data for %s!' % fitsname
-	hdulist = array2fits(gen(), fitsname.replace('.fits', ''))
-	hdulist[0].header.update('GENERAT', 'match test table, random')
-	hdulist.writeto(fitsname, clobber=False)
+def array2fits(table, extname):
+	cat_columns = pyfits.ColDefs([pyfits.Column(name=n, format='E',array=table[n]) 
+		for n in table.dtype.names])
+	return wraptable2fits(cat_columns, extname)
 
-tables = [pyfits.open(fitsname)[1] for fitsname in filenames]
-table_names = [t.name for t in tables]
-tables = [t.data for t in tables]
+if __name__ == '__main__':
+	filenames = sys.argv[1:]
+	
+	numpy.random.seed(0)
 
-err = 0.03
+	def gen():
+		ra  = numpy.random.uniform(size=1000)
+		dec = numpy.random.uniform(size=1000)
+		return numpy.array(zip(ra, dec), dtype=[('ra', 'f'), ('dec', 'f')])
 
-buckets = {}
+	for fitsname in filenames:
+		if os.path.exists(fitsname):
+			continue
+		print 'generating toy data for %s!' % fitsname
+		hdulist = array2fits(gen(), fitsname.replace('.fits', ''))
+		hdulist[0].header.update('GENERAT', 'match test table, random')
+		hdulist.writeto(fitsname, clobber=False)
+	
+	tables = [pyfits.open(fitsname)[1] for fitsname in filenames]
+	table_names = [t.name for t in tables]
+	tables = [t.data for t in tables]
+	
+	err = 0.03
+	
+	results, columns = match_multiple(tables, table_names, err)
+	tbhdu = pyfits.new_table(pyfits.ColDefs(columns))
+	
+	hdulist = wraptable2fits(tbhdu, 'MATCH')
+	hdulist[0].header.update('ANALYSIS', 'match table from' + ', '.join(table_names))
+	hdulist[0].header.update('INPUT', ', '.join(filenames))
+	hdulist.writeto('match.fits', clobber=True)
 
-print 'naive', numpy.product([len(t) for t in tables])
+	print 'plotting'
+	import matplotlib.pyplot as plt
+	for table_name in table_names:
+		plt.plot(tbhdu.data['%s_RA'  % table_name], 
+			 tbhdu.data['%s_DEC' % table_name], '.')
+	
+	for r in tbhdu.data:
+		plt.plot(r['%s_RA'  % table_name],
+			 r['%s_DEC' % table_name],
+			'-', color='b', alpha=0.3)
+	
+	plt.savefig('matchtest.pdf')
 
-import progressbar
-pbar = progressbar.ProgressBar(widgets=[
-	progressbar.Percentage(), progressbar.Counter('%3d'),
-	progressbar.Bar(), progressbar.ETA()], maxval=sum([len(t) for t in tables])).start()
-
-for ti, table in enumerate(tables):
-	for e in table:
-		ra, dec = e['ra'], e['dec']
-		i, j = int(ra / err), int(dec / err)
-		
-		#for jj, ii in (j-1,i-1), (j-1,i), (j-1,i+1), (j,i-1), (j,i), (j,i+1), (j+1,i-1), (j+1,i), (j+1, i+1):
-		for jj, ii in (j,i), (j,i+1), (j+1,i), (j+1, i+1):
-			#k = int(ii + 10000*jj)
-			k = (ii, jj)
-			if k not in buckets:
-				buckets[k] = [[] for _ in range(len(tables))]
-			#print ' bucket', k, 'table', ti, e
-			buckets[k][ti].append(e)
-		pbar.update(pbar.currval + 1)
-pbar.finish()
-
-"""
-pbar = progressbar.ProgressBar(widgets=[
-	progressbar.Percentage(), progressbar.Counter('%3d'),
-	progressbar.Bar(), progressbar.ETA()], maxval=3).start()
-
-hashes0 = []
-hashes1 = []
-hashes2 = []
-hashes3 = []
-print 'hashing ...'
-for ti, table in enumerate(tables):
-	ra, dec = table['ra'], table['dec']
-	i = numpy.array(ra / err / 3,  dtype=numpy.int)
-	j = numpy.array(dec / err / 3, dtype=numpy.int)
-	hashes0.append(i + 10000 * j)
-	hashes1.append(i + 1 + 10000 * j)
-	hashes2.append(i + 10000 * (j + 1))
-	hashes3.append(i + 1 + 10000 * (j + 1))
-
-pbar.update(pbar.currval + 1)
-print 'collecting hashes...'
-all_hashes = set()
-for hashes in [hashes0, hashes1, hashes2, hashes3]:
-	for k in hashes:
-		all_hashes.update(k)
-
-pbar.update(pbar.currval + 1)
-print 'bucketing...'
-buckets = {}
-for h in all_hashes:
-	buckets[h] = []
-	for ti, table in enumerate(tables):
-		buckets[h].append(table[numpy.logical_or(
-			numpy.logical_or(hashes0[ti] == h, hashes1[ti] == h),
-			numpy.logical_or(hashes2[ti] == h, hashes3[ti] == h))])
-
-pbar.update(pbar.currval + 1)
-pbar.finish()
-"""
-
-results = []
-def are_close(*l):
-	# all pairs
-	for i, a in enumerate(l):
-		for b in l[:i]:
-			if numpy.abs(a['ra'] - b['ra']) > err or numpy.abs(a['dec'] - b['dec']) > err:
-				return False
-	return True
-
-print ' combining ...'
-# now combine in buckets
-print 'hashing', numpy.sum([numpy.product([len(li) for li in lists]) for lists in buckets.values()])
-
-pbar = progressbar.ProgressBar(widgets=[
-	progressbar.Percentage(), progressbar.Counter('%3d'), 
-	progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
-for lists in buckets.values():
-	if any([len(li) == 0 for li in lists]):
-		continue
-	#	results += [tuple(pair) for pair in itertools.product(*lists)]
-	results += [tuple(pair) for pair in itertools.product(*lists) if are_close(*pair)]
-	#print ' bucket', k, [len(li) for li in lists]
-	#print '    ', lists
-	#print '    ', product
-	pbar.update(pbar.currval + 1)
-pbar.finish()
-
-# now make results unique by sorting
-print 'filtered', len(results)
-results = set(results)
-print 'unique', len(results)
-
-table = []
-
-keys = []
-for r in results:
-	row = []
-	for t in r:
-		row += list(t)
-	table.append(row)
-for table_name, table in zip(table_names, tables):
-	keys += ["%s_%s" % (table_name, n) for n in table.dtype.names]
-print keys
-table = numpy.array(table, dtype=[(k, 'f') for k in keys])
-hdulist = array2fits(table, 'MATCH')
-hdulist[0].header.update('ANALYSIS', 'match table from' + ', '.join(table_names))
-hdulist[0].header.update('INPUT', ', '.join(filenames))
-hdulist.writeto('match.fits', clobber=True)
-
-
-print 'plotting'
-import matplotlib.pyplot as plt
-
-for ti in range(len(tables)):
-	plt.plot([r[ti]['ra'] for r in results], [r[ti]['dec'] for r in results], '.')
-
-for r in results:
-	plt.plot([t['ra'] for t in r], [t['dec'] for t in r], '-', color='b', alpha=0.3)
-
-plt.savefig('matchtest.pdf')
 
