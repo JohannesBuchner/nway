@@ -35,7 +35,7 @@ parser.add_argument('--n', default=350, type=float,
 parser.add_argument('--mag', type=str, action='append',
 	help='name of <table>_<column> for magnitude biasing', default=[])
 
-parser.add_argument('--secondary-distance', type=float, default=0.005,
+parser.add_argument('--acceptable-prob', type=float, default=0.005,
 	help='limit up to which secondary solutions are flagged')
 
 parser.add_argument('--min-prob', type=float, default=0,
@@ -50,7 +50,7 @@ args = parser.parse_args()
 
 frac = 0.95/6.4e+20
 
-diff_post = args.min_prob
+diff_secondary = args.acceptable_prob
 outfile = args.out
 
 filenames = args.catalogues[::2] # args.catalogues # sys.argv[1:]
@@ -58,7 +58,6 @@ pos_errors = args.catalogues[1::2]
 
 tables = [pyfits.open(fitsname)[1] for fitsname in filenames]
 table_names = [t.name for t in tables]
-print 'tables:', table_names
 tables = [t.data for t in tables]
 min_prob = args.min_prob
 
@@ -88,15 +87,12 @@ def plot_fit(bin_mag, bin_n, func, name):
 	plt.close()
 
 def fitfunc_histogram(bin_mag, bin_n):
-	#w = scipy.signal.flattop(4) #, 1)
-	#w /= w.sum()
-	bin_n += 1e-3
-	#print bin_n
-	#bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same' )
+	w = scipy.signal.flattop(4) #, 1)
+	w /= w.sum()
+	bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
 	interpfunc = scipy.interpolate.interp1d(bin_mag[:-1], 
-		bin_n, bounds_error=False, fill_value=bin_n.min(), kind='linear')
+		bin_n_smooth, bounds_error=False, fill_value=bin_n.min(), kind='quadratic')
 	norm, err = scipy.integrate.quadrature(interpfunc, bin_mag.min(), bin_mag.max())
-	print 'norm', norm, err
 	return lambda mag: log(interpfunc(mag) / norm)
 
 def fitfunc(mag_all, mag_sel):
@@ -104,16 +100,11 @@ def fitfunc(mag_all, mag_sel):
 	func_sel = scipy.interpolate.interp1d(
 		numpy.linspace(0, 1, len(mag_sel)), 
 		sorted(mag_sel))
-	print 'values', mag_all, mag_sel
 	#x = numpy.linspace(numpy.nanmin(mag_all), numpy.nanmax(mag_all), 10)
-	x = func_sel(numpy.linspace(0, 1, 10))
-	print 'limits', x
-	print 'magnitude values: %d / %d' % (len(mag_sel), len(mag_all))
-	hist_sel, bins = numpy.histogram(mag_sel, bins=x, normed=True)
+	x = func_sel(numpy.linspace(0, 1, 20))
+	hist_sel, bins = numpy.histogram(mag_sel, bins=x,    normed=True)
 	hist_all, bins = numpy.histogram(mag_all, bins=bins, normed=True)
-	print 'bin values: ', hist_sel, hist_all
-	
-	return bins, (hist_sel + 1e-2) / (hist_all + 1e-2)
+	return bins, (hist_sel + 1e-3) / (hist_all + 1e-3)
 
 
 biases = {}
@@ -130,11 +121,12 @@ for mag in args.mag:
 	mag_all = tables[ti][col_name]
 	
 	# get magnitudes of selected
+	mask_all = -numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
 	mag_sel = mag_all[list(set(results[table_name]))]
+	mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
 	
 	# make function fitting to ratio shape
-	bins, hist = fitfunc(mag_all[-numpy.isinf(mag_all)], mag_sel[-numpy.isinf(mag_sel)])
-	print 'plotting magnitude distribution for %s' % mag
+	bins, hist = fitfunc(mag_all[mask_all], mag_sel[mask_sel])
 	func = fitfunc_histogram(bins, hist)
 	plot_fit(bins, hist, func, mag)
 	col = "%s_%s" % (table_name, col_name)
@@ -151,6 +143,7 @@ for table_name, pos_error in zip(table_names, pos_errors):
 		# get column
 		k = "%s_%s" % (table_name, pos_error[1:])
 		assert k in table.dtype.names, 'ERROR: Position error column for %s not in table %s. Have columns: %s' % (k, table_name, ', '.join(table.dtype.names))
+		print 'using column', (table[k].min(), table[k].max())
 		errors.append(table[k])
 	else:
 		errors.append(float(pos_error[1:]) * numpy.ones(len(table)))
@@ -196,7 +189,7 @@ for primary_id in set(table[primary_id_key]):
 	mask1 = mask.copy()
 	mask1[best_val != group_posterior] = False
 	mask2 = mask.copy()
-	mask2[best_val - group_posterior > diff_post] = False
+	mask2[best_val - group_posterior > diff_secondary] = False
 	index[mask2] = 2
 	# flag best
 	index[mask1] = 1

@@ -21,7 +21,7 @@ def get_tablekeys(table, name):
 def match_multiple(tables, table_names, err):
 	buckets = {}
 
-	print 'matching with %f arcsec radius' % err
+	print 'matching with %f arcsec radius' % (err * 60 * 60)
 	print 'matching: %6d naive possibilities' % numpy.product([len(t) for t in tables])
 
 	print 'matching: hashing'
@@ -99,13 +99,20 @@ def match_multiple(tables, table_names, err):
 	
 	print 'merging...'
 	cat_columns = []
+	pbar = progressbar.ProgressBar(widgets=[
+		progressbar.Percentage(), progressbar.Counter('%3d'), 
+		progressbar.Bar(), progressbar.ETA()], 
+		maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
 	for table, table_name in zip(tables, table_names):
 		tbl = table[results[table_name]]
+		pbar.update(pbar.currval + 1)
 		for n in table.dtype.names:
 			k = "%s_%s" % (table_name, n)
 			keys.append(k)
 			cat_columns.append(pyfits.Column(name=k, format='E', array=tbl[n]))
-		
+			pbar.update(pbar.currval + 1)
+	pbar.finish()
+	
 	tbhdu = pyfits.new_table(pyfits.ColDefs(cat_columns))
 	
 	print 'merging: adding angular separation columns'

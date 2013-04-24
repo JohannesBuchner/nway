@@ -53,7 +53,6 @@ def log_bf3(p12,p23,p31, s1,s2,s3):
 	q = ss3 * p12**2 + ss1 * p23**2 + ss2 * p31**2
 	return log(4) + 4 * log_arcsec2rad - log(s) - q / 2 / s
 
-
 def log_bf(p, s):
 	n = len(s)
 	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
