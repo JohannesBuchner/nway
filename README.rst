@@ -32,6 +32,14 @@ The final catalogue (*--out*) contains all input catalogues, and additional sepa
 The catalogue can be trimmed using *--min-prob*.
 A flag is added for the most probable match for the primary catalogue (1), and secondary, comparably good solutions (2, *--acceptable-prob*)
 
+Input/output formats
+---------------------
+The input catalogues need to specially prepared, as FITS files. 
+In each file, the first table is used, and its extension name/table name is very important! 
+This name is used for column specification and as a prefix in the merged catalogue.
+It can be set in Table Parameters -> Name in TOPCAT.
+
+The final catalogue is also a FITS table (table "multimatch").
 
 Authors
 ---------

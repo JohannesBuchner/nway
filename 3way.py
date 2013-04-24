@@ -142,7 +142,7 @@ for col, weights in biases.iteritems():
 # add the posterior column
 total = ln_bf + sum(biases.values())
 post = bayesdist.posterior(prior, total)
-columns.append(pyfits.Column(name='post', format='E', array=post)
+columns.append(pyfits.Column(name='post', format='E', array=post))
 
 # flagging of solutions. Go through groups by primary id (IDs in first catalogue)
 index = numpy.zeros_like(post)
