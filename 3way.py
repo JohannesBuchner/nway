@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
 
-__doc__ = """Multiway association between astrometric catalogue. Use --help for usage."""
+__doc__ = """Multiway association between astrometric catalogue. Use --help for usage.
+
+Example: 3way.py --radius 10 --mag-radius 3 --prior-completeness 0.95 --mag GOODS:mag_H --mag IRAC:mag_irac1 cdfs4Ms_srclist_v3.fits :Pos_error CANDELS_irac1.fits 0.5 gs_short.fits 0.1 --out=out.fits
+"""
 
 import sys
 import numpy
@@ -22,7 +25,7 @@ class HelpfulParser(argparse.ArgumentParser):
 		sys.exit(2)
 
 parser = HelpfulParser(description=__doc__,
-	epilog="Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>",
+	epilog="""Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--radius', default=10, type=float,
@@ -32,7 +35,7 @@ parser.add_argument('--mag-radius', default=3, type=float,
 	help='search radius for magnitude histograms')
 
 #nx/(1887*15e+18)
-parser.add_argument('--prior-completeness', default=0.95, type=float,
+parser.add_argument('--prior-completeness', default=1, type=float,
 	help='expected matching completeness of sources (prior)')
 
 parser.add_argument('--mag', type=str, action='append', default=[],
@@ -196,6 +199,8 @@ for primary_id in primary_ids:
 	
 	# flag second best
 	mask2 = logical_and(mask, best_val - post > diff_secondary)
+	# ignore very poor solutions
+	mask2 = logical_and(mask2, post > 0.1)
 	index[mask2] = 2
 	# flag best
 	mask1 = logical_and(mask, best_val == post)

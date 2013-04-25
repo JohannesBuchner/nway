@@ -17,7 +17,7 @@ It uses 3 methods for finding associations:
    For each combination found in (1), the model that all positions belong 
    to one source is compared to the model that they are all independent.
    
-   *--prior* specifies the density of false positives. E.g. nx/(1887*15e+18)
+   *--prior-completeness* specifies the expected matching completeness. E.g. 1.
 
 3) optional: weighting based on properties of close objects versus distant objects
    
