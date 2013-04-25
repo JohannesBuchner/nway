@@ -32,8 +32,8 @@ parser.add_argument('--mag-radius', default=3, type=float,
 	help='search radius for magnitude histograms')
 
 #nx/(1887*15e+18)
-parser.add_argument('--prior', default=0.95/6.4e+20, type=float,
-	help='prior: density of sources expected')
+parser.add_argument('--prior-completeness', default=0.95, type=float,
+	help='expected matching completeness of sources (prior)')
 
 parser.add_argument('--mag', type=str, action='append', default=[],
 	help="""name of <table>_<column> for magnitude biasing.
@@ -66,11 +66,30 @@ print '   catalogues: ', ', '.join(filenames)
 pos_errors = args.catalogues[1::2]
 print '   position errors/columns: ', ', '.join(pos_errors)
 
-tables = [pyfits.open(fitsname)[1] for fitsname in filenames]
-table_names = [t.name for t in tables]
-tables = [t.data for t in tables]
+fits_tables = []
+table_names = []
+tables = []
+source_densities = []
+for fitsname in filenames:
+	fits_table = pyfits.open(fitsname)[1]
+	fits_tables.append(fits_table)
+	table_name = fits_table.name
+	table_names.append(table_name)
+	table = fits_table.data
+	tables.append(table)
+
+	n = len(table)
+	assert 'SKYAREA' in fits_table.header, "file %s, table %s does not have a field 'SKYAREA', which should contain the area of the catalogue in square degrees" % (fitsname, table_name)
+	area = fits_table.header['SKYAREA'] # in square degrees
+	area_total = (4 * pi * (180 / pi)**2)
+	density = n / area * area_total
+	print '     from catalogue %s, density is %e' % (table_name, density)
+	source_densities.append(density)
+
+prior = len(tables[0]) * args.prior_completeness / numpy.product(source_densities)
+print '   prior: %.2f * %d / %d = %e' % (len(tables[0]), args.prior_completeness, numpy.product(source_densities), prior)
+
 min_prob = args.min_prob
-prior = args.prior
 
 match_radius = args.radius / 60. / 60 # in degrees
 mag_radius = args.mag_radius / 60. / 60 # in degrees
@@ -95,6 +114,8 @@ for mag in magnitude_columns:
 	
 	# get magnitudes of all
 	mag_all = tables[ti][col_name]
+	# mark -99 as undefined
+	mag_all[mag_all == -99] = numpy.nan
 	
 	# get magnitudes of selected
 	mask_all = -numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
@@ -111,6 +132,8 @@ for mag in magnitude_columns:
 	func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
 	magnitudeweights.plot_fit(bins, hist_sel, hist_all, func, mag)
 	weights = func(table[col])
+	# undefined magnitudes do not contribute
+	weights[numpy.isnan(weights)] = 0
 	biases[col] = weights
 
 # get the separation and error columns for the bayesian weighting
