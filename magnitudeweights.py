@@ -58,13 +58,6 @@ creates the histograms for the two columns in an adaptive way (based on mag_sel)
 with the same binning.
 """
 def adaptive_histograms(mag_all, mag_sel):
-	# make histogram
-	plt.figure()
-	plt.hist(mag_all, normed=True, alpha=0.5)
-	plt.hist(mag_sel, normed=True, alpha=0.5)
-	plt.savefig('test_fit.pdf', bbox_inches='tight')
-	plt.close()
-	
 	func_sel = scipy.interpolate.interp1d(
 		numpy.linspace(0, 1, len(mag_sel)), 
 		sorted(mag_sel))
