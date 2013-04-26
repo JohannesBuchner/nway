@@ -89,7 +89,7 @@ for fitsname in filenames:
 	print '     from catalogue %s, density is %e' % (table_name, density)
 	source_densities.append(density)
 
-prior = len(tables[0]) * args.prior_completeness / numpy.product(source_densities)
+prior = source_densities[0] * args.prior_completeness / numpy.product(source_densities)
 print '   prior: %.2f * %2.2f%% / %e = %e' % (len(tables[0]), args.prior_completeness * 100, numpy.product(source_densities), prior)
 
 min_prob = args.min_prob
