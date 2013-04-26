@@ -138,9 +138,10 @@ def match_multiple(tables, table_names, err):
 				a_ra[numpy.isnan(col)], a_dec[numpy.isnan(col)], 
 				b_ra[numpy.isnan(col)], b_dec[numpy.isnan(col)]]
 			
-			max_separation = numpy.max([col, max_separation], axis=0)
+			max_separation = numpy.max([col * 60 * 60, max_separation], axis=0)
 			mask = numpy.logical_and(mask, col < err)
-			cat_columns.append(pyfits.Column(name=k, format='E', array=col))
+			# store distance in arcsec 
+			cat_columns.append(pyfits.Column(name=k, format='E', array=col * 60 * 60))
 	
 	cat_columns.append(pyfits.Column(name="Separation_max", format='E', array=max_separation))
 	keys.append("Separation_max")
