@@ -134,7 +134,7 @@ for mag in magnitude_columns:
 	bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
 	func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
 	magnitudeweights.plot_fit(bins, hist_sel, hist_all, func, mag)
-	weights = func(table[col])
+	weights = log10(func(table[col]))
 	# undefined magnitudes do not contribute
 	weights[numpy.isnan(weights)] = 0
 	biases[col] = weights

@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 ratio between the two histograms. Minor offsets to avoid zero and inf.
 """
 def ratio(hist_sel, hist_all):
-	return (hist_sel + 1e-8) / (hist_all + 1e-8)
+	return hist_sel / (hist_all + 1e-8)
 
 """
 Plotting
@@ -53,8 +53,9 @@ def fitfunc_histogram(bin_mag, hist_sel, hist_all):
 	# normalize area
 	#norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
 	#	epsrel=1e-2)
-	norm = 1.
-	return lambda mag: log10(interpfunc(mag) / norm)
+	#norm = 1.
+	#return lambda mag: interpfunc(mag) / norm
+	return interpfunc
 
 """
 creates the histograms for the two columns in an adaptive way (based on mag_sel)
