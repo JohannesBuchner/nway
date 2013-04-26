@@ -95,7 +95,7 @@ print '   prior: %.2f * %2.2f%% / %e = %e' % (source_densities[0], args.prior_co
 min_prob = args.min_prob
 
 match_radius = args.radius / 60. / 60 # in degrees
-mag_radius = args.mag_radius / 60. / 60 # in degrees
+mag_radius = args.mag_radius # in arc sec
 
 magnitude_columns = args.mag
 print '   magnitude columns: ', ', '.join(magnitude_columns)
