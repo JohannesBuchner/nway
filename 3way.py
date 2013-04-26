@@ -90,7 +90,7 @@ for fitsname in filenames:
 	source_densities.append(density)
 
 prior = source_densities[0] * args.prior_completeness / numpy.product(source_densities)
-print '   prior: %.2f * %2.2f%% / %e = %e' % (len(tables[0]), args.prior_completeness * 100, numpy.product(source_densities), prior)
+print '   prior: %.2f * %2.2f%% / %e = %e' % (source_densities[0], args.prior_completeness * 100, numpy.product(source_densities), prior)
 
 min_prob = args.min_prob
 
