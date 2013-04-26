@@ -46,7 +46,7 @@ Natural log of the multi-way Bayes factor, see eq.(18)
 def log_bf(p, s):
 	n = len(s)
 	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
-	norm = (n-1) * log(2) + 2 * (n - 1) * log_arcsec2rad
+	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
 	
 	wsum = numpy.sum(w, axis=0)
 	s = numpy.sum(log(w), axis=0) - log(wsum)
