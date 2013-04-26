@@ -90,7 +90,7 @@ for fitsname in filenames:
 	source_densities.append(density)
 
 prior = len(tables[0]) * args.prior_completeness / numpy.product(source_densities)
-print '   prior: %.2f * %e / %e = %e' % (len(tables[0]), args.prior_completeness, numpy.product(source_densities), prior)
+print '   prior: %.2f * %2.2f%% / %e = %e' % (len(tables[0]), args.prior_completeness * 100, numpy.product(source_densities), prior)
 
 min_prob = args.min_prob
 
@@ -198,7 +198,7 @@ for primary_id in primary_ids:
 	best_val = group_posterior[best_index]
 	
 	# flag second best
-	mask2 = logical_and(mask, best_val - post > diff_secondary)
+	mask2 = logical_and(mask, best_val - post < diff_secondary)
 	# ignore very poor solutions
 	mask2 = logical_and(mask2, post > 0.1)
 	index[mask2] = 2
