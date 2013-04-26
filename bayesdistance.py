@@ -14,10 +14,10 @@ from numpy import log, log10, pi, exp, logical_and, where, e
 log_arcsec2rad = log(3600 * 180 / pi)
 
 def log_posterior(prior, log_bf):
-	return -log10( 1 + (1 - prior) * exp(-log_bf - log(prior)))
+	return -log10( 1 + (1 - prior) * 10**(-log_bf - log10(prior)))
 
 def posterior(prior, log_bf):
-	return 1. / (1 + (1 - prior) * exp(-log_bf - log(prior)))
+	return 1. / (1 + (1 - prior) * 10**(-log_bf - log10(prior)))
 
 """
 Natural log of the 2-way Bayes factor, see eq.(16)
