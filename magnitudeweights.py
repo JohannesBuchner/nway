@@ -24,12 +24,12 @@ Plotting
 def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	plt.figure()
 	hist_n = ratio(hist_sel, hist_all)
-	plt.plot(bin_mag[:-1], hist_all / hist_all.sum(), '--', 
-		drawstyle='steps-pre', label='all')
-	plt.plot(bin_mag[:-1], hist_sel / hist_sel.sum(), '--', 
-		drawstyle='steps-pre', label='selected')
-	plt.plot(bin_mag[:-1], hist_n / hist_n.sum(), '--', 
-		drawstyle='steps-pre', label='ratio histogram')
+	plt.plot(bin_mag[:-1], hist_all, '-', 
+		drawstyle='steps', label='all')
+	plt.plot(bin_mag[:-1], hist_sel, '-', 
+		drawstyle='steps', label='selected')
+	plt.plot(bin_mag[:-1], hist_n / hist_n.sum(), '-',
+		drawstyle='steps', label='ratio histogram')
 	mags = numpy.linspace(bin_mag.min(), bin_mag.max(), 400)
 	plt.plot(mags, exp(func(mags)), '-', drawstyle='steps-pre', label='fit')
 	plt.legend(loc='best')
@@ -43,11 +43,12 @@ creates the biasing functions
 """
 def fitfunc_histogram(bin_mag, hist_sel, hist_all):
 	bin_n = ratio(hist_sel, hist_all)
-	w = scipy.signal.flattop(4) #, 1)
+	w = scipy.signal.gaussian(5, 1)
 	w /= w.sum()
 	bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
+	bin_n_smooth = bin_n
 	interpfunc = scipy.interpolate.interp1d(bin_mag[:-1], 
-		bin_n_smooth, bounds_error=False, fill_value=bin_n.min(), kind='quadratic')
+		bin_n_smooth, bounds_error=False, fill_value=bin_n.min(), kind='linear')
 	norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
 		epsrel=1e-2)
 	return lambda mag: log(interpfunc(mag) / norm)
@@ -58,13 +59,23 @@ with the same binning.
 """
 def adaptive_histograms(mag_all, mag_sel):
 	# make histogram
+	plt.figure()
+	plt.hist(mag_all, normed=True, alpha=0.5)
+	plt.hist(mag_sel, normed=True, alpha=0.5)
+	plt.savefig('test_fit.pdf', bbox_inches='tight')
+	plt.close()
+	
 	func_sel = scipy.interpolate.interp1d(
 		numpy.linspace(0, 1, len(mag_sel)), 
 		sorted(mag_sel))
 	# choose bin borders based on cumulative distribution, using 20 points
-	x = func_sel(numpy.linspace(0, 1, 20))
-	hist_sel, bins = numpy.histogram(mag_sel, bins=x,    normed=True)
-	hist_all, bins = numpy.histogram(mag_all, bins=bins, normed=True)
+	x = func_sel(numpy.linspace(0, 1, 15))
+	x = numpy.asarray(list(x) + [mag_all.max() + 1])
+	#print x
+	# linear histogram (for no adaptiveness):
+	##x = numpy.linspace(mag_all.min(), mag_all.max(), 20)
+	hist_sel, bins = numpy.histogram(mag_sel, bins=x,    density=True)
+	hist_all, bins = numpy.histogram(mag_all, bins=bins, density=True)
 	return bins, hist_sel, hist_all
 
 

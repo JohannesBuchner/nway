@@ -90,7 +90,7 @@ for fitsname in filenames:
 	source_densities.append(density)
 
 prior = len(tables[0]) * args.prior_completeness / numpy.product(source_densities)
-print '   prior: %.2f * %d / %d = %e' % (len(tables[0]), args.prior_completeness, numpy.product(source_densities), prior)
+print '   prior: %.2f * %e / %e = %e' % (len(tables[0]), args.prior_completeness, numpy.product(source_densities), prior)
 
 min_prob = args.min_prob
 
@@ -128,7 +128,7 @@ for mag in magnitude_columns:
 	mask_radius = table['Separation_max'] < mag_radius
 	mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
 	col = "%s_%s" % (table_name, col_name)
-	print 'selected %d matches for magnitude histogramming: %d magnitude values for %s' % (mask_radius.sum(), len(mag_sel), col)
+	print 'magnitude histogramming: %d matches in magnitude radius. rows used from %s: %d (%d valid)' % (mask_radius.sum(), col, len(mag_sel), mask_sel.sum())
 	
 	# make function fitting to ratio shape
 	bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
