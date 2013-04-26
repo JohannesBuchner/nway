@@ -173,7 +173,7 @@ columns.append(pyfits.Column(name='bfpost', format='E', array=bayesdist.posterio
 
 # add the bias columns
 for col, weights in biases.iteritems():
-	columns.append(pyfits.Column(name='bias_%s' % col, format='E', array=weights))
+	columns.append(pyfits.Column(name='bias_%s' % col, format='E', array=10**weights))
 
 
 # add the posterior column

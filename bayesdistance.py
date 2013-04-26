@@ -7,15 +7,14 @@ Authors: Tamas Budavari (C) 2012
 """
 
 import numpy
-from numpy import log, log10, pi, exp, logical_and, where
+from numpy import log, log10, pi, exp, logical_and, where, e
 
 # use base 10 everywhere
-log = log10
 
 log_arcsec2rad = log(3600 * 180 / pi)
 
 def log_posterior(prior, log_bf):
-	return -log( 1 + (1 - prior) * exp(-log_bf - log(prior)))
+	return -log10( 1 + (1 - prior) * exp(-log_bf - log(prior)))
 
 def posterior(prior, log_bf):
 	return 1. / (1 + (1 - prior) * exp(-log_bf - log(prior)))
@@ -27,7 +26,7 @@ s1 and s2=accuracy of coordinates
 """
 def log_bf2(psi, s1, s2):
 	s = s1*s1 + s2*s2;
-	return log(2) + 2 * log_arcsec2rad - log(s) - psi*psi / 2 / s
+	return (log(2) + 2 * log_arcsec2rad - log(s) - psi*psi / 2 / s) * log10(e)
 
 """
 Natural log of the 3-way Bayes factor, see eq.(17)
@@ -38,7 +37,7 @@ def log_bf3(p12,p23,p31, s1,s2,s3):
 	ss3 = s3*s3
 	s = ss1*ss2 + ss2*ss3 + ss3*ss1
 	q = ss3 * p12**2 + ss1 * p23**2 + ss2 * p31**2
-	return log(4) + 4 * log_arcsec2rad - log(s) - q / 2 / s
+	return (log(4) + 4 * log_arcsec2rad - log(s) - q / 2 / s) * log10(e)
 
 """
 Natural log of the multi-way Bayes factor, see eq.(18)
@@ -56,7 +55,7 @@ def log_bf(p, s):
 			if i < j:
 				q += wi * wj * p[i][j]**2
 	exponent = - q / 2 / wsum
-	return norm + s + exponent
+	return (norm + s + exponent) * log10(e)
 
 def test_log_bf():
 	import numpy.testing as test
