@@ -16,22 +16,28 @@ import matplotlib.pyplot as plt
 ratio between the two histograms. Minor offsets to avoid zero and inf.
 """
 def ratio(hist_sel, hist_all):
-	return hist_sel / (hist_all + 1e-8)
+	return numpy.where(hist_all == 0, 1, hist_sel / hist_all)
+	return hist_sel / hist_all
 
 """
 Plotting
 """
 def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	plt.figure()
+	plt.subplot(2, 1, 1)
 	hist_n = ratio(hist_sel, hist_all)
 	plt.plot(bin_mag[:-1], hist_all, '-', 
-		drawstyle='steps', label='all')
+		drawstyle='steps-pre', label='all')
 	plt.plot(bin_mag[:-1], hist_sel, '-', 
-		drawstyle='steps', label='selected')
-	plt.plot(bin_mag[:-1], hist_n / hist_n.sum(), '-',
-		drawstyle='steps', label='ratio histogram')
+		drawstyle='steps-pre', label='selected')
+	plt.legend(loc='best')
+	plt.ylabel('normalized weight')
+	plt.xlabel('magnitude')
+	plt.subplot(2, 1, 2)
+	plt.plot(bin_mag[:-1], hist_n, '-',
+		drawstyle='steps-pre', label='ratio histogram')
 	mags = numpy.linspace(bin_mag.min(), bin_mag.max(), 400)
-	plt.plot(mags, exp(func(mags)), '-', drawstyle='steps-pre', label='fit')
+	plt.plot(mags, func(mags), '-', label='fit')
 	plt.legend(loc='best')
 	plt.ylabel('normalized weight')
 	plt.xlabel('magnitude')
@@ -49,7 +55,7 @@ def fitfunc_histogram(bin_mag, hist_sel, hist_all):
 	# no smoothing
 	bin_n_smooth = bin_n
 	interpfunc = scipy.interpolate.interp1d(bin_mag[:-1], 
-		bin_n_smooth, bounds_error=False, fill_value=bin_n.min(), kind='linear')
+		bin_n_smooth, bounds_error=False, kind='linear')
 	# normalize area
 	#norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
 	#	epsrel=1e-2)
