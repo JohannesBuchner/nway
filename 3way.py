@@ -8,7 +8,7 @@ Example: 3way.py --radius 10 --mag-radius 3 --prior-completeness 0.95 --mag GOOD
 
 import sys
 import numpy
-from numpy import log, pi, exp, logical_and
+from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
 import pyfits
 import argparse
@@ -165,11 +165,11 @@ for ti, a in enumerate(table_names):
 
 # compute n-way position evidence
 
-ln_bf = bayesdist.log_bf(separations, errors)
+log_bf = bayesdist.log_bf(separations, errors)
 
 # add the additional columns
-columns.append(pyfits.Column(name='bf', format='E', array=ln_bf/log(10)))
-columns.append(pyfits.Column(name='bfpost', format='E', array=bayesdist.posterior(prior, ln_bf)))
+columns.append(pyfits.Column(name='bf', format='E', array=log_bf))
+columns.append(pyfits.Column(name='bfpost', format='E', array=bayesdist.posterior(prior, log_bf)))
 
 # add the bias columns
 for col, weights in biases.iteritems():
@@ -177,7 +177,7 @@ for col, weights in biases.iteritems():
 
 
 # add the posterior column
-total = ln_bf + sum(biases.values())
+total = log_bf + sum(biases.values())
 post = bayesdist.posterior(prior, total)
 columns.append(pyfits.Column(name='post', format='E', array=post))
 

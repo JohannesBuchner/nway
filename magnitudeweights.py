@@ -6,7 +6,7 @@ Provides smooth biasing functions and plots them.
 
 import scipy, scipy.interpolate, scipy.signal, scipy.integrate
 import numpy
-from numpy import log, pi, exp, logical_and
+from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
 
 # compute magnitude distributions
@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 ratio between the two histograms. Minor offsets to avoid zero and inf.
 """
 def ratio(hist_sel, hist_all):
-	return (hist_sel + 1e-2) / (hist_all + 1e-2)
+	return (hist_sel + 1e-2) / (hist_all + 1e-4)
 
 """
 Plotting
@@ -46,12 +46,15 @@ def fitfunc_histogram(bin_mag, hist_sel, hist_all):
 	w = scipy.signal.gaussian(5, 1)
 	w /= w.sum()
 	bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
+	# no smoothing
 	bin_n_smooth = bin_n
 	interpfunc = scipy.interpolate.interp1d(bin_mag[:-1], 
 		bin_n_smooth, bounds_error=False, fill_value=bin_n.min(), kind='linear')
-	norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
-		epsrel=1e-2)
-	return lambda mag: log(interpfunc(mag) / norm)
+	# normalize area
+	#norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
+	#	epsrel=1e-2)
+	norm = 1.
+	return lambda mag: log10(interpfunc(mag) / norm)
 
 """
 creates the histograms for the two columns in an adaptive way (based on mag_sel)

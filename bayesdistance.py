@@ -7,7 +7,10 @@ Authors: Tamas Budavari (C) 2012
 """
 
 import numpy
-from numpy import log, pi, exp, logical_and, where
+from numpy import log, log10, pi, exp, logical_and, where
+
+# use base 10 everywhere
+log = log10
 
 log_arcsec2rad = log(3600 * 180 / pi)
 
