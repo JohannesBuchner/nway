@@ -39,7 +39,7 @@ def get_tablekeys(table, name):
 	assert len(keys) > 0 and name in keys[0].upper(), 'ERROR: No "%s"  column found in input catalogue. Only have: %s' % (name, ', '.join(table.dtype.names))
 	return keys[0]
 
-def match_multiple(tables, table_names, err):
+def match_multiple(tables, table_names, err, fits_formats):
 	buckets = {}
 
 	print 'matching with %f arcsec radius' % (err * 60 * 60)
@@ -48,9 +48,9 @@ def match_multiple(tables, table_names, err):
 	print 'matching: hashing'
 
 	ra_keys = [get_tablekeys(table, 'RA') for table in tables]
-	print 'using RA  columns: %s' % ', '.join(ra_keys)
+	print '    using RA  columns: %s' % ', '.join(ra_keys)
 	dec_keys = [get_tablekeys(table, 'DEC') for table in tables]
-	print 'using DEC columns: %s' % ', '.join(dec_keys)
+	print '    using DEC columns: %s' % ', '.join(dec_keys)
 	#ra_min = min([table[k].min() for k, table in zip(ra_keys, tables)])
 	#ra_max = max([table[k].max() for k, table in zip(ra_keys, tables)])
 	#dec_min = min([table[k].min() for k, table in zip(dec_keys, tables)])
@@ -107,13 +107,15 @@ def match_multiple(tables, table_names, err):
 		progressbar.Percentage(), progressbar.Counter('%3d'), 
 		progressbar.Bar(), progressbar.ETA()], 
 		maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
-	for table, table_name in zip(tables, table_names):
+	for table, table_name, fits_format in zip(tables, table_names, fits_formats):
 		tbl = table[results[table_name]]
 		pbar.update(pbar.currval + 1)
-		for n in table.dtype.names:
+		for n, format in zip(table.dtype.names, fits_format):
 			k = "%s_%s" % (table_name, n)
 			keys.append(k)
-			cat_columns.append(pyfits.Column(name=k, format='E', array=tbl[n]))
+			col = pyfits.Column(name=k, format=format, array=tbl[n])
+			# print table_name, n, k, tbl[n][:100], '-->', col.array[:100]
+			cat_columns.append(col)
 			pbar.update(pbar.currval + 1)
 	pbar.finish()
 	
