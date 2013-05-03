@@ -38,9 +38,10 @@ parser.add_argument('--mag-radius', default=None, type=float,
 parser.add_argument('--prior-completeness', metavar='COMPLETENESS', default=1, type=float,
 	help='expected matching completeness of sources (prior)')
 
-parser.add_argument('--mag', metavar='MAGCOLUMN', type=str, action='append', default=[],
-	help="""name of <table>_<column> for magnitude biasing.
-	Example: --mag GOODS:mag_H --mag IRAC:mag_irac1""")
+parser.add_argument('--mag', metavar='MAGCOLUMN+MAGFILE', type=str, nargs=2, action='append', default=[],
+	help="""name of <table>_<column> for magnitude biasing, and filename for magnitude histogram 
+	(use auto for auto-computation within mag-radius).
+	Example: --mag GOODS:mag_H auto --mag IRAC:mag_irac1 irac_histogram.txt""")
 
 parser.add_argument('--acceptable-prob', metavar='PROB', type=float, default=0.005,
 	help='limit up to which secondary solutions are flagged')
@@ -62,6 +63,7 @@ parser.add_argument('catalogues', type=str, nargs='+',
 
 # parsing arguments
 args = parser.parse_args()
+print args
 
 print '3way arguments:'
 
@@ -109,7 +111,7 @@ if mag_radius >= match_radius:
 	print 'WARNING: match radius is very large (>= matching radius). Consider using a smaller value.'
 
 magnitude_columns = args.mag
-print '    magnitude columns: ', ', '.join(magnitude_columns)
+print '    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns])
 
 # first match input catalogues, compute possible combinations in match_radius
 results, columns = match.match_multiple(tables, table_names, match_radius, fits_formats)
@@ -136,8 +138,8 @@ if args.write_no_matches is not None:
 
 # find magnitude biasing functions
 biases = {}
-for mag in magnitude_columns:
-	print 'making magnitude histogram "%s" ...' % mag
+for mag, magfile in magnitude_columns:
+	print 'magnitude bias "%s" ...' % mag
 	table_name, col_name = mag.split(':', 1)
 	assert table_name in table_names, 'table name specified for magnitude (%s) unknown. Known tables: %s' % (table_name, ', '.join(table_names))
 	ti = table_names.index(table_name)
@@ -152,17 +154,24 @@ for mag in magnitude_columns:
 	
 	# get magnitudes of selected
 	mask_all = -numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
-	
-	rows = list(set(results[table_name][table['Separation_max'] < mag_radius]))
-	assert len(rows) > 0, 'No magnitude values within mag_radius for "%s".' % mag
-	mag_sel = mag_all[rows]
-	mask_radius = table['Separation_max'] < mag_radius
-	mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
+
 	col = "%s_%s" % (table_name, col_name)
-	print 'magnitude histogramming: %d matches in magnitude radius. rows used from column "%s": %d (%d valid)' % (mask_radius.sum(), col, len(mag_sel), mask_sel.sum())
 	
-	# make function fitting to ratio shape
-	bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
+	if magfile == 'auto':
+		rows = list(set(results[table_name][table['Separation_max'] < mag_radius]))
+		assert len(rows) > 1, 'No magnitude values within mag_radius for "%s".' % mag
+		mag_sel = mag_all[rows]
+		mask_radius = table['Separation_max'] < mag_radius
+		mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
+		print 'magnitude histogramming: %d matches in magnitude radius. rows used from column "%s": %d (%d valid)' % (mask_radius.sum(), col, len(mag_sel), mask_sel.sum())
+		
+		# make function fitting to ratio shape
+		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
+		numpy.savetxt(mag.replace(':', '_') + '_fit.txt', numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]))
+	else:
+		print 'magnitude histogramming: using histogram from %s for column "%s"' % (magfile, col)
+		bins_lo, bins_hi, hist_sel, hist_all = numpy.loadtxt(magfile).transpose()
+		bins = numpy.array(list(bins_lo) + [bins_hi[-1]])
 	func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
 	magnitudeweights.plot_fit(bins, hist_sel, hist_all, func, mag)
 	weights = log10(func(table[col]))
