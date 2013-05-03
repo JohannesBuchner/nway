@@ -29,9 +29,9 @@ def dist((a_ra, a_dec), (b_ra, b_dec)):
 	dec1 = a_dec / 180 * pi
 	ra2 = b_ra / 180 * pi
 	dec2 = b_dec / 180 * pi
-        sd2 = sin(0.5 * (dec2 - dec1));
-        sr2 = sin(0.5 * (ra2 - ra1));
-        a = sd2 * sd2 + sr2 * sr2 * cos(dec1) * cos(dec2);
+        sd2 = sin(0.5 * (dec2 - dec1))
+        sr2 = sin(0.5 * (ra2 - ra1))
+        a = sd2**2 + sr2**2 * cos(dec1) * cos(dec2);
         return numpy.where(a < 1.0, 2.0 * arcsin(a**0.5), pi) * 180 / pi;
 
 def get_tablekeys(table, name):
