@@ -65,32 +65,34 @@ diff_secondary = args.acceptable_prob
 outfile = args.out
 
 filenames = args.catalogues[::2]
-print '   catalogues: ', ', '.join(filenames)
+print '    catalogues: ', ', '.join(filenames)
 pos_errors = args.catalogues[1::2]
-print '   position errors/columns: ', ', '.join(pos_errors)
+print '    position errors/columns: ', ', '.join(pos_errors)
 
 fits_tables = []
 table_names = []
 tables = []
 source_densities = []
+fits_formats = []
 for fitsname in filenames:
 	fits_table = pyfits.open(fitsname)[1]
 	fits_tables.append(fits_table)
 	table_name = fits_table.name
 	table_names.append(table_name)
 	table = fits_table.data
+	fits_formats.append([c.format for c in fits_table.columns])
 	tables.append(table)
 
 	n = len(table)
-	assert 'SKYAREA' in fits_table.header, "file %s, table %s does not have a field 'SKYAREA', which should contain the area of the catalogue in square degrees" % (fitsname, table_name)
+	assert 'SKYAREA' in fits_table.header, 'file "%s", table "%s" does not have a field "SKYAREA", which should contain the area of the catalogue in square degrees' % (fitsname, table_name)
 	area = fits_table.header['SKYAREA'] # in square degrees
 	area_total = (4 * pi * (180 / pi)**2)
 	density = n / area * area_total
-	print '     from catalogue %s, density is %e' % (table_name, density)
+	print '      from catalogue "%s" (%d), density is %e' % (table_name, n, density)
 	source_densities.append(density)
 
 prior = source_densities[0] * args.prior_completeness / numpy.product(source_densities)
-print '   prior: %.2f * %2.2f%% / %e = %e' % (source_densities[0], args.prior_completeness * 100, numpy.product(source_densities), prior)
+print '    -> prior = %.2f * %2.2f%% / %e = %e' % (source_densities[0], args.prior_completeness * 100, numpy.product(source_densities), prior)
 
 min_prob = args.min_prob
 
@@ -98,16 +100,18 @@ match_radius = args.radius / 60. / 60 # in degrees
 mag_radius = args.mag_radius # in arc sec
 
 magnitude_columns = args.mag
-print '   magnitude columns: ', ', '.join(magnitude_columns)
+print '    magnitude columns: ', ', '.join(magnitude_columns)
 
 # first match input catalogues, compute possible combinations in match_radius
-results, columns = match.match_multiple(tables, table_names, match_radius)
+results, columns = match.match_multiple(tables, table_names, match_radius, fits_formats)
 table = pyfits.new_table(pyfits.ColDefs(columns)).data
 
+assert len(table) > 0, 'No matches.'
 
 # find magnitude biasing functions
 biases = {}
 for mag in magnitude_columns:
+	print 'making magnitude histogram "%s" ...' % mag
 	table_name, col_name = mag.split(':', 1)
 	assert table_name in table_names, 'table name specified for magnitude (%s) unknown. Known tables: %s' % (table_name, ', '.join(table_names))
 	ti = table_names.index(table_name)
@@ -124,11 +128,12 @@ for mag in magnitude_columns:
 	mask_all = -numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
 	
 	rows = list(set(results[table_name][table['Separation_max'] < mag_radius]))
+	assert len(rows) > 0, 'No magnitude values within mag_radius for "%s".' % mag
 	mag_sel = mag_all[rows]
 	mask_radius = table['Separation_max'] < mag_radius
 	mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
 	col = "%s_%s" % (table_name, col_name)
-	print 'magnitude histogramming: %d matches in magnitude radius. rows used from %s: %d (%d valid)' % (mask_radius.sum(), col, len(mag_sel), mask_sel.sum())
+	print 'magnitude histogramming: %d matches in magnitude radius. rows used from column "%s": %d (%d valid)' % (mask_radius.sum(), col, len(mag_sel), mask_sel.sum())
 	
 	# make function fitting to ratio shape
 	bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
@@ -139,18 +144,24 @@ for mag in magnitude_columns:
 	weights[numpy.isnan(weights)] = 0
 	biases[col] = weights
 
+print 'finalizing catalogue'
+print '    finding position error columns ...'
 # get the separation and error columns for the bayesian weighting
 errors    = []
 for table_name, pos_error in zip(table_names, pos_errors):
 	if pos_error[0] == ':':
 		# get column
 		k = "%s_%s" % (table_name, pos_error[1:])
-		assert k in table.dtype.names, 'ERROR: Position error column for %s not in table %s. Have columns: %s' % (k, table_name, ', '.join(table.dtype.names))
-		print 'using column', (table[k].min(), table[k].max())
+		assert k in table.dtype.names, 'ERROR: Position error column for "%s" not in table "%s". Have these columns: %s' % (k, table_name, ', '.join(table.dtype.names))
+		print '    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table[k].min(), table[k].max())
+		if table[k].min() > 0:
+			print 'WARNING: Some separation errors in %s are 0! This will give invalid results.' % k
 		errors.append(table[k])
 	else:
-		errors.append(float(pos_error[1:]) * numpy.ones(len(table)))
+		print '    Position error for "%s": using fixed value %f' % (table_name, float(pos_error))
+		errors.append(float(pos_error) * numpy.ones(len(table)))
 
+print '    finding position columns ...'
 separations = []
 for ti, a in enumerate(table_names):
 	row = []
@@ -163,6 +174,7 @@ for ti, a in enumerate(table_names):
 			row.append(numpy.ones(len(table)) * numpy.nan)
 	separations.append(row)
 
+print '    computing probabilities from separations ...'
 # compute n-way position evidence
 
 log_bf = bayesdist.log_bf(separations, errors)
@@ -181,12 +193,13 @@ total = log_bf + sum(biases.values())
 post = bayesdist.posterior(prior, total)
 columns.append(pyfits.Column(name='post', format='E', array=post))
 
+
 # flagging of solutions. Go through groups by primary id (IDs in first catalogue)
 index = numpy.zeros_like(post)
 
 primary_id_key = match.get_tablekeys(tables[0], 'ID')
-print 'grouping by %s from %s' % (primary_id_key, table_names[0])
 primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
+print '    grouping by column "%s" for flagging ...' % (primary_id_key)
 
 primary_ids = sorted(set(table[primary_id_key]))
 
@@ -212,13 +225,16 @@ columns.append(pyfits.Column(name='match_flag', format='I', array=index))
 # cut away poor posteriors if requested
 if min_prob > 0:
 	mask = -(post < min_prob)
-	print 'cutting away %d (below minimum)' % mask.sum()
+	print '    cutting away %d (below minimum)' % (len(mask) - mask.sum())
 
 	for c in columns:
 		c.array = c.array[mask]
 
+
 # write out fits file
 tbhdu = pyfits.new_table(pyfits.ColDefs(columns))
+print 'writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns))
+
 hdulist = match.wraptable2fits(tbhdu, 'MULTIMATCH')
 hdulist[0].header.update('METHOD', 'multi-way matching')
 hdulist[0].header.update('INPUT', ', '.join(filenames))
@@ -228,7 +244,6 @@ for k, v in args.__dict__.iteritems():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
 hdulist.writeto(outfile, clobber=True)
 
-print 'wrote %s (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns))
 
 
 
