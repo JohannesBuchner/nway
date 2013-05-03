@@ -28,27 +28,31 @@ parser = HelpfulParser(description=__doc__,
 	epilog="""Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-parser.add_argument('--radius', default=10, type=float,
+parser.add_argument('--radius', type=float, required=True,
 	help='exclusive search radius in arcsec for initial matching')
 
-parser.add_argument('--mag-radius', default=3, type=float,
-	help='search radius for magnitude histograms')
+parser.add_argument('--mag-radius', default=None, type=float,
+	help='search radius for magnitude histograms. Default is the same as --radius.')
 
 #nx/(1887*15e+18)
-parser.add_argument('--prior-completeness', default=1, type=float,
+parser.add_argument('--prior-completeness', metavar='COMPLETENESS', default=1, type=float,
 	help='expected matching completeness of sources (prior)')
 
-parser.add_argument('--mag', type=str, action='append', default=[],
+parser.add_argument('--mag', metavar='MAGCOLUMN', type=str, action='append', default=[],
 	help="""name of <table>_<column> for magnitude biasing.
 	Example: --mag GOODS:mag_H --mag IRAC:mag_irac1""")
 
-parser.add_argument('--acceptable-prob', type=float, default=0.005,
+parser.add_argument('--acceptable-prob', metavar='PROB', type=float, default=0.005,
 	help='limit up to which secondary solutions are flagged')
 
 parser.add_argument('--min-prob', type=float, default=0,
 	help='lowest probability allowed in final catalogue. If 0, no trimming is performed.')
 
-parser.add_argument('--out', help='output file name', required=True)
+parser.add_argument('--out', metavar='OUTFILE', help='output file name', required=True)
+
+parser.add_argument('--write-no-matches', metavar='POSTFIX', 
+	help="""Write files similar to the input catalogues containing only the rows
+	without any matches within the defined radius. The files are named <inputfile><POSTFIX>.fits""")
 
 parser.add_argument('catalogues', type=str, nargs='+',
 	help="""input catalogue fits files and position errors.
@@ -97,7 +101,12 @@ print '    -> prior = %.2f * %2.2f%% / %e = %e' % (source_densities[0], args.pri
 min_prob = args.min_prob
 
 match_radius = args.radius / 60. / 60 # in degrees
-mag_radius = args.mag_radius # in arc sec
+if args.mag_radius is None:
+	mag_radius = match_radius # in arc sec
+else:
+	mag_radius = args.mag_radius # in arc sec
+if mag_radius >= match_radius:
+	print 'WARNING: match radius is very large (>= matching radius). Consider using a smaller value.'
 
 magnitude_columns = args.mag
 print '    magnitude columns: ', ', '.join(magnitude_columns)
@@ -107,6 +116,23 @@ results, columns = match.match_multiple(tables, table_names, match_radius, fits_
 table = pyfits.new_table(pyfits.ColDefs(columns)).data
 
 assert len(table) > 0, 'No matches.'
+
+# write out left-out catalogues
+if args.write_no_matches is not None:
+	postfix = args.write_no_matches
+	print ' using postfix', postfix
+	for fits_table, fitsname, table_name in zip(fits_tables, filenames, table_names):
+		f = pyfits.open(fitsname)
+		# select left out
+		mask = numpy.zeros(len(f[1].data)) == 0
+		result = results[table_name]
+		mask[result] = False
+		if not mask.any():
+			continue
+		leftoutfilename = fitsname.replace('.fits', postfix + '.fits')
+		print '   in table "%s", %d have no matches. writing to "%s".' % (table_name, mask.sum(), leftoutfilename)
+		f[1].data = f[1].data[mask]
+		f.writeto(leftoutfilename, clobber=True)
 
 # find magnitude biasing functions
 biases = {}
