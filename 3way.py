@@ -63,7 +63,6 @@ parser.add_argument('catalogues', type=str, nargs='+',
 
 # parsing arguments
 args = parser.parse_args()
-print args
 
 print '3way arguments:'
 
@@ -107,8 +106,6 @@ if args.mag_radius is None:
 	mag_radius = match_radius # in arc sec
 else:
 	mag_radius = args.mag_radius # in arc sec
-if mag_radius >= match_radius:
-	print 'WARNING: match radius is very large (>= matching radius). Consider using a smaller value.'
 
 magnitude_columns = args.mag
 print '    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns])
@@ -141,10 +138,10 @@ biases = {}
 for mag, magfile in magnitude_columns:
 	print 'magnitude bias "%s" ...' % mag
 	table_name, col_name = mag.split(':', 1)
-	assert table_name in table_names, 'table name specified for magnitude (%s) unknown. Known tables: %s' % (table_name, ', '.join(table_names))
+	assert table_name in table_names, 'table name specified for magnitude ("%s") unknown. Known tables: %s' % (table_name, ', '.join(table_names))
 	ti = table_names.index(table_name)
 	col_names = tables[ti].dtype.names
-	assert col_name in col_names, 'column name specified for magnitude (%s) unknown. Known columns in table %s: %s' % (mag, table_name, ', '.join(col_names))
+	assert col_name in col_names, 'column name specified for magnitude ("%s") unknown. Known columns in table "%s": %s' % (mag, table_name, ', '.join(col_names))
 	ci = col_names.index(col_name)
 	
 	# get magnitudes of all
@@ -158,6 +155,8 @@ for mag, magfile in magnitude_columns:
 	col = "%s_%s" % (table_name, col_name)
 	
 	if magfile == 'auto':
+		if mag_radius >= match_radius:
+			print 'WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.'
 		rows = list(set(results[table_name][table['Separation_max'] < mag_radius]))
 		assert len(rows) > 1, 'No magnitude values within mag_radius for "%s".' % mag
 		mag_sel = mag_all[rows]
@@ -169,7 +168,7 @@ for mag, magfile in magnitude_columns:
 		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
 		numpy.savetxt(mag.replace(':', '_') + '_fit.txt', numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]))
 	else:
-		print 'magnitude histogramming: using histogram from %s for column "%s"' % (magfile, col)
+		print 'magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col)
 		bins_lo, bins_hi, hist_sel, hist_all = numpy.loadtxt(magfile).transpose()
 		bins = numpy.array(list(bins_lo) + [bins_hi[-1]])
 	func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
@@ -189,8 +188,8 @@ for table_name, pos_error in zip(table_names, pos_errors):
 		k = "%s_%s" % (table_name, pos_error[1:])
 		assert k in table.dtype.names, 'ERROR: Position error column for "%s" not in table "%s". Have these columns: %s' % (k, table_name, ', '.join(table.dtype.names))
 		print '    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table[k].min(), table[k].max())
-		if table[k].min() > 0:
-			print 'WARNING: Some separation errors in %s are 0! This will give invalid results.' % k
+		if table[k].min() <= 0:
+			print 'WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (table[k] <= 0).sum())
 		errors.append(table[k])
 	else:
 		print '    Position error for "%s": using fixed value %f' % (table_name, float(pos_error))
@@ -203,7 +202,7 @@ for ti, a in enumerate(table_names):
 	for tj, b in enumerate(table_names):
 		if ti < tj:
 			k = 'Separation_%s_%s' % (b, a)
-			assert k in table.dtype.names, 'ERROR: Separation column for %s not in merged table. Have columns: %s' % (k, ', '.join(table.dtype.names))
+			assert k in table.dtype.names, 'ERROR: Separation column for "%s" not in merged table. Have columns: %s' % (k, ', '.join(table.dtype.names))
 			row.append(table[k])
 		else:
 			row.append(numpy.ones(len(table)) * numpy.nan)
