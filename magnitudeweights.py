@@ -49,18 +49,14 @@ creates the biasing functions
 """
 def fitfunc_histogram(bin_mag, hist_sel, hist_all):
 	bin_n = ratio(hist_sel, hist_all)
-	w = scipy.signal.gaussian(5, 1)
-	w /= w.sum()
-	bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
+	# w = scipy.signal.gaussian(5, 1)
+	# w /= w.sum()
+	# bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
 	# no smoothing
 	bin_n_smooth = bin_n
-	interpfunc = scipy.interpolate.interp1d((bin_mag[:-1] + bin_mag[1:]) / 2., 
-		bin_n_smooth, bounds_error=False, kind='linear')
-	# normalize area
-	#norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
-	#	epsrel=1e-2)
-	#norm = 1.
-	#return lambda mag: interpfunc(mag) / norm
+	interpfunc = scipy.interpolate.interp1d(bin_mag,
+		list(bin_n_smooth) + [bin_n_smooth[-1]],
+		bounds_error=False, kind='zero')
 	return interpfunc
 
 """
