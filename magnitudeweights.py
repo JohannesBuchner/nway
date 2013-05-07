@@ -54,7 +54,7 @@ def fitfunc_histogram(bin_mag, hist_sel, hist_all):
 	bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
 	# no smoothing
 	bin_n_smooth = bin_n
-	interpfunc = scipy.interpolate.interp1d(bin_mag[:-1], 
+	interpfunc = scipy.interpolate.interp1d((bin_mag[:-1] + bin_mag[1:]) / 2., 
 		bin_n_smooth, bounds_error=False, kind='linear')
 	# normalize area
 	#norm, err = scipy.integrate.quad(interpfunc, bin_mag.min(), bin_mag.max(),
