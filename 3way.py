@@ -230,6 +230,8 @@ columns.append(pyfits.Column(name='post', format='E', array=post))
 
 # flagging of solutions. Go through groups by primary id (IDs in first catalogue)
 index = numpy.zeros_like(post)
+prob_no_match = numpy.zeros_like(post)
+prob_this_match = numpy.zeros_like(post)
 
 primary_id_key = match.get_tablekeys(tables[0], 'ID')
 primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
@@ -252,6 +254,14 @@ for primary_id in primary_ids:
 	# flag best
 	mask1 = logical_and(mask, best_val == post)
 	index[mask1] = 1
+	
+	# compute no-match probability
+	bfsum = log10(10**(total[mask]).sum())
+	prob_no_match[mask] = bayesdist.posterior(prior, bfsum)
+	prob_this_match[mask] = 10**(total[mask] - bfsum)
+	
+columns.append(pyfits.Column(name='post_group_no_match', format='E', array=prob_no_match))
+columns.append(pyfits.Column(name='post_group_this_match', format='E', array=prob_this_match))
 
 # add the flagging column
 columns.append(pyfits.Column(name='match_flag', format='I', array=index))
