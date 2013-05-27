@@ -23,24 +23,26 @@ def ratio(hist_sel, hist_all):
 Plotting
 """
 def plot_fit(bin_mag, hist_sel, hist_all, func, name):
+	mags = numpy.linspace(bin_mag.min(), bin_mag.max(), 400)
 	plt.figure()
 	plt.subplot(2, 1, 1)
 	hist_n = ratio(hist_sel, hist_all)
 	plt.plot(bin_mag[:-1], hist_all, '-', 
-		drawstyle='steps-pre', label='all')
+		drawstyle='steps-post', label='all')
 	plt.plot(bin_mag[:-1], hist_sel, '-', 
-		drawstyle='steps-pre', label='selected')
+		drawstyle='steps-post', label='selected')
 	plt.legend(loc='best')
 	plt.ylabel('normalized weight')
 	plt.xlabel('magnitude')
+	plt.xlim(mags.min(), mags.max())
 	plt.subplot(2, 1, 2)
 	plt.plot(bin_mag[:-1], hist_n, '-',
-		drawstyle='steps-pre', label='ratio histogram')
-	mags = numpy.linspace(bin_mag.min(), bin_mag.max(), 400)
+		drawstyle='steps-post', label='ratio histogram')
 	plt.plot(mags, func(mags), '-', label='fit')
 	plt.legend(loc='best')
 	plt.ylabel('normalized weight')
 	plt.xlabel('magnitude')
+	plt.xlim(mags.min(), mags.max())
 	plt.savefig(name.replace(':', '_') + '_fit.pdf', bbox_inches='tight')
 	plt.close()
 
