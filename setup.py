@@ -17,7 +17,8 @@ setup(
 		"pyfits",
 		"progressbar",
 		"matplotlib",
-		"argparse"
+		"argparse",
+		"joblib"
 	],
 )
 
