@@ -10,6 +10,11 @@ import os, sys
 import pyfits
 import progressbar
 from numpy import sin, cos, arccos, arcsin, pi, exp, log
+import joblib
+import os
+cachedir = 'cache'
+if not os.path.isdir(cachedir): os.mkdir(cachedir)
+mem = joblib.Memory(cachedir=cachedir, verbose=False)
 
 """
 From topcat: Haversine formula for spherical trigonometry.
@@ -39,9 +44,56 @@ def get_tablekeys(table, name):
 	assert len(keys) > 0 and name in keys[0].upper(), 'ERROR: No "%s"  column found in input catalogue. Only have: %s' % (name, ', '.join(table.dtype.names))
 	return keys[0]
 
-def match_multiple(tables, table_names, err, fits_formats):
+@mem.cache
+def crossproduct(radectables, err):
 	buckets = {}
+	pbar = progressbar.ProgressBar(widgets=[
+		progressbar.Percentage(), progressbar.Counter('%3d'),
+		progressbar.Bar(), progressbar.ETA()], maxval=sum([len(t[0]) for t in radectables])).start()
+	for ti, (ra_table, dec_table) in enumerate(radectables):
+		for ei, (ra, dec) in enumerate(zip(ra_table, dec_table)):
+			i, j = int(ra / err), int(dec / err)
+			
+			# put in bucket, and neighbors
+			for jj, ii in (j,i), (j,i+1), (j+1,i), (j+1, i+1):
+				k = (ii, jj)
+				if k not in buckets: # prepare bucket
+					buckets[k] = [[] for _ in range(len(radectables))]
+				buckets[k][ti].append(ei)
+			pbar.update(pbar.currval + 1)
+	pbar.finish()
+	
+	# add no-counterpart options
+	results = []
+	# now combine within buckets
+	print 'matching: %6d matches after hashing' % numpy.sum([
+		len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]]) 
+			for lists in buckets.values()])
 
+	print 'matching: collecting from buckets'
+	pbar = progressbar.ProgressBar(widgets=[
+		progressbar.Percentage(), progressbar.Counter('%3d'), 
+		progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
+	for lists in buckets.values():
+		if len(lists[0]) == 0:
+			continue
+		comb = itertools.product(*[lists[0]] + [li + [-1] for li in lists[1:]])
+		results += comb
+		pbar.update(pbar.currval + 1)
+	pbar.finish()
+
+	# now make results unique by sorting
+	print 'matching: %6d matches from hashing' % len(results)
+	results = sorted(set(results))
+	results = numpy.array(results)
+	print 'matching: %6d unique matches' % len(results)
+	
+	onlyfirst = (results != -1).sum(axis=1) == 1
+	results = results[-onlyfirst]
+	
+	return results
+
+def match_multiple(tables, table_names, err, fits_formats):
 	print 'matching with %f arcsec radius' % (err * 60 * 60)
 	print 'matching: %6d naive possibilities' % numpy.product([len(t) for t in tables])
 
@@ -57,51 +109,20 @@ def match_multiple(tables, table_names, err, fits_formats):
 	#dec_max = max([table[k].max() for k, table in zip(dec_keys, tables)])
 	#print ra_min, ra_max, dec_min, dec_max
 
-	pbar = progressbar.ProgressBar(widgets=[
-		progressbar.Percentage(), progressbar.Counter('%3d'),
-		progressbar.Bar(), progressbar.ETA()], maxval=sum([len(t) for t in tables])).start()
-	for ti, table in enumerate(tables):
-		ra_key = ra_keys[ti]
-		dec_key = dec_keys[ti]
-		for ei, e in enumerate(table):
-			ra, dec = e[ra_key], e[dec_key]
-			i, j = int(ra / err), int(dec / err)
-			
-			for jj, ii in (j,i), (j,i+1), (j+1,i), (j+1, i+1):
-				k = (ii, jj)
-				if k not in buckets:
-					buckets[k] = [[] for _ in range(len(tables))]
-				buckets[k][ti].append(ei)
-			pbar.update(pbar.currval + 1)
-	pbar.finish()
+	ratables = [(t[ra_key], t[dec_key]) for t, ra_key, dec_key in zip(tables, ra_keys, dec_keys)]
+	resultstable = crossproduct(ratables, err)
+	#print results[:100]
+	#print results.shape, results.dtype, len(table_names)
+	results = resultstable.view(dtype=[(table_name, resultstable.dtype) for table_name in table_names]).reshape((-1,))
+	#print results.shape, results.dtype, len(table_names)
 
-	results = []
-	# now combine in buckets
-	print 'matching: %6d matches after hashing' % numpy.sum([numpy.product([len(li) for li in lists]) for lists in buckets.values()])
-
-	print 'matching: collecting from buckets'
-	pbar = progressbar.ProgressBar(widgets=[
-		progressbar.Percentage(), progressbar.Counter('%3d'), 
-		progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
-	for lists in buckets.values():
-		if any([len(li) == 0 for li in lists]):
-			continue
-		results += itertools.product(*lists)
-		pbar.update(pbar.currval + 1)
-	pbar.finish()
-
-	# now make results unique by sorting
-	print 'matching: %6d matches from hashing' % len(results)
-	results = list(set(results))
-	print 'matching: %6d unique matches' % len(results)
+	#print results[:100]
 
 	keys = []
 	for table_name, table in zip(table_names, tables):
 		keys += ["%s_%s" % (table_name, n) for n in table.dtype.names]
 	
-	results = numpy.array(results, dtype=[(table_name, 'i') for table_name in table_names])
-	
-	print 'merging columns ...'
+	print 'merging columns ...', sum([1 + len(table.dtype.names) for table in tables])
 	cat_columns = []
 	pbar = progressbar.ProgressBar(widgets=[
 		progressbar.Percentage(), progressbar.Counter('%3d'), 
@@ -109,13 +130,25 @@ def match_multiple(tables, table_names, err, fits_formats):
 		maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
 	for table, table_name, fits_format in zip(tables, table_names, fits_formats):
 		tbl = table[results[table_name]]
+		# set missing to nan
+		mask_missing = results[table_name] == -1
+		#tbl[mask_missing]
+		
 		pbar.update(pbar.currval + 1)
 		for n, format in zip(table.dtype.names, fits_format):
 			k = "%s_%s" % (table_name, n)
 			keys.append(k)
-			col = pyfits.Column(name=k, format=format, array=tbl[n])
-			# print table_name, n, k, tbl[n][:100], '-->', col.array[:100]
-			cat_columns.append(col)
+			col = tbl[n]
+			#print '   setting "%s" to -99 (%d affected; column format "%s")' % (k, mask_missing.sum(), format)
+			try:
+				col[mask_missing] = -99
+			except Exception as e:
+				print '   setting "%s" to -99 failed (%d affected; column format "%s"): %s' % (k, mask_missing.sum(), format, e)
+			
+			fitscol = pyfits.Column(name=k, format=format, array=col)
+			#if mask_missing.any():
+			#	print table_name, n, k, tbl[n][:100], '-->', fitscol.array[:100]
+			cat_columns.append(fitscol)
 			pbar.update(pbar.currval + 1)
 	pbar.finish()
 	
@@ -123,7 +156,6 @@ def match_multiple(tables, table_names, err, fits_formats):
 	
 	print 'merging columns: adding angular separation columns'
 	cols = []
-	mask = numpy.zeros(len(results)) == 0
 	max_separation = numpy.zeros(len(results))
 	for i in range(len(tables)):
 		a_ra  = tbhdu.data["%s_%s" % (table_names[i], ra_keys[i])]
@@ -140,13 +172,16 @@ def match_multiple(tables, table_names, err, fits_formats):
 				a_ra[numpy.isnan(col)], a_dec[numpy.isnan(col)], 
 				b_ra[numpy.isnan(col)], b_dec[numpy.isnan(col)]]
 			
-			max_separation = numpy.max([col * 60 * 60, max_separation], axis=0)
-			mask = numpy.logical_and(mask, col < err)
+			col[a_ra == -99] = numpy.nan
+			col[b_ra == -99] = numpy.nan
+			max_separation = numpy.nanmax([col * 60 * 60, max_separation], axis=0)
 			# store distance in arcsec 
 			cat_columns.append(pyfits.Column(name=k, format='E', array=col * 60 * 60))
 	
 	cat_columns.append(pyfits.Column(name="Separation_max", format='E', array=max_separation))
+	cat_columns.append(pyfits.Column(name="ncat", format='I', array=(resultstable > -1).sum(axis=1)))
 	keys.append("Separation_max")
+	mask = max_separation < err * 60 * 60
 	for c in cat_columns:
 		c.array = c.array[mask]
 	

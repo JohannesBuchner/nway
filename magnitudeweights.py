@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 ratio between the two histograms. Minor offsets to avoid zero and inf.
 """
 def ratio(hist_sel, hist_all):
-	return numpy.where(hist_all == 0, 1, hist_sel / hist_all)
+	return numpy.where(hist_all == 0, 100, hist_sel / hist_all)
 	return hist_sel / hist_all
 
 """

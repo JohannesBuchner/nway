@@ -24,7 +24,9 @@ It uses 3 methods for finding associations:
    A magnitude histogram of input catalogue matches is compared to the 
    magnitude histogram of the full input catalogue.
    
-   *--mag* specifies the catalogue column to use (can be used multiple times).
+   *--mag* specifies the catalogue column to use (can be used multiple times),
+      and whether the histogram should be computed from the input ("auto")
+      or a input histogram.
    
    *--mag-radius* specifies the search radius in arcsec.
 
