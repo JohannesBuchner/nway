@@ -151,7 +151,6 @@ prior = numpy.zeros(len(table)) * numpy.nan
 for case in range(2**(len(table_names)-1)):
 	table_mask = numpy.array([True] + [(case / 2**(ti)) % 2 == 0 for ti in range(len(tables)-1)])
 	ncat = table_mask.sum()
-	print case, table_mask
 	# select those cases
 	mask = True
 	for i in range(1, len(tables)):
