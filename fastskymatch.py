@@ -64,33 +64,35 @@ def crossproduct(radectables, err):
 	pbar.finish()
 	
 	# add no-counterpart options
-	results = []
+	results = set()
 	# now combine within buckets
 	print 'matching: %6d matches after hashing' % numpy.sum([
 		len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]]) 
 			for lists in buckets.values()])
 
-	print 'matching: collecting from buckets'
+	print 'matching: collecting from %d buckets' % len(buckets)
 	pbar = progressbar.ProgressBar(widgets=[
 		progressbar.Percentage(), progressbar.Counter('%3d'), 
 		progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
-	for lists in buckets.values():
+	while buckets:
+		k, lists = buckets.popitem()
 		if len(lists[0]) == 0:
 			continue
-		comb = itertools.product(*[lists[0]] + [li + [-1] for li in lists[1:]])
-		results += comb
+		for l in lists[1:]:
+			l.append(-1)
+		comb = itertools.product(*lists)
+		results.update(comb)
 		pbar.update(pbar.currval + 1)
 	pbar.finish()
 
+	print 'matching: %6d unique matches from crossproduct' % len(results)
 	# now make results unique by sorting
-	print 'matching: %6d matches from hashing' % len(results)
-	results = sorted(set(results))
-	results = numpy.array(results)
-	print 'matching: %6d unique matches' % len(results)
+	results = numpy.array(sorted(results))
 	
 	onlyfirst = (results != -1).sum(axis=1) == 1
 	results = results[-onlyfirst]
 	
+	print 'matching: %6d matches' % len(results)
 	return results
 
 def match_multiple(tables, table_names, err, fits_formats):
