@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 __doc__ = """Multiway association between astrometric catalogue. Use --help for usage.
 
@@ -289,7 +289,7 @@ for primary_id in primary_ids:
 	# compute no-match probability
 	offset = total[mask].max()
 	bfsum = log10((10**(total[mask] - offset)).sum()) + offset
-	prob_no_match[mask] = 1 - bayesdist.posterior(prior, bfsum)
+	prob_no_match[mask] = 1 - bayesdist.posterior(prior[mask], bfsum)
 	prob_this_match[mask] = 10**(total[mask] - bfsum)
 	
 columns.append(pyfits.Column(name='post_group_no_match', format='E', array=prob_no_match))
