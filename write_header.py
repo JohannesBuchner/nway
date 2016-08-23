@@ -1,4 +1,4 @@
-import pyfits
+import astropy.io.fits as pyfits
 import sys
 
 f = pyfits.open(sys.argv[1])

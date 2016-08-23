@@ -33,7 +33,7 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 		drawstyle='steps-post', label='selected')
 	plt.legend(loc='best')
 	plt.ylabel('normalized weight')
-	plt.xlabel('magnitude')
+	plt.xlabel(name)
 	plt.xlim(mags.min(), mags.max())
 	plt.subplot(2, 1, 2)
 	plt.plot(bin_mag[:-1], hist_n, '-',
@@ -41,7 +41,7 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	plt.plot(mags, func(mags), '-', label='fit')
 	plt.legend(loc='best')
 	plt.ylabel('normalized weight')
-	plt.xlabel('magnitude')
+	plt.xlabel(name)
 	plt.xlim(mags.min(), mags.max())
 	plt.savefig(name.replace(':', '_') + '_fit.pdf', bbox_inches='tight')
 	plt.close()

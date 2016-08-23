@@ -41,9 +41,13 @@ def log_bf3(p12,p23,p31, s1,s2,s3):
 
 """
 Natural log of the multi-way Bayes factor, see eq.(18)
+
+p: separations matrix (NxN matrix of arrays)
+s: errors (list of N arrays)
 """
 def log_bf(p, s):
 	n = len(s)
+	# precision parameter w = 1/sigma^2
 	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
 	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
 	

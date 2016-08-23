@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
 	name='3way',
-	version='0.7',
+	version='0.9',
 	author='Johannes Buchner',
 	author_email='jbuchner@mpe.mpg.de',
 	py_modules=['fastskymatch', 'bayesdistance', 'magnitudeweights'],
@@ -14,7 +14,7 @@ setup(
 	install_requires=[
 		"scipy",
 		"numpy",
-		"pyfits",
+		"astropy",
 		"progressbar",
 		"matplotlib",
 		"argparse",

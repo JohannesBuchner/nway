@@ -7,7 +7,7 @@ Very fast method based on hashing.
 import numpy
 import itertools
 import os, sys
-import pyfits
+import astropy.io.fits as pyfits
 import progressbar
 from numpy import sin, cos, arccos, arcsin, pi, exp, log
 import joblib
@@ -96,6 +96,21 @@ def crossproduct(radectables, err):
 	return results
 
 def match_multiple(tables, table_names, err, fits_formats):
+	"""
+	computes the cartesian product of all possible matches,
+	limited to a maximum distance of err (in degrees).
+	
+	tables: input FITS table
+	table_names: names of the tables
+	fits_formats: FITS data type of the columns of each table
+	
+	returns 
+	results: cartesian product of all possible matches (smaller than err)
+	cat_columns: table with separation distances in arcsec
+	header: which columns were used in each table for RA/DEC
+	
+	"""
+	
 	print 'matching with %f arcsec radius' % (err * 60 * 60)
 	print 'matching: %6d naive possibilities' % numpy.product([len(t) for t in tables])
 
@@ -154,7 +169,11 @@ def match_multiple(tables, table_names, err, fits_formats):
 			pbar.update(pbar.currval + 1)
 	pbar.finish()
 	
-	tbhdu = pyfits.new_table(pyfits.ColDefs(cat_columns))
+	tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(cat_columns))
+	header = dict(
+		COLS_RA = ' '.join(["%s_%s" % (ti, ra_key) for ti, ra_key in zip(table_names, ra_keys)]),
+		COLS_DEC = ' '.join(["%s_%s" % (ti, dec_key) for ti, dec_key in zip(table_names, dec_keys)])
+	)
 	
 	print 'merging columns: adding angular separation columns'
 	cols = []
@@ -189,19 +208,19 @@ def match_multiple(tables, table_names, err, fits_formats):
 	
 	print 'matching: %6d matches after filtering' % mask.sum()
 	
-	return results[mask], cat_columns
+	return results[mask], cat_columns, header
 
 def wraptable2fits(cat_columns, extname):
-	tbhdu = pyfits.new_table(pyfits.ColDefs(cat_columns))
+	tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(cat_columns))
 	hdu = pyfits.PrimaryHDU()
 	import datetime, time
 	now = datetime.datetime.fromtimestamp(time.time())
 	nowstr = now.isoformat()
 	nowstr = nowstr[:nowstr.rfind('.')]
-	hdu.header.update('CREATOR', """Johannes Buchner <jbuchner@mpe.mpg.de>""")
-	hdu.header.update('DATE', nowstr)
-	hdu.header.update('ANALYSIS', 'match test tables')
-	tbhdu.header.update('EXTNAME', extname)
+	#hdu.header['CREATOR'] = """Johannes Buchner <johannes.buchner.acad@gmx.com>"""
+	hdu.header['DATE'] = nowstr
+	hdu.header['ANALYSIS'] = '3WAY matching'
+	tbhdu.header['EXTNAME'] = extname
 	hdulist = pyfits.HDUList([hdu, tbhdu])
 	return hdulist
 
@@ -225,7 +244,7 @@ if __name__ == '__main__':
 			continue
 		print 'generating toy data for %s!' % fitsname
 		hdulist = array2fits(gen(), fitsname.replace('.fits', ''))
-		hdulist[0].header.update('GENERAT', 'match test table, random')
+		hdulist[0].header['GENERAT'] = 'match test table, random'
 		hdulist.writeto(fitsname, clobber=False)
 	
 	tables = [pyfits.open(fitsname)[1] for fitsname in filenames]
@@ -235,11 +254,11 @@ if __name__ == '__main__':
 	err = 0.03
 	
 	results, columns = match_multiple(tables, table_names, err)
-	tbhdu = pyfits.new_table(pyfits.ColDefs(columns))
+	tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(columns))
 	
 	hdulist = wraptable2fits(tbhdu, 'MATCH')
-	hdulist[0].header.update('ANALYSIS', 'match table from' + ', '.join(table_names))
-	hdulist[0].header.update('INPUT', ', '.join(filenames))
+	hdulist[0].header['ANALYSIS'] = 'match table from' + ', '.join(table_names)
+	hdulist[0].header['INPUT'] = ', '.join(filenames)
 	hdulist.writeto('match.fits', clobber=True)
 
 	print 'plotting'

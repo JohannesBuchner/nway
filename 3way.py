@@ -10,7 +10,7 @@ import sys
 import numpy
 from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
-import pyfits
+import astropy.io.fits as pyfits
 import argparse
 import fastskymatch as match
 import bayesdistance as bayesdist
@@ -25,7 +25,7 @@ class HelpfulParser(argparse.ArgumentParser):
 		sys.exit(2)
 
 parser = HelpfulParser(description=__doc__,
-	epilog="""Johannes Buchner (C) 2013 <jbuchner@mpe.mpg.de>""",
+	epilog="""Johannes Buchner (C) 2013-2016 <johannes.buchner.acad@gmx.com>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--radius', type=float, required=True,
@@ -39,7 +39,7 @@ parser.add_argument('--prior-completeness', metavar='COMPLETENESS', default=1, t
 	help='expected matching completeness of sources (prior)')
 
 parser.add_argument('--mag', metavar='MAGCOLUMN+MAGFILE', type=str, nargs=2, action='append', default=[],
-	help="""name of <table>_<column> for magnitude biasing, and filename for magnitude histogram 
+	help="""name of <table>:<column> for magnitude biasing, and filename for magnitude histogram 
 	(use auto for auto-computation within mag-radius).
 	Example: --mag GOODS:mag_H auto --mag IRAC:mag_irac1 irac_histogram.txt""")
 
@@ -104,8 +104,8 @@ magnitude_columns = args.mag
 print '    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns])
 
 # first match input catalogues, compute possible combinations in match_radius
-results, columns = match.match_multiple(tables, table_names, match_radius, fits_formats)
-table = pyfits.new_table(pyfits.ColDefs(columns)).data
+results, columns, match_header = match.match_multiple(tables, table_names, match_radius, fits_formats)
+table = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(columns)).data
 
 assert len(table) > 0, 'No matches.'
 
@@ -124,12 +124,17 @@ for table_name, pos_error in zip(table_names, pos_errors):
 		print '    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table[k].min(), table[k].max())
 		if table[k].min() <= 0:
 			print 'WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (table[k] <= 0).sum())
+		if table[k].max() > match_radius * 60 * 60:
+			print 'WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (k, table[k].max())
 		errors.append(table[k])
 	else:
 		print '    Position error for "%s": using fixed value %f' % (table_name, float(pos_error))
+		if float(pos_error) > match_radius * 60 * 60:
+			print 'WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (k, float(pos_error))
 		errors.append(float(pos_error) * numpy.ones(len(table)))
 
 print '    finding position columns ...'
+# table is in arcsec, and therefore separations is in arcsec
 separations = []
 for ti, a in enumerate(table_names):
 	row = []
@@ -266,6 +271,8 @@ prob_this_match = numpy.zeros_like(post)
 
 primary_id_key = match.get_tablekeys(tables[0], 'ID')
 primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
+match_header['COL_PRIM'] = primary_id_key
+match_header['COLS_ERR'] = ' '.join(['%s_%s' % (ti, poscol) for ti, poscol in zip(table_names, pos_errors)])
 print '    grouping by column "%s" for flagging ...' % (primary_id_key)
 
 primary_ids = sorted(set(table[primary_id_key]))
@@ -308,16 +315,18 @@ if min_prob > 0:
 
 
 # write out fits file
-tbhdu = pyfits.new_table(pyfits.ColDefs(columns))
+tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(columns))
 print 'writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns))
 
 hdulist = match.wraptable2fits(tbhdu, 'MULTIMATCH')
-hdulist[0].header.update('METHOD', 'multi-way matching')
-hdulist[0].header.update('INPUT', ', '.join(filenames))
-hdulist[0].header.update('TABLES', ', '.join(table_names))
-hdulist[0].header.update('BIASING', ', '.join(biases.keys()))
+hdulist[0].header['METHOD'] = 'multi-way matching'
+hdulist[0].header['INPUT'] = ', '.join(filenames)
+hdulist[0].header['TABLES'] = ', '.join(table_names)
+hdulist[0].header['BIASING'] =  ', '.join(biases.keys())
+hdulist[0].header['3WAYCMD'] = ' '.join(sys.argv)
 for k, v in args.__dict__.iteritems():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
+hdulist[0].header.update(match_header)
 hdulist.writeto(outfile, clobber=True)
 
 
