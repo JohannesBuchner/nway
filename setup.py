@@ -1,13 +1,13 @@
 from distutils.core import setup
 
 setup(
-	name='3way',
+	name='nway',
 	version='0.9',
 	author='Johannes Buchner',
-	author_email='jbuchner@mpe.mpg.de',
+	author_email='johannes.buchner.acad@gmx.com',
 	py_modules=['fastskymatch', 'bayesdistance', 'magnitudeweights'],
-	scripts=['3way.py'],
-	url='http://pypi.python.org/pypi/3way/',
+	scripts=['nway.py'],
+	url='http://pypi.python.org/pypi/nway/',
 	license='LICENSE',
 	description='Probabilistic Cross-Identification of Astronomical Sources',
 	long_description=open('README.rst').read(),

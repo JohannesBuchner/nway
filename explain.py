@@ -17,7 +17,7 @@ parser = HelpfulParser(description=__doc__,
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('matchcatalogue', type=str, 
-	help="""3way output catalogue""")
+	help="""nway output catalogue""")
 
 parser.add_argument('id', type=str,
 	help='ID to explain (from primary catalogue)')
@@ -106,10 +106,6 @@ for col in header['BIASING'].split(', '):
 			ra = data[col_ra][mask2] - center_ra
 			dec = data[col_dec][mask2] - center_dec
 			plt.plot(ra, dec, 'd ', mew=4, ms=20, mec='r', mfc='None', label='%s strong reject < -1' % col, alpha=0.3)
-
-#for col in data.columns:
-#	if col.startswith('bias')
-#for j, i in enumerate(numpy.argsort(data['bfpost'][mask])[::-1][:3]):
 
 mask2 = numpy.logical_and(mask, data['match_flag'] == 1)
 ras = []

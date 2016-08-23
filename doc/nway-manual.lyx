@@ -5,7 +5,7 @@
 \textclass report
 \begin_preamble
 \newcommand{\nwayversion}{1.0}
-\newcommand{\nway}{\textsc{3way}}
+\newcommand{\nway}{\textsc{nway}}
 \newcommand{\examplebox}[1]{\colorbox{YellowGreen}{\begin{minipage}{10cm}#1\end{minipage}}}
 \newcommand{\otherbox}[1]{\colorbox{Green}{\begin{minipage}#1\end{minipage}}}
 \newcommand{\code}[1]{{\texttt{#1}}}
@@ -1916,7 +1916,7 @@ status open
 
 
 \backslash
-code{python 3way.py XMM
+code{python ../nway.py XMM
 \backslash
 _xray
 \backslash
@@ -2944,7 +2944,7 @@ status open
 
 \begin_layout Plain Layout
 
-python 3way.py XMM
+python ../nway.py XMM
 \backslash
 _xray
 \backslash
@@ -3113,7 +3113,7 @@ status open
 
 
 \backslash
-code{python 3way.py XMM
+code{python ../nway.py XMM
 \backslash
 _xray
 \backslash
@@ -3462,7 +3462,7 @@ status open
 
 
 \backslash
-code{python 3way.py XMM
+code{python ../nway.py XMM
 \backslash
 _xray
 \backslash
@@ -3740,7 +3740,7 @@ status open
 
 
 \backslash
-code{python 3way.py -{}-help}
+code{python ../nway.py -{}-help}
 \end_layout
 
 \end_inset
@@ -3757,7 +3757,7 @@ status open
 
 
 \backslash
-code{python 3way.py catalogue1 catalogues ...}
+code{python ../nway.py catalogue1 catalogues ...}
 \end_layout
 
 \end_inset
@@ -3774,7 +3774,7 @@ status open
 
 
 \backslash
-code{python 3way.py -{}-out}
+code{python ../nway.py -{}-out}
 \end_layout
 
 \end_inset
@@ -3791,7 +3791,7 @@ status open
 
 
 \backslash
-code{python 3way.py -{}-radius}
+code{python ../nway.py -{}-radius}
 \end_layout
 
 \end_inset
@@ -3811,7 +3811,7 @@ status open
 
 
 \backslash
-code{python 3way.py -{}-prior-completeness 1}
+code{python ../nway.py -{}-prior-completeness 1}
 \end_layout
 
 \end_inset
@@ -3828,7 +3828,7 @@ status open
 
 
 \backslash
-code{python 3way.py -{}-mag MAGCOLUMN MAGFILE}
+code{python ../nway.py -{}-mag MAGCOLUMN MAGFILE}
 \end_layout
 
 \end_inset
@@ -3866,7 +3866,7 @@ status open
 
 
 \backslash
-code{python 3way.py -{}-mag-radius}
+code{python ../nway.py -{}-mag-radius}
 \end_layout
 
 \end_inset
@@ -3886,7 +3886,7 @@ status open
 
 
 \backslash
-code{python 3way.py -{}-min-prob}
+code{python ../nway.py -{}-min-prob}
 \end_layout
 
 \end_inset
@@ -3917,7 +3917,7 @@ status open
 
 
 \backslash
-code{python 3way.py -{}-acceptable-prob}
+code{python ../nway.py -{}-acceptable-prob}
 \end_layout
 
 \end_inset

@@ -3,7 +3,7 @@
 
 __doc__ = """Multiway association between astrometric catalogue. Use --help for usage.
 
-Example: 3way.py --radius 10 --prior-completeness 0.95 --mag GOODS:mag_H auto --mag IRAC:mag_irac1 auto cdfs4Ms_srclist_v3.fits :Pos_error CANDELS_irac1.fits 0.5 gs_short.fits 0.1 --out=out.fits
+Example: nway.py --radius 10 --prior-completeness 0.95 --mag GOODS:mag_H auto --mag IRAC:mag_irac1 auto cdfs4Ms_srclist_v3.fits :Pos_error CANDELS_irac1.fits 0.5 gs_short.fits 0.1 --out=out.fits
 """
 
 import sys
@@ -60,7 +60,7 @@ parser.add_argument('catalogues', type=str, nargs='+',
 # parsing arguments
 args = parser.parse_args()
 
-print '3way arguments:'
+print 'nway arguments:'
 
 diff_secondary = args.acceptable_prob
 outfile = args.out
@@ -323,7 +323,7 @@ hdulist[0].header['METHOD'] = 'multi-way matching'
 hdulist[0].header['INPUT'] = ', '.join(filenames)
 hdulist[0].header['TABLES'] = ', '.join(table_names)
 hdulist[0].header['BIASING'] =  ', '.join(biases.keys())
-hdulist[0].header['3WAYCMD'] = ' '.join(sys.argv)
+hdulist[0].header['NWAYCMD'] = ' '.join(sys.argv)
 for k, v in args.__dict__.iteritems():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
 hdulist[0].header.update(match_header)
