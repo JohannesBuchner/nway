@@ -1,0 +1,4947 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass report
+\begin_preamble
+\newcommand{\nwayversion}{1.0}
+\newcommand{\nway}{\textsc{3way}}
+\newcommand{\examplebox}[1]{\colorbox{YellowGreen}{\begin{minipage}{10cm}#1\end{minipage}}}
+\newcommand{\otherbox}[1]{\colorbox{Green}{\begin{minipage}#1\end{minipage}}}
+\newcommand{\code}[1]{{\texttt{#1}}}
+\newcommand{\apj}{ApJ}
+\newcommand{\apjs}{ApJS}
+\newcommand{\aap}{A\&A}
+\newcommand{\mnras}{MNRAS}
+\usepackage[dvipsnames]{xcolor}
+\end_preamble
+\options 10pt,openany
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=blue,citecolor=green"
+\papersize a5paper
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\topmargin 1.5cm
+\bottommargin 1.5cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ - The versatile catalogue matching tool
+\end_layout
+
+\begin_layout Author
+Johannes Buchner
+\end_layout
+
+\begin_layout Date
+User manual, version 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nwayversion
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+22.
+ August 2016
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter
+Why 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+?
+\end_layout
+
+\begin_layout Standard
+In astrophysics, a common task is to assemble multi-wavelength information
+ about individual sources.
+ This is done by taking the detections of sources in the sky (positions,
+ errors, and fluxes/magnitudes) from a catalogue of one wavelength and matching
+ it to another from another wavelength, or multiple such catalogues.
+ Care has to be taken to consider all possible matches and also the possibility
+ that the source does not have a counterpart in a catalogue of a given depth.
+ For many classes of sources, the Spectral Energy Distribution (SED) provides
+ additional hints, which associations are likely real.
+ For instance, the color distribution of stars in the WISE bands is different
+ than that of quasars or galaxies.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ is a generic solution to these tasks:
+\end_layout
+
+\begin_layout Enumerate
+Matching of N catalogues simultaneously
+\end_layout
+
+\begin_layout Enumerate
+Consideration of all possible matches, partial matches and absence of counterpar
+ts in some catalogues.
+\end_layout
+
+\begin_layout Enumerate
+Taking into account the positional uncertainty.
+\end_layout
+
+\begin_layout Enumerate
+Incorporating magnitude, color or other information about the sources of
+ interest.
+\end_layout
+
+\begin_layout Enumerate
+Computation of a probability for each possible match.
+\end_layout
+
+\begin_layout Enumerate
+Computation of a probability that there is no match.
+\end_layout
+
+\begin_layout Section*
+How to read this manual
+\end_layout
+
+\begin_layout Standard
+This manual walks you through the installation and usage.
+ It is best to try out the examples as you read, because they illustrate
+ how 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ works.
+\end_layout
+
+\begin_layout Standard
+Yellow boxes indicate text about the illustrative examples and their explanation
+s.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+colorbox{Yellow}{
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+Useful explanation for users on how to prepare files or how to run 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ are found in yellow boxes.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+Green boxes indicate examples you can run yourself to learn 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Sometimes there are 
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{commands}
+\end_layout
+
+\end_inset
+
+ you can copy-paste.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you are interested in the rigorous mathematical details, go to Chapter
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:math"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section*
+Terminology
+\end_layout
+
+\begin_layout Paragraph
+Counterpart
+\end_layout
+
+\begin_layout Standard
+The corresponding source in another catalogue.
+\end_layout
+
+\begin_layout Paragraph
+Association
+\end_layout
+
+\begin_layout Standard
+A specific combination of entries from the various catalogues, i.e.
+ a tuple of detections associated with each other.
+\end_layout
+
+\begin_layout Paragraph
+Match
+\end_layout
+
+\begin_layout Standard
+Same as association, used interchangeably.
+\end_layout
+
+\begin_layout Chapter
+User Manual
+\end_layout
+
+\begin_layout Section
+Development, questions and issues
+\end_layout
+
+\begin_layout Standard
+Please let us know if you have comments about this manual or problems running/in
+stalling 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+For reporting bugs or requesting features, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+'s issue tracker is at the following location.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/JohannesBuchner/nway
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ is a small but powerful tool.
+ Most questions or apparent issues arise to understand which information
+ lead to a counterpart being preferred, and therefore understanding the
+ input data well.
+ This manual will guide you through the computation and the pieces of informatio
+n added together.
+\end_layout
+
+\begin_layout Section
+Installation
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ is a pure Python program.
+ Install 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ through
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\backslash
+$ pip install nway -{}-user}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To get the latest development version, fetch 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ from 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/JohannesBuchner/nway
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and run in the directory
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\backslash
+$ python install -{}-user}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Citing 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ correctly
+\end_layout
+
+\begin_layout Standard
+Please cite Salvato et al.
+ (in prep.).
+\end_layout
+
+\begin_layout Section
+Simple distance-based matching
+\end_layout
+
+\begin_layout Standard
+Before exploring the full power of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+, we consider a simple, illustrative case.
+ We have three catalogues, provided as FITS files:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\emph on
+Input:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="5">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Primary Catalogue
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2nd Catalogue
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3rd Catalogue
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathbb{A}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\beta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathbb{B}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+\begin_inset VSpace 0.1cm
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\emph on
+Output:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="11" columns="5">
+<features rotate="0" tabularvalignment="middle">
+<column alignment="center" valignment="top" width="2cm">
+<column alignment="center" valignment="top" width="2cm">
+<column alignment="center" valignment="top" width="2cm">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Primary Catalogue Entry
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2nd Catalogue Entry
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3rd Catalogue Entry
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Probability
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathbb{A}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="3" alignment="center" valignment="middle" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A group
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathbb{B}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(none)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\beta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathbb{A}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\beta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathbb{B}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\beta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(none)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(none)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathbb{A}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(none)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathbb{B}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+A
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(none)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+(none)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell multirow="4" alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+B
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+...
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+B group
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+, only the first catalogue (
+\series bold
+the primary catalogue
+\series default
+) plays a special role.
+ For each entry of it, counterparts are sought from the other catalogues.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+colorbox{Yellow}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Subsection
+Example - Preparing input files
+\end_layout
+
+\begin_layout Plain Layout
+Note these points about preparing a catalogue input file:
+\end_layout
+
+\begin_layout Enumerate
+Each catalogue needs to be a FITS file.
+ The second extension should be the table (first extension is a header).
+ TOPCAT writes files in this way.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+Three example catalogues are provided for you in the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{doc/}
+\end_layout
+
+\end_inset
+
+ directory: 
+\series bold
+irac_id_radec_mag.fits, megacam_2016AUG23.fits and XMM_xray_errors.fits
+\series default
+.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The data table needs to have a extension name and the keyword SKYAREA.
+ The extension name is used as a prefix as all columns are copied to the
+ output catalogue.
+ The SKYAREA keyword tells the area on the sky in square degrees covered
+ by the catalogue.
+ This is important for estimating the chance of random alignments.
+ You can use the tool 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python write
+\backslash
+_header.py mycat.fits mytablename myskyarea}
+\end_layout
+
+\end_inset
+
+ to set the fits header.
+ 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+For our example files we have a optical, IRAC and XMM catalogue covering
+ 2 square degrees: 
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python write
+\backslash
+_header.py megacam
+\backslash
+_2016AUG23.fits OPT 2; }
+\end_layout
+
+\end_inset
+
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python write
+\backslash
+_header.py irac
+\backslash
+_id
+\backslash
+_radec
+\backslash
+_mag.fits IRAC 2}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python write
+\backslash
+_header.py XMM
+\backslash
+_xray
+\backslash
+_errors.fits XMM 2}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Each catalogue needs to have a column RA and DEC.
+ To make your life easier, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ tries to be a bit fuzzy and detect the columns named RA_something etc.
+ It will print out which columns it found and used.
+\end_layout
+
+\begin_layout Enumerate
+The primary catalogue needs to have a ID column.
+ In our example this is the X-ray catalogue.
+ To make your life easier, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ tries to be a bit fuzzy and detect the columns named ID_something etc.
+ It will print out which columns it found and used.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Every possible combination of association is considered.
+ However, in practice you do not want an extremely large output catalogue
+ with extremely distant, unlikely to be physically associated.
+ 
+You can 
+\lang english
+set the largest distance in degrees to consider by setting 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-radius}
+\end_layout
+
+\end_inset
+
+.
+ This speeds up the computation.
+ But use a value that is much larger than the largest positional error.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+colorbox{Yellow}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Subsection
+Example - Matching two catalogues
+\end_layout
+
+\begin_layout Plain Layout
+Lets try the simplest example and match the XMM X-ray catalogue to an optical
+ catalogue.
+ The XMM catalogue has a pos_err column with the positional error in arcseconds.
+ For the optical catalogue we will assume a error of 0.1 arcseconds.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+Run this command: 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py XMM
+\backslash
+_xray
+\backslash
+_errors.fits :pos
+\backslash
+_err megacam
+\backslash
+_2016AUG23.fits 0.1 -{}-out=example1.fits -{}-radius 7 -{}-prior-completeness
+ 0.9}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Lets understand what we put in:
+\end_layout
+
+\begin_layout Enumerate
+We passed two catalogue files: XMM_xray_errors.fits and megacam_2016AUG23.fits.
+ For the first one, we told 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ to use the column (
+\begin_inset Quotes eld
+\end_inset
+
+:
+\begin_inset Quotes erd
+\end_inset
+
+) 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+pos_err
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ in that catalogue for the positional error (
+\series bold
+always in arcsec
+\series default
+).
+ For the second one we specified a fixed error of 0.1 arcsec.
+\end_layout
+
+\begin_layout Enumerate
+We specified where the output should be written (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-out}
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+The largest XMM error is 5.66 arcsec, so we adopt a cropping radius of 7
+ arcsec to speed up the matching (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-radius 7}
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Enumerate
+
+The parameter 
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-prior-completeness 0.9}
+\end_layout
+
+\end_inset
+
+ is mentioned below.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+colorbox{Yellow}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+Lets understand what 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ did:
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset listings
+lstparams "basicstyle={\scriptsize\ttfamily},tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+3way arguments:
+\end_layout
+
+\begin_layout Plain Layout
+
+    catalogues:  XMM_xray_errors.fits, megacam_2016AUG23.fits
+\end_layout
+
+\begin_layout Plain Layout
+
+    position errors/columns:  :pos_err, 0.1
+\end_layout
+
+\begin_layout Plain Layout
+
+      from catalogue "XMM" (1797), density is 3.706579e+07
+\end_layout
+
+\begin_layout Plain Layout
+
+      from catalogue "OPT" (560536), density is 1.156188e+10
+\end_layout
+
+\begin_layout Plain Layout
+
+    magnitude columns:  
+\end_layout
+
+\end_inset
+
+It reads the catalogues and looks at their densities.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset listings
+lstparams "basicstyle={\scriptsize\ttfamily},tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+matching with 7.000000 arcsec radius
+\end_layout
+
+\begin_layout Plain Layout
+
+matching: 1007283192 naive possibilities
+\end_layout
+
+\begin_layout Plain Layout
+
+matching: hashing
+\end_layout
+
+\begin_layout Plain Layout
+
+    using RA  columns: RA, RA
+\end_layout
+
+\begin_layout Plain Layout
+
+    using DEC columns: DEC, DEC
+\end_layout
+
+\begin_layout Plain Layout
+
+100%562333|#####################################|Time: 0:00:24
+\end_layout
+
+\begin_layout Plain Layout
+
+matching:  32782 matches after hashing
+\end_layout
+
+\begin_layout Plain Layout
+
+matching: collecting from 755640 buckets
+\end_layout
+
+\begin_layout Plain Layout
+
+100%755640|#####################################|Time: 0:00:02
+\end_layout
+
+\begin_layout Plain Layout
+
+matching:  14956 unique matches from crossproduct
+\end_layout
+
+\begin_layout Plain Layout
+
+matching:  13159 matches
+\end_layout
+
+\begin_layout Plain Layout
+
+merging columns ...
+ 10
+\end_layout
+
+\begin_layout Plain Layout
+
+100% 10|########################################|Time: 0:00:00
+\end_layout
+
+\begin_layout Plain Layout
+
+merging columns: adding angular separation columns
+\end_layout
+
+\begin_layout Plain Layout
+
+matching:   5259 matches after filtering
+\end_layout
+
+\end_inset
+
+Within 30 seconds it created a cross-match of possible associations (1007283192
+ in principle, 5259 within 7 arcseconds).
+\end_layout
+
+\begin_layout Enumerate
+It found ID, RA, DEC, and positional error columns.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset listings
+lstparams "basicstyle={\scriptsize\ttfamily},tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+finalizing catalogue
+\end_layout
+
+\begin_layout Plain Layout
+
+    finding position error columns ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    Position error for "XMM": found column XMM_pos_err: 
+\end_layout
+
+\begin_layout Plain Layout
+
+        Values are [0.109000..5.660000]
+\end_layout
+
+\begin_layout Plain Layout
+
+    Position error for "OPT": using fixed value 0.100000
+\end_layout
+
+\begin_layout Plain Layout
+
+    finding position columns ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    computing probabilities from separations ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    grouping by column "XMM_ID" for flagging ...
+\end_layout
+
+\end_inset
+
+It computed the probability of each association.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset listings
+lstparams "basicstyle={\scriptsize\ttfamily},tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+writing "example1.fits" (5259 rows, 17 columns)
+\end_layout
+
+\end_inset
+
+It wrote the output file 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+example1.fits
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ This file contains all columns from the input catalogues and the computed
+ probabilities (see below for their meaning).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So how does 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ deal with a particular, possible association and compute its probability?
+ 
+\end_layout
+
+\begin_layout Standard
+The probability of a given association is computed by comparing the probability
+ of a random chance alignment of unrelated sources (prior) to the likelihood
+ that the source is the same.
+ The gory mathematical details are laid out in Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:math"
+
+\end_inset
+
+, but from a user point of view the following is important:
+\end_layout
+
+\begin_layout Enumerate
+The chance of a random alignment depends on the source sky density of the
+ various catalogues.
+ 
+\series bold
+So each catalogue needs to have a FITS header entry 
+\family typewriter
+SKYAREA
+\family default
+ which tells the area covered by the catalogue in square degrees.
+
+\series default
+ The source density is then computed by the number of entries divided by
+ that area.
+ You can use the tool 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python write
+\backslash
+_header.py mycat.fits mytablename myskyarea}
+\end_layout
+
+\end_inset
+
+ to set the fits header.
+\end_layout
+
+\begin_layout Enumerate
+Varying depths between the catalogues and different coverage can further
+ reduce the fraction of expected matches.
+ This can be adjusted by setting 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-prior-completeness=0.9}
+\end_layout
+
+\end_inset
+
+, if previous experience is that only 90% of sources have a match with the
+ given inputs.
+\end_layout
+
+\begin_layout Standard
+The outputs catalogue then contains three new columns along all columns
+ of the input catalogues:
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{bf}
+\end_layout
+
+\end_inset
+
+: logarithm of ratio between prior and posterior from distance matching
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+bfpost
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+: Distance posterior probability.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+post
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+: Posterior probability (same as bfpost unless additional information was
+ added).
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+post_group_no_match
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\series default
+: For each entry in the primary catalogue (e.g.
+ A) the probability that no association is the correct one is computed.
+ Because every catalogue is limited by its depth, it is possible that the
+ true counterpart has not been found yet.
+ When building a secure catalogue, 
+\series bold
+keep only associations where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+post_group_no_match<0.4
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+post_group_this_match
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\series default
+: For each possible association for each entry in the primary catalogue
+ (e.g.
+ A), the relative probability is computed.
+ When building a secure catalogue, 
+\series bold
+keep only associations where 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+post_group_this_match>0.6
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ Secondary solutions down to 0.1 may be interesting.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+match_flag
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\series default
+: The best match is indicated with 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ for each primary catalogue entry.
+ Secondary, almost as good solutions are marked with 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+
+2
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+ The maximum allowed difference is at most 0.005 (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-acceptable-prob}
+\end_layout
+
+\end_inset
+
+ parameter), and also 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{post>=0.1}
+\end_layout
+
+\end_inset
+
+ is required.
+ All other associations are marked with 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+0
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Use the last three columns to identify sources with one solution, possible
+ secondary solutions, and to build final catalogues.
+ Chapter 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:math"
+
+\end_inset
+
+ explains how these quantities are computed.
+ 
+The 
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-min-prob}
+\end_layout
+
+\end_inset
+
+ parameter can be used to remove low-probability associations from the catalogue.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+colorbox{Yellow}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Subsection
+Example - Output of matching two catalogues
+\end_layout
+
+\begin_layout Plain Layout
+Lets understand the output fits file and the associations found for a particular
+ X-ray source.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+Open the fits file and find XMM_ID=60388.
+ As you can see, this is a ambiguous case, where more than one optical counterpa
+rt is possible.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+Below is an illustration of this ambiguous case (produced with 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python explain.py example1.fits 60388}
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Plain Layout
+Two sources are at a similar distance from the X-ray source (blue, with
+ error circle).
+ Therefore their association probability (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{bfpost}
+\end_layout
+
+\end_inset
+
+) is similar.
+ The slightly higher one is marked as match_flag=1 (orange), the other with
+ 2 (yellow).
+\end_layout
+
+\begin_layout Plain Layout
+Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:additional-priors"
+
+\end_inset
+
+ solves this by adding more information (the magnitude distribution).
+ But we can also solve this another way.
+ We know AGN (the X-ray source) emits in the infrared, so you can also match
+ with an IRAC catalogue like so: 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+python 3way.py XMM
+\backslash
+_xray
+\backslash
+_errors.fits :pos
+\backslash
+_err megacam
+\backslash
+_2016AUG23.fits 0.1 irac
+\backslash
+_id
+\backslash
+_radec
+\backslash
+_mag.fits 0.5 -{}-out=example3.fits -{}-radius 7
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename example1.fits_explain_60388.pdf
+	width 80col%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage clearpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Matching with additional information
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:additional-priors"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For many classes of sources, the Spectral Energy Distribution (SED) provides
+ additional hints, which associations are likely real.
+ For instance, the color distribution of stars in the WISE bands is different
+ than that of quasars or galaxies.
+ A powerful feature of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ is to take advantage of this additional information to improve the matching.
+ Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:mag-priors"
+
+\end_inset
+
+ has the mathematical details and a comparison to the Likelihood Ratio method.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+colorbox{Yellow}{
+\end_layout
+
+\end_inset
+
+
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Subsection
+Example - Using magnitude information
+\end_layout
+
+\begin_layout Plain Layout
+AGN (which we are looking for in our example) have a different optical magnitude
+ distribution than other objects.
+ Lets take advantage of this information.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+Run this command: 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py XMM
+\backslash
+_xray
+\backslash
+_errors.fits :pos
+\backslash
+_err megacam
+\backslash
+_2016AUG23.fits 0.1 -{}-out=example2.fits -{}-radius 7 -{}-prior-completeness
+ 0.9 --mag OPT:MAG auto --mag-radius 3.5}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+The last two parts are new: 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag OPT:MAG auto -{}-mag-radius 3.5}
+\end_layout
+
+\end_inset
+
+.
+ Lets look at what they mean:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+You have to tell 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ in which catalogue and which column to find this information for a individual
+ source.
+ Adding the argument 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag catalogue-table-name:catalogue-table-column [auto|histogramfile.txt]
+}
+\end_layout
+
+\end_inset
+
+ does this.
+ Remember that the FITS extension containing the table has a name (OPT in
+ our example).
+ 
+\end_layout
+
+\begin_layout Enumerate
+If we know the magnitude distribution of X-ray detected AGN we can provide
+ this prior distribution as a table (histogram).
+ This table contains the color histogram of the sources of interest (X-ray
+ detected AGN) and a histogram of other, field sources.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Specifying 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{auto}
+\end_layout
+
+\end_inset
+
+ instead of a histogram file, as we do in our example, derives the two distribut
+ions from the data.
+ For this, all sources inside 3.5 arcseconds of a X-ray source are put into
+ one histogram, and all others into another histogram (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag-radius}
+\end_layout
+
+\end_inset
+
+ parameter).
+ 
+\end_layout
+
+\begin_layout Plain Layout
+(continued below)
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+colorbox{Yellow}{
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+Lets look at the histograms it computed (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ created 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{OPT
+\backslash
+_MAG
+\backslash
+_fit.pdf}
+\end_layout
+
+\end_inset
+
+, and also 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{OPT
+\backslash
+_MAG
+\backslash
+_fit.txt}
+\end_layout
+
+\end_inset
+
+ as a histogram file):
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename OPT_MAG_fit.pdf
+	width 80col%
+	BoundingBox 0bp 198bp 507bp 398bp
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+They are clearly different: Lower magnitude (bright) sources are more likely
+ associated to AGN.
+ This will help our matching.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+As an example, we show below the ambiguous case from before.
+ The lower association has been selected because it has a better match by
+ magnitude, resolving the ambiguity.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename example2.fits_explain_60388.pdf
+	width 80col%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Multiple priors
+\end_layout
+
+\begin_layout Standard
+You can specify as many priors as you like, taking advantage of more and
+ more information.
+ Just repeat 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+-{}-mag
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+The following example uses one prior from the optical catalogue and another
+ prior from the IRAC catalogue.
+ A three-way match is performed.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py XMM
+\backslash
+_xray
+\backslash
+_errors.fits :pos
+\backslash
+_err megacam
+\backslash
+_2016AUG23.fits 0.1 irac
+\backslash
+_id
+\backslash
+_radec
+\backslash
+_mag.fits 0.5  -{}-out=example3.fits -{}-radius 7 -{}-prior-completeness 0.9
+ -{}-mag OPT:MAG auto -{}-mag IRAC:mag
+\backslash
+_ch1 auto  -{}-mag-radius 3.5}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Providing a prior as a file
+\end_layout
+
+\begin_layout Standard
+In the paper we used the WISE color distribution of X-ray detected AGN from
+ another study.
+ We provided this color prior distribution as a ASCII table (histogram).
+ This table contains the color histogram of the sources of interest (X-ray
+ detected AGN) and a histogram of other, field sources.
+ The file 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{OPT
+\backslash
+_MAG
+\backslash
+_fit.txt}
+\end_layout
+
+\end_inset
+
+ is an example of such a input file, and can be used via 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag OPT:MAG OPT
+\backslash
+_MAG
+\backslash
+_fit.txt}
+\end_layout
+
+\end_inset
+
+.
+ It contains four columns (lower and upper bin edge, density of selected
+ and non-selected) and looks like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\footnotesize\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+# OPT_MAG_fit.txt
+\end_layout
+
+\begin_layout Plain Layout
+
+# lo         hi          selected   others
+\end_layout
+
+\begin_layout Plain Layout
+
+  10.76000   18.98571    0.00870    0.00183
+\end_layout
+
+\begin_layout Plain Layout
+
+  18.98571   20.27286    0.05562    0.01448
+\end_layout
+
+\begin_layout Plain Layout
+
+  ...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+A general approach
+\end_layout
+
+\begin_layout Standard
+Providing priors is not limited to magnitude distributions, you can use
+ colors or any other information you want (e.g.
+ morphology, variability, etc.).
+ The approach is very general, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ just looks at the corresponding bin and reweighs the probabilities.
+ 
+\end_layout
+
+\begin_layout Paragraph
+Discovering a prior from distance matching
+\end_layout
+
+\begin_layout Standard
+If you set 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag OPT:MAG auto}
+\end_layout
+
+\end_inset
+
+ and do not set 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag-radius}
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ uses the Bayesian distance matching for discovering the histogram of 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{OPT:MAG}
+\end_layout
+
+\end_inset
+
+.
+ It divides association into three groups: 
+\end_layout
+
+\begin_layout Enumerate
+Those with 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{bfpost>0.9}
+\end_layout
+
+\end_inset
+
+ are considered safe matches and used for the 
+\begin_inset Quotes eld
+\end_inset
+
+selected
+\begin_inset Quotes erd
+\end_inset
+
+ histogram (AGN in our example).
+\end_layout
+
+\begin_layout Enumerate
+Those with 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{bfpost<0.01}
+\end_layout
+
+\end_inset
+
+ are considered safe non-matches and used for the 
+\begin_inset Quotes eld
+\end_inset
+
+all
+\begin_inset Quotes erd
+\end_inset
+
+ histogram (non-AGN in our example).
+\end_layout
+
+\begin_layout Enumerate
+All others are considered ambiguous and not used for the histogram.
+\end_layout
+
+\begin_layout Standard
+This is more cautious but if you do not have a large catalogue you may not
+ have enough sources to build a well-sampled histogram.
+\end_layout
+
+\begin_layout Chapter
+Program Arguments
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py -{}-help}
+\end_layout
+
+\end_inset
+
+ ...
+ display help page
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py catalogue1 catalogues ...}
+\end_layout
+
+\end_inset
+
+ ...
+ input catalogues as FITS files.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py -{}-out}
+\end_layout
+
+\end_inset
+
+ ...
+ Output file name (also a FITS file).
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py -{}-radius}
+\end_layout
+
+\end_inset
+
+ This radius (in degrees) is used to discard distant pairs.
+ Always choose a value that is much larger than the largest positional uncertain
+ty, then this value will not change the results.
+ Smaller values just make the code run faster by reducing the number of
+ combinations to explore.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py -{}-prior-completeness 1}
+\end_layout
+
+\end_inset
+
+ ...
+ set expected matching completeness (default: 1)
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py -{}-mag MAGCOLUMN MAGFILE}
+\end_layout
+
+\end_inset
+
+ ...
+ name of <table>:<column> for magnitude biasing, and file name for magnitude
+ histogram (use auto for auto-computation within mag-radius).
+ Example: 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag GOODS:mag
+\backslash
+_H auto -{}-mag IRAC:mag
+\backslash
+_irac1 irac
+\backslash
+_histogram.txt}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py -{}-mag-radius}
+\end_layout
+
+\end_inset
+
+ ...
+ If set, and a auto prior is defined, then the selected sources are taken
+ from within this radius of the primary sources (in arc seconds).
+ If not set (recommended), the Bayesian posterior from distance matching
+ is used, which incorporates positional errors.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py -{}-min-prob}
+\end_layout
+
+\end_inset
+
+ ...
+ only retain associations in the output catalogue exceeding this 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{post}
+\end_layout
+
+\end_inset
+
+ value.
+ Recommended: 0.1.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python 3way.py -{}-acceptable-prob}
+\end_layout
+
+\end_inset
+
+ ...
+ affects the flagging of secondary solutions (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{match
+\backslash
+_flag}
+\end_layout
+
+\end_inset
+
+ column).
+ If the secondary is within this difference (default: 0.005), it is marked
+ as a secondary solution.
+\end_layout
+
+\begin_layout Chapter
+Input file specifications
+\end_layout
+
+\begin_layout Enumerate
+Each catalogue needs to be a FITS file.
+ The second extension should be the table (first extension is a header).
+ 
+\end_layout
+
+\begin_layout Enumerate
+The data table needs to have a extension name.
+\end_layout
+
+\begin_layout Enumerate
+The header of the data table needs the keyword SKYAREA, which specifies
+ the area covered by the catalogue in 
+\series bold
+square degrees
+\series default
+.
+\end_layout
+
+\begin_layout Enumerate
+Each catalogue needs to have a column RA and DEC 
+\series bold
+in degrees
+\series default
+.
+ To make your life easier, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ tries to be a bit fuzzy and detect the columns named RA_something etc.
+ 
+\end_layout
+
+\begin_layout Enumerate
+The primary catalogue needs to have a ID column.
+ To make your life easier, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ tries to be a bit fuzzy and detect the columns named ID_something etc.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Positional error columns need to be in arcseconds.
+\end_layout
+
+\begin_layout Standard
+Example catalogues are provided in the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{doc/}
+\end_layout
+
+\end_inset
+
+ directory: irac_id_radec_mag.fits, megacam_2016AUG23.fits and XMM_xray_errors.fits.
+\end_layout
+
+\begin_layout Chapter
+Mathematical details and Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "chap:math"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Distance-based matching
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:math"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lets consider the problem of finding counterparts to a primary catalogue
+ (
+\begin_inset Formula $i=1$
+\end_inset
+
+), namely the X-ray source position catalogue.
+ Let each 
+\begin_inset Formula $N_{i}$
+\end_inset
+
+ denote the number of entries for the catalogues used, and 
+\begin_inset Formula $\nu_{i}=N_{i}/\Omega_{i}$
+\end_inset
+
+ denote their source surface density on the sky.
+ 
+\end_layout
+
+\begin_layout Standard
+If a counterpart is required to exist in each of the 
+\begin_inset Formula $k$
+\end_inset
+
+ catalogues, there are 
+\begin_inset Formula $\prod_{i=1}^{k}N_{i}$
+\end_inset
+
+ possible associations.
+ If we assume that a counterpart might be missing in each of the matching
+ catalogues, there are 
+\begin_inset Formula $N_{1}\cdot\prod_{i=2}^{k}(N_{i}+1)$
+\end_inset
+
+ possible associations.
+ This minor modification, negligible for 
+\begin_inset Formula $N_{i}\gg1$
+\end_inset
+
+, is ignored in the following for simplicity.
+\end_layout
+
+\begin_layout Standard
+If each catalogue covers the same area with some respective, homogeneous
+ source density 
+\begin_inset Formula $\nu_{i}$
+\end_inset
+
+, the probability of a chance alignment on the sky of physically unrelated
+ objects can then be written (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Budavari2008"
+
+\end_inset
+
+, eq.
+ 25) as 
+\begin_inset Formula 
+\begin{equation}
+P(H)=N_{1}/\prod_{i=1}^{k}N_{i}=1/\prod_{i=2}^{k}N_{i}=1/\prod_{i=2}^{k}\nu_{i}\Omega_{i}.
+\end{equation}
+
+\end_inset
+
+Thus 
+\begin_inset Formula $P(H)$
+\end_inset
+
+ is the prior probability of an association.
+ The posterior should strongly exceed this prior probability, to avoid false
+ positives.
+ 
+\end_layout
+
+\begin_layout Standard
+To account for non-uniform coverage, 
+\begin_inset Formula $P(H)$
+\end_inset
+
+ is modified by a 
+\begin_inset Quotes eld
+\end_inset
+
+prior completeness factor
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset Formula $c$
+\end_inset
+
+, which gives the expected fraction of sources with reliable counterpart
+ (due to only partial coverage of the matching catalogues 
+\begin_inset Formula $\Omega_{i>1}\neq\Omega_{1}$
+\end_inset
+
+, depth of the catalogues and/or systematic errors in the coordinates).
+ Our prior can thus be written as 
+\begin_inset Formula 
+\begin{equation}
+P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bayes' theorem connects the prior probability 
+\begin_inset Formula $P(H)$
+\end_inset
+
+ to the posterior probability 
+\begin_inset Formula $P(H|D)$
+\end_inset
+
+, by incorporating information gained from the observation data 
+\begin_inset Formula $D$
+\end_inset
+
+ via 
+\begin_inset Formula 
+\begin{equation}
+P(H|D)\propto P(H)\times P(D|H).
+\end{equation}
+
+\end_inset
+
+Then, comparing two different hypotheses (
+\begin_inset Formula $H$
+\end_inset
+
+ and 
+\begin_inset Formula $\bar{H}$
+\end_inset
+
+), we can write how probable one is compared to the other as 
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{P(H|D)}{P(\bar{H}|D)} & \propto & \frac{P(H)}{P(\bar{H})}\times\frac{P(D|H)}{P(D|\bar{H})}\\
+ & = & \frac{P(H)}{P(\bar{H})}\times B
+\end{eqnarray}
+
+\end_inset
+
+ where the Bayes factor 
+\begin_inset Formula $B$
+\end_inset
+
+ indicates the strength of hypothesis 
+\begin_inset Formula $H$
+\end_inset
+
+ based on the observations.
+ In the case considered here, for each association, the model 
+\begin_inset Quotes eld
+\end_inset
+
+chance alignment
+\begin_inset Quotes erd
+\end_inset
+
+ is compared with the model 
+\begin_inset Quotes eld
+\end_inset
+
+real association
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The relevant Bayes factor, developed in (
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Budavari2008"
+
+\end_inset
+
+, eq.
+ 18), is dependent on the angular distance 
+\begin_inset Formula $\phi_{ij}$
+\end_inset
+
+ between the source positions in catalogues 
+\begin_inset Formula $i$
+\end_inset
+
+ and 
+\begin_inset Formula $j$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+B & = & \frac{P(\text{"real association"}|D)}{P(\text{"chance alignment"}|D)}\nonumber \\
+ & = & 2^{n-1}\frac{\prod\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\exp\left\{ -\frac{\sum_{i=1}^{j}\phi_{ij}\sigma_{j}^{-1}\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\right\} \label{eq:assocBayes}
+\end{eqnarray}
+
+\end_inset
+
+Here, 
+\begin_inset Formula $\sigma_{i}$
+\end_inset
+
+ denotes the positional uncertainty in each catalogue.
+ The output column 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+bf
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ is 
+\begin_inset Formula $\log B$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+For each association the posterior of the hypothesis 
+\begin_inset Quotes eld
+\end_inset
+
+real association
+\begin_inset Quotes erd
+\end_inset
+
+ is then 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P(\text{"real association"}|D)=\left[1+\frac{1-P(H)}{B\cdot P(H)}\right]^{-1}\label{eq:assocPost}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Grouping-by-primary"
+
+\end_inset
+
+For each combinatorically possible association across the catalogues, Equations
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:assocPost"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:assocBayes"
+
+\end_inset
+
+ describe the probability that this association is real (i.e.
+ not by chance).
+ The output column 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+bfpost
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ is the result of equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:assocPost"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The task now is to begin with the primary catalogue and find for each source
+ one or more realistic associations to consider.
+\end_layout
+
+\begin_layout Standard
+First, we write the probability that the primary catalogue entry has any
+ association at all, by summing the probability of its possible counterparts:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P(\text{"any real association"}|D)=\left[1+\frac{1-P(H)}{\sum_{k}B_{k}\times P(H)}\right]^{-1}\label{eq:post-any}
+\end{equation}
+
+\end_inset
+
+This is possible because the prior remains the same across all associations
+ and because associations are mutually exclusive.
+ Based on this posterior we can reject or accept the hypothesis that a real
+ association exists for each object in the primary catalogue.
+ The output column 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+post_group_no_match
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ is the result of equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:post-any"
+
+\end_inset
+
+ through 
+\begin_inset Formula $1-P(\text{"any real association"}|D)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+If we accept the hypothesis that this source has a counterpart, the probability
+ for any specific association 
+\begin_inset Formula $k$
+\end_inset
+
+ is
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P(\text{k}|D,\,\text{"any real association"})=B_{k}/\sum_{k}B_{k}.\label{eq:post-assoc}
+\end{equation}
+
+\end_inset
+
+Here, I have used that a priori all associations are equally likely.
+ This posterior can be used to reject unlikely counterparts.
+ The output column 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+post_group_this_match
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ is the result of equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:post-assoc"
+
+\end_inset
+
+.
+ A 
+\begin_inset Quotes eld
+\end_inset
+
+very secure
+\begin_inset Quotes erd
+\end_inset
+
+ counterpart could be defined by the requirement 
+\begin_inset Formula $P(\text{"any real association"}|D)>99\%$
+\end_inset
+
+ and 
+\begin_inset Formula $P(\text{k}|D,\,\text{"any real association"})>95\%$
+\end_inset
+
+, for example.
+ However, it is useful to run simulations to understand the rate of false
+ positives.
+ Typically, much lower thresholds are acceptable.
+\end_layout
+
+\begin_layout Standard
+One subtlety of Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:post-any"
+
+\end_inset
+
+ is that it only considers the associations enumerated, i.e.
+ the combinations of all detected objects.
+ However, very faint counterparts may have not been detected with the current
+ exposure depth.
+ The possibility that another, undetected counterpart is the correct one
+ is thus not included in Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:post-any"
+
+\end_inset
+
+ nor Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:post-assoc"
+
+\end_inset
+
+.
+ Low probabilities in Equation 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:assocPost"
+
+\end_inset
+
+ even for the most probable association may indicate that no suitable counterpar
+t has been found yet.
+\end_layout
+
+\begin_layout Section
+Magnitudes, Colors and other additional information
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:mag-priors"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Astronomical objects of various classes often show distinct color and magnitude
+ distributions.
+  Because most X-ray point-sources in deep images are AGN, and the fact
+ that AGN show a different optical magnitude distribution than other objects
+ such as stars, this information can be exploited.
+ Previous works 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Brusa2005,Brusa2007"
+
+\end_inset
+
+ have modified the likelihood ratio coming from the angular distance 
+\begin_inset Formula $f(r)$
+\end_inset
+
+ information (likelihood ratio method, 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "SutherlandSaunders1992"
+
+\end_inset
+
+) by a factor:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+LR=\frac{q(m)}{n(m)}\times f(r)
+\end{equation}
+
+\end_inset
+
+Here, 
+\begin_inset Formula $q(m)$
+\end_inset
+
+ and 
+\begin_inset Formula $n(m)$
+\end_inset
+
+ are associated with the magnitude distributions of source (e.g.
+ AGN) and background objects (e.g.
+ stars, passive galaxies) respectively, but additionally contain sky density
+ contributions.
+\end_layout
+
+\begin_layout Standard
+This idea can be put on solid footing within the Bayesian framework.
+ Here, two Bayes factor are combined, by simply considering two independent
+ observations, namely one for the positions, 
+\begin_inset Formula $D_{\phi}$
+\end_inset
+
+, and one for the magnitudes 
+\begin_inset Formula $D_{m}$
+\end_inset
+
+.
+ The Bayes factor thus becomes
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+B' & = & \frac{P(D_{\phi}|\text{"real association"})}{P(D_{\phi}|\text{"chance alignment"})}\times\frac{P(D_{m}|\text{"real association"})}{P(D_{m}|\text{"chance alignment"})}\\
+ & = & B\times\frac{\bar{q}(m)}{\bar{n}(m)},
+\end{eqnarray}
+
+\end_inset
+
+with 
+\begin_inset Formula $\bar{q}(m)$
+\end_inset
+
+ and 
+\begin_inset Formula $\bar{n}(m)$
+\end_inset
+
+ being the probability that a X-ray source or a background object has magnitude
+ 
+\begin_inset Formula $m$
+\end_inset
+
+ respectively.
+ 
+\end_layout
+
+\begin_layout Standard
+For completeness, I mention the fully generalised case.
+ This is attained when an arbitrary number of photometry bands are considered,
+ each consisting of a magnitude measurement 
+\begin_inset Formula $m$
+\end_inset
+
+ and measurement uncertainty 
+\begin_inset Formula $\sigma_{m}$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+B'=B\times\prod\frac{\int_{m}\bar{q}(m)\,p(m|D_{m})\,dm}{\int_{m}\bar{n}(m)\,p(m|D_{m})\,dm}
+\end{equation}
+
+\end_inset
+
+Here, 
+\begin_inset Formula $p(m|D_{m})$
+\end_inset
+
+ would refer to a Gaussian error distribution with mean 
+\begin_inset Formula $m$
+\end_inset
+
+ and standard deviation 
+\begin_inset Formula $\sigma_{m}$
+\end_inset
+
+.
+ This is convolved with the distribution properties.
+ Alternatively, 
+\begin_inset Formula $p(m|D_{m})$
+\end_inset
+
+ can also consider upper limits.
+ The posterior formulae 
+\begin_inset Formula $P(\cdot|D)$
+\end_inset
+
+ introduced above (Equations 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:post-any"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:post-assoc"
+
+\end_inset
+
+) remain the same, with 
+\begin_inset Formula $B'$
+\end_inset
+
+ replacing 
+\begin_inset Formula $B$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Auto-calibration
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Auto-calibration"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The probability distributions 
+\begin_inset Formula $\bar{q}(m)$
+\end_inset
+
+ and 
+\begin_inset Formula $\bar{n}(m)$
+\end_inset
+
+ can be taken from other observations by computing the magnitude histograms
+ of the target population (e.g.
+ X-ray sources, AGN) and other objects selected in other wavebands.
+ 
+\end_layout
+
+\begin_layout Standard
+Under certain approximations and assumptions, these histograms can also
+ be computed during the catalogue matching procedure while also being used
+ for the weighting.
+ One could perform the distance-based matching procedure laid out above,
+ and compute a magnitude histogram of the secure counterparts as an approximatio
+n for 
+\begin_inset Formula $\bar{q}(m)$
+\end_inset
+
+ and a histogram of ruled out counterparts for 
+\begin_inset Formula $\bar{n}(m)$
+\end_inset
+
+.
+ While the weights 
+\begin_inset Formula $\bar{q}(m)/\bar{n}(m)$
+\end_inset
+
+ may strongly influence the probabilities of the associations for a single
+ object, the bulk of the associations will be dominated by distance-weighting.
+ One may thus assume that the 
+\begin_inset Formula $\bar{q}(m)$
+\end_inset
+
+ and 
+\begin_inset Formula $\bar{n}(m)$
+\end_inset
+
+ are computed with and without applying the magnitude weighting are the
+ same, which is true in practice.
+ When differences are noticed, they will only strengthen 
+\begin_inset Formula $\bar{q}(m)$
+\end_inset
+
+, and the procedure may be iterated.
+\end_layout
+
+\begin_layout Section
+Implementation
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Implementation"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+My implementation for matching 
+\begin_inset Formula $n$
+\end_inset
+
+ catalogues is a Python program called 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+.
+ The input catalogues have to be in FITS format.
+ Information about the (shared) sky coverage has to be provided to the program
+ as well.
+ The program proceeds in four steps.
+\end_layout
+
+\begin_layout Standard
+First, possible associations are found.
+ It is unfeasible to consider all theoretical possibilities (complexity
+ 
+\begin_inset Formula $O(\prod_{i=1}^{k}N_{i})$
+\end_inset
+
+), so the sky is split first to cluster nearby objects.
+ For this, a hashing procedure puts each object into square bins.
+ The bin width 
+\begin_inset Formula $w$
+\end_inset
+
+ is chosen so that an association of distance 
+\begin_inset Formula $w$
+\end_inset
+
+ is improbable, i.e.
+ much larger than the largest positional error.
+ An object with coordinates 
+\begin_inset Formula $\phi,\,\theta$
+\end_inset
+
+ is thus put into bin 
+\begin_inset Formula $(i,\,j)=(\left\lfloor \phi/w\right\rfloor ,\left\lfloor \theta/w\right\rfloor )$
+\end_inset
+
+, but also into bins 
+\begin_inset Formula $(i+1,\,j)$
+\end_inset
+
+, 
+\begin_inset Formula $(i,\,j+1)$
+\end_inset
+
+ and 
+\begin_inset Formula $(i+1,\,j+1)$
+\end_inset
+
+ to avoid boundary effects.
+ This is done for each catalogue separately.
+ Then, in each bin, the Cartesian product across catalogues (every possible
+ combination of sources) is computed.
+ All associations are collected across the bins and filtered to be unique.
+ The hashing procedure adds very low effort 
+\begin_inset Formula $O(\sum_{i=1}^{k}N_{i})$
+\end_inset
+
+ while the Cartesian product is reduced drastically to 
+\begin_inset Formula $O(N_{bins}\cdot\prod_{i=1}^{k}\frac{N_{i}}{N_{bins}})$
+\end_inset
+
+.
+ All primary objects that have no associations past this step have 
+\begin_inset Formula $P(\text{"any real association"}|D)=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The second step is the computation of Bayes factors using the angular distances
+ between counterparts.
+ The prior is also evaluated from the size of the catalogue and the effective
+ coverage, as well as the user-supplied prior incompleteness factor.
+ The posterior for each association based on the distances only is calculated.
+\end_layout
+
+\begin_layout Standard
+In the third step the magnitudes are considered, and the Bayes factors modified.
+ An arbitrary number of magnitude columns in the input catalogues can be
+ specified.
+ It is possible to use external magnitude histograms (e.g.
+ for sparse matching with few objects) as well as computing the histograms
+ from the data itself (see Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Auto-calibration"
+
+\end_inset
+
+).
+ The breaks of the histogram bins are computed adaptively based on the empirical
+ cumulative distribution found.
+ Because the histogram bins are usually larger than the magnitude measurement
+ uncertainty, the latter is currently not considered.
+ The adaptive binning creates bin edges based on the number of objects,
+ and is thus independent of the chosen scale (magnitudes, flux).
+ Thus the method is not limited to magnitudes, but can be used for virtually
+ any other known object property (colours, morphology, variability, etc.).
+\end_layout
+
+\begin_layout Standard
+In the final step, associations are grouped by the object from the primary
+ catalogue (here: the X-ray source).
+ The posteriors 
+\begin_inset Formula $P(\text{"any real association"}|D)$
+\end_inset
+
+ and 
+\begin_inset Formula $P(\text{k}|D,\,\text{"any real association"})$
+\end_inset
+
+ computed.
+ For the output catalogue a cut on the posterior probability (e.g.
+ above 80%) is applied, and all associations with their posterior probability
+ are written to the output fits catalogue file.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "nway-references"
+options "apalike2"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
