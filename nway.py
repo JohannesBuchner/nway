@@ -12,9 +12,9 @@ from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
 import astropy.io.fits as pyfits
 import argparse
-import fastskymatch as match
-import bayesdistance as bayesdist
-import magnitudeweights
+import nwaylib.fastskymatch as match
+import nwaylib.bayesdistance as bayesdist
+import nwaylib.magnitudeweights as magnitudeweights
 
 # set up program arguments
 

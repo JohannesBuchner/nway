@@ -553,12 +553,114 @@ status open
 \backslash
 code{
 \backslash
-$ pip install nway -{}-user}
+$ sudo pip install nway}
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+This will give you the tool 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{nway.py}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Or if you do not have root access:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\backslash
+$ pip install nway --user}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The tool 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{nway.py}
+\end_layout
+
+\end_inset
+
+ is installed for you as 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{~/.local/bin/nway.py}
+\end_layout
+
+\end_inset
+
+.
+ You may want to add 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{~/.local/bin/}
+\end_layout
+
+\end_inset
+
+ to your 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\backslash
+$PATH}
+\end_layout
+
+\end_inset
+
+ environment variable.
+\end_layout
+
+\begin_layout Paragraph
+Development version
 \end_layout
 
 \begin_layout Standard
@@ -2152,7 +2254,7 @@ status open
 
 \begin_layout Plain Layout
 
-3way arguments:
+nway arguments:
 \end_layout
 
 \begin_layout Plain Layout
@@ -3944,7 +4046,7 @@ _flag}
 \end_layout
 
 \begin_layout Chapter
-Input file specifications
+Input file specifications and units
 \end_layout
 
 \begin_layout Enumerate
