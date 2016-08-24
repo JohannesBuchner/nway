@@ -415,101 +415,6 @@ User Manual
 \end_layout
 
 \begin_layout Section
-Development, questions and issues
-\end_layout
-
-\begin_layout Standard
-Please let us know if you have comments about this manual or problems running/in
-stalling 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-nway
-\end_layout
-
-\end_inset
-
-.
- 
-\end_layout
-
-\begin_layout Standard
-For reporting bugs or requesting features, 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-nway
-\end_layout
-
-\end_inset
-
-'s issue tracker is at the following location.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Box Boxed
-position "t"
-hor_pos "c"
-has_inner_box 1
-inner_pos "t"
-use_parbox 0
-use_makebox 0
-width "100col%"
-special "none"
-height "1in"
-height_special "totalheight"
-status open
-
-\begin_layout Plain Layout
-\begin_inset Flex URL
-status open
-
-\begin_layout Plain Layout
-
-https://github.com/JohannesBuchner/nway
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-nway~
-\end_layout
-
-\end_inset
-
- is a small but powerful tool.
- Most questions or apparent issues arise to understand which information
- lead to a counterpart being preferred, and therefore understanding the
- input data well.
- This manual will guide you through the computation and the pieces of informatio
-n added together.
-\end_layout
-
-\begin_layout Section
 Installation
 \end_layout
 
@@ -622,26 +527,19 @@ status open
 
 
 \backslash
-code{~/.local/bin/nway.py}
+code{
+\backslash
+textasciitilde/.local/bin/nway.py}
 \end_layout
 
 \end_inset
 
 .
- You may want to add 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-code{~/.local/bin/}
+ 
 \end_layout
 
-\end_inset
-
- to your 
+\begin_layout Standard
+If that directory is in your 
 \begin_inset ERT
 status open
 
@@ -656,7 +554,22 @@ $PATH}
 
 \end_inset
 
- environment variable.
+, you can run 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\backslash
+$ nway.py -{}-help}
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Paragraph
@@ -727,7 +640,7 @@ status open
 \backslash
 code{
 \backslash
-$ python install -{}-user}
+$ python setup.py install -{}-user}
 \end_layout
 
 \end_inset
@@ -755,6 +668,101 @@ nway~
 \begin_layout Standard
 Please cite Salvato et al.
  (in prep.).
+\end_layout
+
+\begin_layout Section
+Development, questions and issues
+\end_layout
+
+\begin_layout Standard
+Please let us know if you have comments about this manual or problems running/in
+stalling 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+For reporting bugs or requesting features, 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+'s issue tracker is at the following location.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Box Boxed
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+status open
+
+\begin_layout Plain Layout
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/JohannesBuchner/nway
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ is a small but powerful tool.
+ Most questions or apparent issues arise to understand which information
+ lead to a counterpart being preferred, and therefore understanding the
+ input data well.
+ This manual will guide you through the computation and the pieces of informatio
+n added together.
 \end_layout
 
 \begin_layout Section
