@@ -74,6 +74,7 @@ fits_tables = []
 table_names = []
 tables = []
 source_densities = []
+source_densities_plus = []
 fits_formats = []
 for fitsname in filenames:
 	fits_table = pyfits.open(fitsname)[1]
@@ -90,8 +91,13 @@ for fitsname in filenames:
 	area_total = (4 * pi * (180 / pi)**2)
 	density = n / area * area_total
 	print '      from catalogue "%s" (%d), density is %e' % (table_name, n, density)
+	# this takes into account that the source may be absent
+	density_plus = (n + 1) / area * area_total
 	source_densities.append(density)
+	source_densities_plus.append(density_plus)
 
+# source can not be absent in primary catalogue
+source_densities_plus[0] = source_densities[0]
 min_prob = args.min_prob
 
 match_radius = args.radius / 60. / 60 # in degrees
@@ -170,7 +176,7 @@ for case in range(2**(len(table_names)-1)):
 		for row, m in zip(separations, table_mask) if m]
 	log_bf[mask] = bayesdist.log_bf(separations_selected, errors_selected)
 
-	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(numpy.asarray(source_densities)[table_mask])
+	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(numpy.asarray(source_densities_plus)[table_mask])
 
 post = bayesdist.posterior(prior, log_bf)
 

@@ -331,10 +331,7 @@ status open
 \end_layout
 
 \begin_layout Plain Layout
-
 Sometimes there are 
-\lang english
-
 \begin_inset ERT
 status open
 
@@ -1823,12 +1820,9 @@ _2016AUG23.fits OPT 2; }
 \end_inset
 
 
-
 \begin_inset Newline newline
 \end_inset
 
-
-\lang english
 
 \begin_inset ERT
 status open
@@ -1946,10 +1940,7 @@ status open
 Every possible combination of association is considered.
  However, in practice you do not want an extremely large output catalogue
  with extremely distant, unlikely to be physically associated.
- 
-You can 
-\lang english
-set the largest distance in degrees to consider by setting 
+ You can set the largest distance in degrees to consider by setting 
 \begin_inset ERT
 status open
 
@@ -2149,10 +2140,7 @@ code{-{}-radius 7}
 \end_layout
 
 \begin_layout Enumerate
-
 The parameter 
-\lang english
-
 \begin_inset ERT
 status open
 
@@ -2833,10 +2821,7 @@ code{
 
 \end_inset
 
-
 2
-\lang english
-
 \begin_inset ERT
 status open
 
@@ -2913,10 +2898,7 @@ reference "sec:math"
 \end_inset
 
  explains how these quantities are computed.
- 
-The 
-\lang english
-
+ The 
 \begin_inset ERT
 status open
 
@@ -4173,7 +4155,7 @@ Lets consider the problem of finding counterparts to a primary catalogue
 \begin_inset Formula $i=1$
 \end_inset
 
-), namely the X-ray source position catalogue.
+), in our example for the X-ray source position catalogue.
  Let each 
 \begin_inset Formula $N_{i}$
 \end_inset
@@ -4206,7 +4188,7 @@ If a counterpart is required to exist in each of the
 \begin_inset Formula $N_{i}\gg1$
 \end_inset
 
-, is ignored in the following for simplicity.
+, is ignored in the following for simplicity, but handled in the code.
 \end_layout
 
 \begin_layout Standard
@@ -4504,8 +4486,7 @@ P(\text{"any real association"}|D)=\left[1+\frac{1-P(H)}{\sum_{k}B_{k}\times P(H
 
 \end_inset
 
-This is possible because the prior remains the same across all associations
- and because associations are mutually exclusive.
+This is possible because associations are mutually exclusive.
  Based on this posterior we can reject or accept the hypothesis that a real
  association exists for each object in the primary catalogue.
  The output column 
@@ -4563,7 +4544,11 @@ P(\text{k}|D,\,\text{"any real association"})=B_{k}/\sum_{k}B_{k}.\label{eq:post
 
 \end_inset
 
-Here, I have used that a priori all associations are equally likely.
+Here, I have used that 
+\emph on
+a priori
+\emph default
+ all associations are equally likely.
  This posterior can be used to reject unlikely counterparts.
  The output column 
 \begin_inset ERT
@@ -4675,9 +4660,8 @@ name "sec:mag-priors"
 \begin_layout Standard
 Astronomical objects of various classes often show distinct color and magnitude
  distributions.
-  Because most X-ray point-sources in deep images are AGN, and the fact
- that AGN show a different optical magnitude distribution than other objects
- such as stars, this information can be exploited.
+  Because most bright X-ray point-sources in deep images are also optically
+ bright compared to generic sources, this information can be exploited.
  Previous works 
 \begin_inset CommandInset citation
 LatexCommand citep

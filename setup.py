@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
 	name='nway',
-	version='0.9',
+	version='0.91',
 	author='Johannes Buchner',
 	author_email='johannes.buchner.acad@gmx.com',
 	py_modules=['nwaylib'],
