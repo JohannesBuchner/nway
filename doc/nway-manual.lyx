@@ -2,7 +2,7 @@
 \lyxformat 474
 \begin_document
 \begin_header
-\textclass report
+\textclass scrreprt
 \begin_preamble
 \newcommand{\nwayversion}{1.0}
 \newcommand{\nway}{\textsc{nway}}
@@ -14,6 +14,19 @@
 \newcommand{\aap}{A\&A}
 \newcommand{\mnras}{MNRAS}
 \usepackage[dvipsnames]{xcolor}
+
+\IfFileExists{lucimatx.sty}{
+  % ----- if Lucida availalable------------------
+  \usepackage[
+    scale=0.875,
+    stdmathitalics=true,
+    stdmathdigits=true]{lucimatx}
+ \linespread{1.02}
+}{
+  % ------ if Lucida not available --------------
+  \usepackage{times}
+  \usepackage{amssymb}
+}
 \end_preamble
 \options 10pt,openany
 \use_default_options true
@@ -110,12 +123,8 @@ nway~
  - The versatile catalogue matching tool
 \end_layout
 
-\begin_layout Author
-Johannes Buchner
-\end_layout
-
-\begin_layout Date
-User manual, version 
+\begin_layout Subtitle
+User Manual, version 
 \begin_inset ERT
 status open
 
@@ -129,9 +138,13 @@ nwayversion
 \end_inset
 
 
-\begin_inset Newline newline
-\end_inset
+\end_layout
 
+\begin_layout Author
+Written by Johannes Buchner
+\end_layout
+
+\begin_layout Date
 22.
  August 2016
 \end_layout
@@ -216,6 +229,27 @@ Computation of a probability for each possible match.
 
 \begin_layout Enumerate
 Computation of a probability that there is no match.
+\end_layout
+
+\begin_layout Section*
+Contributors
+\end_layout
+
+\begin_layout Itemize
+Mara Salvato -- idea and leading the science case.
+\end_layout
+
+\begin_layout Itemize
+Tamás Budavári -- shared basic implementation of his formulae.
+\end_layout
+
+\begin_layout Itemize
+Sotiria Fotopoulou -- initial implementation for matching three catalogues.
+\end_layout
+
+\begin_layout Itemize
+Johannes Buchner -- complete code rewrite for the general case, documentation,
+ manual and adding features.
 \end_layout
 
 \begin_layout Section*
@@ -383,6 +417,15 @@ Terminology
 \end_layout
 
 \begin_layout Paragraph
+Source 
+\end_layout
+
+\begin_layout Standard
+A detection in a certain wavelength significant enough to be recorded in
+ a catalogue with sky position.
+\end_layout
+
+\begin_layout Paragraph
 Counterpart
 \end_layout
 
@@ -405,6 +448,14 @@ Match
 
 \begin_layout Standard
 Same as association, used interchangeably.
+\end_layout
+
+\begin_layout Paragraph
+Object
+\end_layout
+
+\begin_layout Standard
+A physical entity in the real universe, emitting radiation.
 \end_layout
 
 \begin_layout Chapter
@@ -1741,7 +1792,7 @@ code{doc/}
 
  directory: 
 \series bold
-irac_id_radec_mag.fits, megacam_2016AUG23.fits and XMM_xray_errors.fits
+COSMOS_IRAC.fits, COSMOS_OPTICAL.fits and COSMOS_XMM.fits
 \series default
 .
 \begin_inset ERT
@@ -1812,9 +1863,9 @@ status open
 \backslash
 code{python write
 \backslash
-_header.py megacam
+_header.py COSMOS
 \backslash
-_2016AUG23.fits OPT 2; }
+_OPTICAL.fits OPT 2; }
 \end_layout
 
 \end_inset
@@ -1833,13 +1884,9 @@ status open
 \backslash
 code{python write
 \backslash
-_header.py irac
+_header.py COSMOS
 \backslash
-_id
-\backslash
-_radec
-\backslash
-_mag.fits IRAC 2}
+_IRAC.fits IRAC 2}
 \end_layout
 
 \end_inset
@@ -1858,11 +1905,9 @@ status open
 \backslash
 code{python write
 \backslash
-_header.py XMM
+_header.py COSMOS
 \backslash
-_xray
-\backslash
-_errors.fits XMM 2}
+_XMM.fits XMM 2}
 \end_layout
 
 \end_inset
@@ -2017,15 +2062,13 @@ status open
 
 
 \backslash
-code{python ../nway.py XMM
+code{python ../nway.py COSMOS
 \backslash
-_xray
+_XMM.fits :pos
 \backslash
-_errors.fits :pos
+_err COSMOS
 \backslash
-_err megacam
-\backslash
-_2016AUG23.fits 0.1 -{}-out=example1.fits -{}-radius 7 -{}-prior-completeness
+_OPTICAL.fits 0.1 -{}-out=example1.fits -{}-radius 7 -{}-prior-completeness
  0.9}
 \end_layout
 
@@ -2050,7 +2093,7 @@ Lets understand what we put in:
 \end_layout
 
 \begin_layout Enumerate
-We passed two catalogue files: XMM_xray_errors.fits and megacam_2016AUG23.fits.
+We passed two catalogue files: COSMOS_XMM.fits and COSMOS_OPTICAL.fits.
  For the first one, we told 
 \begin_inset ERT
 status open
@@ -2255,7 +2298,7 @@ nway arguments:
 
 \begin_layout Plain Layout
 
-    catalogues:  XMM_xray_errors.fits, megacam_2016AUG23.fits
+    catalogues:  COSMOS_XMM.fits, COSMOS_OPTICAL.fits
 \end_layout
 
 \begin_layout Plain Layout
@@ -3036,21 +3079,15 @@ status open
 
 \begin_layout Plain Layout
 
-python ../nway.py XMM
+python ../nway.py COSMOS
 \backslash
-_xray
+_XMM.fits :pos
 \backslash
-_errors.fits :pos
+_err COSMOS
 \backslash
-_err megacam
+_OPTICAL.fits 0.1 COSMOS
 \backslash
-_2016AUG23.fits 0.1 irac
-\backslash
-_id
-\backslash
-_radec
-\backslash
-_mag.fits 0.5 -{}-out=example3.fits -{}-radius 7
+_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 7
 \end_layout
 
 \end_inset
@@ -3205,15 +3242,13 @@ status open
 
 
 \backslash
-code{python ../nway.py XMM
+code{python ../nway.py COSMOS
 \backslash
-_xray
+_XMM.fits :pos
 \backslash
-_errors.fits :pos
+_err COSMOS
 \backslash
-_err megacam
-\backslash
-_2016AUG23.fits 0.1 -{}-out=example2.fits -{}-radius 7 -{}-prior-completeness
+_OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 7 -{}-prior-completeness
  0.9 --mag OPT:MAG auto --mag-radius 3.5}
 \end_layout
 
@@ -3554,21 +3589,15 @@ status open
 
 
 \backslash
-code{python ../nway.py XMM
+code{python ../nway.py COSMOS
 \backslash
-_xray
+_XMM.fits :pos
 \backslash
-_errors.fits :pos
+_err COSMOS
 \backslash
-_err megacam
+_OPTICAL.fits 0.1 COSMOS
 \backslash
-_2016AUG23.fits 0.1 irac
-\backslash
-_id
-\backslash
-_radec
-\backslash
-_mag.fits 0.5  -{}-out=example3.fits -{}-radius 7 -{}-prior-completeness 0.9
+_IRAC.fits 0.5  -{}-out=example3.fits -{}-radius 7 -{}-prior-completeness 0.9
  -{}-mag OPT:MAG auto -{}-mag IRAC:mag
 \backslash
 _ch1 auto  -{}-mag-radius 3.5}
@@ -4118,7 +4147,7 @@ code{doc/}
 
 \end_inset
 
- directory: irac_id_radec_mag.fits, megacam_2016AUG23.fits and XMM_xray_errors.fits.
+ directory: COSMOS_IRAC.fits, COSMOS_OPTICAL.fits and COSMOS_XMM.fits.
 \end_layout
 
 \begin_layout Chapter
@@ -4521,10 +4550,14 @@ reference "eq:post-any"
 \end_inset
 
  through 
-\begin_inset Formula $1-P(\text{"any real association"}|D)$
+\begin_inset Formula 
+\[
+\text{\texttt{post\_group\_no\_match}}=1-P(\text{"any real association"}|D).
+\]
+
 \end_inset
 
-.
+
 \end_layout
 
 \begin_layout Standard
