@@ -4,16 +4,30 @@
 \begin_header
 \textclass scrreprt
 \begin_preamble
+\usepackage[dvipsnames]{xcolor}
+\usepackage{fourier}
+
+\definecolor{MyYellow}{HTML}{CBD90F}
+\definecolor{MyGreen}{HTML}{DFEF11}
+\definecolor{MyOrange}{HTML}{FEC34D}
+
+
 \newcommand{\nwayversion}{1.0}
 \newcommand{\nway}{\textsc{nway}}
-\newcommand{\examplebox}[1]{\colorbox{YellowGreen}{\begin{minipage}{10cm}#1\end{minipage}}}
-\newcommand{\otherbox}[1]{\colorbox{Green}{\begin{minipage}#1\end{minipage}}}
+\newcommand{\examplebox}[1]{\colorbox{MyYellow}{\begin{minipage}{10.3cm}#1\end{minipage}}}
+\newcommand{\otherbox}[1]{\colorbox{MyGreen}{\begin{minipage}#1\end{minipage}}}
 \newcommand{\code}[1]{{\texttt{#1}}}
 \newcommand{\apj}{ApJ}
 \newcommand{\apjs}{ApJS}
 \newcommand{\aap}{A\&A}
 \newcommand{\mnras}{MNRAS}
-\usepackage[dvipsnames]{xcolor}
+%\newcommand{\mycaution}[1]{{\large \danger } \#1}
+\newcommand{\mycaution}[1]{{\Huge \danger } \colorbox{MyOrange}{\begin{minipage}{10cm}#1\end{minipage}}}
+
+%\newcommand{\mycaution}[1]{\colorbox{Green}{\begin{minipage}#1\end{minipage}}}
+%\newcommand{\caution}[1]{\colorbox{Red}{\begin{minipage}{\huge \danger} #1\end{minipage}}}
+
+
 
 \IfFileExists{lucimatx.sty}{
   % ----- if Lucida availalable------------------
@@ -59,7 +73,7 @@
 \pdf_bookmarksopenlevel 1
 \pdf_breaklinks false
 \pdf_pdfborder true
-\pdf_colorlinks true
+\pdf_colorlinks false
 \pdf_backref false
 \pdf_pdfusetitle true
 \pdf_quoted_options "linkcolor=blue,citecolor=green"
@@ -89,7 +103,7 @@
 \color #008000
 \end_index
 \topmargin 1.5cm
-\bottommargin 1.5cm
+\bottommargin 1.7cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -250,6 +264,12 @@ Sotiria Fotopoulou -- initial implementation for matching three catalogues.
 \begin_layout Itemize
 Johannes Buchner -- complete code rewrite for the general case, documentation,
  manual and adding features.
+\end_layout
+
+\begin_layout Standard
+The code is the results of many discussion among colleagues and friends.
+ We thank in particular: Tamás Budavári, Sotiria Fotopoulou, Fabrizia Guglielmet
+ti, Tom Dwelly, Andrea Merloni and Kirpal Nandra.
 \end_layout
 
 \begin_layout Section*
@@ -1795,6 +1815,38 @@ code{doc/}
 COSMOS_IRAC.fits, COSMOS_OPTICAL.fits and COSMOS_XMM.fits
 \series default
 .
+ These are the same files as in Appendix B of Salvato et al (
+in prep), 
+\lang english
+extracted from 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Sanders2007"
+
+\end_inset
+
+/
+\begin_inset CommandInset citation
+LatexCommand cite
+key "McCracken2007"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ilbert2010"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brusa2010"
+
+\end_inset
+
+ respectively.
 \begin_inset ERT
 status open
 
@@ -1812,8 +1864,11 @@ status open
 The data table needs to have a extension name and the keyword SKYAREA.
  The extension name is used as a prefix as all columns are copied to the
  output catalogue.
- The SKYAREA keyword tells the area on the sky in square degrees covered
- by the catalogue.
+ The SKYAREA keyword tells the area on the sky in 
+\series bold
+square degrees
+\series default
+ covered by the catalogue.
  This is important for estimating the chance of random alignments.
  You can use the tool 
 \begin_inset ERT
@@ -1865,7 +1920,7 @@ code{python write
 \backslash
 _header.py COSMOS
 \backslash
-_OPTICAL.fits OPT 2; }
+_OPTICAL.fits OPT 2}
 \end_layout
 
 \end_inset
@@ -1927,7 +1982,12 @@ status open
 \end_layout
 
 \begin_layout Enumerate
-Each catalogue needs to have a column RA and DEC.
+Each catalogue needs to have a column RA and DEC providing the coordinates
+ in 
+\series bold
+degrees
+\series default
+.
  To make your life easier, 
 \begin_inset ERT
 status open
@@ -1963,6 +2023,11 @@ nway
 
  tries to be a bit fuzzy and detect the columns named ID_something etc.
  It will print out which columns it found and used.
+\end_layout
+
+\begin_layout Enumerate
+Otherwise the file can have arbitrary columns which are copied over to the
+ output file.
 \end_layout
 
 \end_inset
@@ -2038,7 +2103,7 @@ Example - Matching two catalogues
 Lets try the simplest example and match the XMM X-ray catalogue to an optical
  catalogue.
  The XMM catalogue has a pos_err column with the positional error in arcseconds.
- For the optical catalogue we will assume a error of 0.1 arcseconds.
+ For the optical catalogue we will assume a fixed error of 0.1 arcseconds.
 \end_layout
 
 \begin_layout Plain Layout
@@ -2054,7 +2119,10 @@ examplebox{
 
 \end_inset
 
-Run this command: 
+Run this command:
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -2560,8 +2628,8 @@ SKYAREA
  which tells the area covered by the catalogue in square degrees.
 
 \series default
- The source density is then computed by the number of entries divided by
- that area.
+ The source density on the sky is then computed by the number of entries
+ divided by that area.
  You can use the tool 
 \begin_inset ERT
 status open
@@ -2601,8 +2669,8 @@ code{-{}-prior-completeness=0.9}
 \end_layout
 
 \begin_layout Standard
-The outputs catalogue then contains three new columns along all columns
- of the input catalogues:
+The outputs catalogue then contains six important new columns along with
+ all columns of the input catalogues:
 \end_layout
 
 \begin_layout Enumerate
@@ -2708,9 +2776,9 @@ status open
  A) the probability that no association is the correct one is computed.
  Because every catalogue is limited by its depth, it is possible that the
  true counterpart has not been found yet.
- When building a secure catalogue, 
+ Our testing suggest that secure catalogue
 \series bold
-keep only associations where 
+ should require 
 \begin_inset ERT
 status open
 
@@ -2768,9 +2836,9 @@ status open
 : For each possible association for each entry in the primary catalogue
  (e.g.
  A), the relative probability is computed.
- When building a secure catalogue, 
+ Our testing suggest that secure, pure catalogue
 \series bold
-keep only associations where 
+ should keep only associations where 
 \begin_inset ERT
 status open
 
@@ -2826,7 +2894,7 @@ status open
 
 
 \series default
-: The best match is indicated with 
+: The most probable match is indicated with 
 \begin_inset ERT
 status open
 
@@ -2876,7 +2944,8 @@ status open
 \end_inset
 
 .
- The maximum allowed difference is at most 0.005 (
+ By default, the maximum allowed difference is at most 0.005, but the user
+ can modify this threshold via the 
 \begin_inset ERT
 status open
 
@@ -2889,7 +2958,8 @@ code{-{}-acceptable-prob}
 
 \end_inset
 
- parameter), and also 
+ parameter.
+ Additionally, 
 \begin_inset ERT
 status open
 
@@ -3033,7 +3103,7 @@ status open
 
 
 \backslash
-code{python explain.py example1.fits 60388}
+code{python ../nway-explain.py example1.fits 60388}
 \end_layout
 
 \end_inset
@@ -3073,13 +3143,32 @@ reference "chap:additional-priors"
  solves this by adding more information (the magnitude distribution).
  But we can also solve this another way.
  We know AGN (the X-ray source) emits in the infrared, so you can also match
- with an IRAC catalogue like so: 
+ with an IRAC catalogue.
+ 
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-python ../nway.py COSMOS
+
+\backslash
+examplebox{
+\end_layout
+
+\end_inset
+
+Make a three-way match like so:
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{python ../nway.py COSMOS
 \backslash
 _XMM.fits :pos
 \backslash
@@ -3087,7 +3176,18 @@ _err COSMOS
 \backslash
 _OPTICAL.fits 0.1 COSMOS
 \backslash
-_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 7
+_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 7}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -3157,8 +3257,8 @@ name "chap:additional-priors"
 \begin_layout Standard
 For many classes of sources, the Spectral Energy Distribution (SED) provides
  additional hints, which associations are likely real.
- For instance, the color distribution of stars in the WISE bands is different
- than that of quasars or galaxies.
+ For instance, bright X-ray sources have a different color distribution
+ in the WISE bands than non-X-ray emitting objects.
  A powerful feature of 
 \begin_inset ERT
 status open
@@ -3217,8 +3317,7 @@ Example - Using magnitude information
 \begin_layout Plain Layout
 AGN (which we are looking for in our example) have a different optical magnitude
  distribution than other objects.
- Lets take advantage of this information.
- 
+ Lets take advantage of this information:
 \end_layout
 
 \begin_layout Plain Layout
@@ -3235,6 +3334,9 @@ examplebox{
 \end_inset
 
 Run this command: 
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -3249,7 +3351,7 @@ _XMM.fits :pos
 _err COSMOS
 \backslash
 _OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 7 -{}-prior-completeness
- 0.9 --mag OPT:MAG auto --mag-radius 3.5}
+ 0.9 -{}-mag OPT:MAG auto -{}-mag-radius 3.5}
 \end_layout
 
 \end_inset
@@ -3272,7 +3374,123 @@ code{-{}-mag OPT:MAG auto -{}-mag-radius 3.5}
 \end_inset
 
 .
- Lets look at what they mean:
+ We use the column 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+MAG
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ from the catalogue 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+OPT
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ (FITS table name), therefore 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag OPT:MAG}
+\end_layout
+
+\end_inset
+
+.
+ After this follows that the magnitude prior histogram should be generated
+ from the data (mode 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+auto
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+), by comparing the
+ 
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{MAG}
+\end_layout
+
+\end_inset
+
+ histogram of sources within 3.5 arcsec of a X-ray source (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag-radius}
+\end_layout
+
+\end_inset
+
+) to all those further away.
 \end_layout
 
 \begin_layout Plain Layout
@@ -3287,10 +3505,27 @@ status open
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
+There are three ways to construct the prior are possible in 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+: 
 \end_layout
 
 \begin_layout Enumerate
-You have to tell 
+If you do not specify 
 \begin_inset ERT
 status open
 
@@ -3298,14 +3533,12 @@ status open
 
 
 \backslash
-nway~
+code{-{}-mag-radius}
 \end_layout
 
 \end_inset
 
- in which catalogue and which column to find this information for a individual
- source.
- Adding the argument 
+, Bayesian distance probabilities (
 \begin_inset ERT
 status open
 
@@ -3313,24 +3546,19 @@ status open
 
 
 \backslash
-code{-{}-mag catalogue-table-name:catalogue-table-column [auto|histogramfile.txt]
-}
+code{bfpost}
 \end_layout
 
 \end_inset
 
- does this.
- Remember that the FITS extension containing the table has a name (OPT in
- our example).
- 
+) will be used (more details below).
 \end_layout
 
 \begin_layout Enumerate
 If we know the magnitude distribution of X-ray detected AGN we can provide
  this prior distribution as a table (histogram).
  This table contains the color histogram of the sources of interest (X-ray
- detected AGN) and a histogram of other, field sources.
- 
+ detected AGN) and a histogram of other, field sources (more details below).
 \end_layout
 
 \begin_layout Enumerate
@@ -3624,11 +3852,24 @@ Providing a prior as a file
 \end_layout
 
 \begin_layout Standard
-In the paper we used the WISE color distribution of X-ray detected AGN from
- another study.
- We provided this color prior distribution as a ASCII table (histogram).
+In the paper we demonstrate the use of a WISE magnitude of X-ray sources.
+ If such prior information comes from previous studies, the distributions
+ can be passed to 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ as a ASCII table histogram.
  This table contains the color histogram of the sources of interest (X-ray
- detected AGN) and a histogram of other, field sources.
+ sources) and a histogram of other, field sources.
  The file 
 \begin_inset ERT
 status open
@@ -3665,7 +3906,7 @@ _fit.txt}
 
 .
  It contains four columns (lower and upper bin edge, density of selected
- and non-selected) and looks like this:
+ and non-selected) and looks like this (# indicates comments):
 \end_layout
 
 \begin_layout Standard
@@ -3704,6 +3945,37 @@ status open
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mycaution{
+\end_layout
+
+\end_inset
+
+Keep in mind that a prior created from a different data set used should
+ be applicable to the present data set.
+ For example, in the introduction of the paper (Salvato et al., in prep)
+ we stress that a prior from a comparable X-ray exposure depth must be used
+ when deriving color distributions.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Paragraph
 A general approach
 \end_layout
@@ -3726,6 +3998,11 @@ nway~
 \end_inset
 
  just looks at the corresponding bin and reweighs the probabilities.
+ For example, in Salvato et al.
+ (in prep), the counterparts to ROSAT sources where found using WISE.
+ The prior was build by using the color-magnitude (W1-W2 vs W2) properties
+ of ~3000 secure counterparts to the 3XMM-Bright survey cut at the depth
+ reached by ROSAT.
  
 \end_layout
 
@@ -3768,7 +4045,7 @@ status open
 
 
 \backslash
-nway
+nway~
 \end_layout
 
 \end_inset
@@ -3845,8 +4122,32 @@ All others are considered ambiguous and not used for the histogram.
 \end_layout
 
 \begin_layout Standard
-This is more cautious but if you do not have a large catalogue you may not
- have enough sources to build a well-sampled histogram.
+This is in general more cautious, and recommended for large catalogues 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mycaution{
+\end_layout
+
+\end_inset
+
+However, if you only have a small catalogue you may build a poorly sampled
+ histogram, potentially leading to biases
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Chapter
@@ -3965,9 +4266,7 @@ status open
 
 
 \backslash
-code{-{}-mag GOODS:mag
-\backslash
-_H auto -{}-mag IRAC:mag
+code{-{}-mag OPT:MAG auto -{}-mag IRAC:mag
 \backslash
 _irac1 irac
 \backslash
@@ -4101,7 +4400,7 @@ status open
 
 
 \backslash
-nway
+nway~
 \end_layout
 
 \end_inset
@@ -4120,7 +4419,7 @@ status open
 
 
 \backslash
-nway
+nway~
 \end_layout
 
 \end_inset
@@ -4130,7 +4429,12 @@ nway
 \end_layout
 
 \begin_layout Enumerate
-Positional error columns need to be in arcseconds.
+Positional error columns, if used, need to be 
+\series bold
+in arcseconds
+\series default
+.
+ 
 \end_layout
 
 \begin_layout Standard
