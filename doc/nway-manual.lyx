@@ -13,7 +13,7 @@
 
 
 \newcommand{\nwayversion}{1.0}
-\newcommand{\nway}{\textsc{nway}}
+\newcommand{\nway}{\textsc{Nway}}
 \newcommand{\examplebox}[1]{\colorbox{MyYellow}{\begin{minipage}{10.3cm}#1\end{minipage}}}
 \newcommand{\otherbox}[1]{\colorbox{MyGreen}{\begin{minipage}#1\end{minipage}}}
 \newcommand{\code}[1]{{\texttt{#1}}}
@@ -22,7 +22,7 @@
 \newcommand{\aap}{A\&A}
 \newcommand{\mnras}{MNRAS}
 %\newcommand{\mycaution}[1]{{\large \danger } \#1}
-\newcommand{\mycaution}[1]{{\Huge \danger } \colorbox{MyOrange}{\begin{minipage}{10cm}#1\end{minipage}}}
+\newcommand{\mycaution}[1]{{\Huge \danger } \colorbox{MyOrange}{\begin{minipage}{8cm}#1\end{minipage}}}
 
 %\newcommand{\mycaution}[1]{\colorbox{Green}{\begin{minipage}#1\end{minipage}}}
 %\newcommand{\caution}[1]{\colorbox{Red}{\begin{minipage}{\huge \danger} #1\end{minipage}}}
@@ -73,7 +73,7 @@
 \pdf_bookmarksopenlevel 1
 \pdf_breaklinks false
 \pdf_pdfborder true
-\pdf_colorlinks false
+\pdf_colorlinks true
 \pdf_backref false
 \pdf_pdfusetitle true
 \pdf_quoted_options "linkcolor=blue,citecolor=green"
@@ -269,7 +269,7 @@ Johannes Buchner -- complete code rewrite for the general case, documentation,
 \begin_layout Standard
 The code is the results of many discussion among colleagues and friends.
  We thank in particular: Tamás Budavári, Sotiria Fotopoulou, Fabrizia Guglielmet
-ti, Tom Dwelly, Andrea Merloni and Kirpal Nandra.
+ti, Arne Rau, Tom Dwelly, Andrea Merloni and Kirpal Nandra.
 \end_layout
 
 \begin_layout Section*
@@ -1815,10 +1815,8 @@ code{doc/}
 COSMOS_IRAC.fits, COSMOS_OPTICAL.fits and COSMOS_XMM.fits
 \series default
 .
- These are the same files as in Appendix B of Salvato et al (
-in prep), 
-\lang english
-extracted from 
+ These are the same files as in Appendix B of Salvato et al (in prep), extracted
+ from 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Sanders2007"
@@ -2741,7 +2739,18 @@ status open
 \end_inset
 
 : Posterior probability (same as bfpost unless additional information was
- added).
+ added, see Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:additional-priors"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Enumerate
@@ -2779,6 +2788,15 @@ status open
  Our testing suggest that secure catalogue
 \series bold
  should require 
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\series bold
+\lang english
+
 \begin_inset ERT
 status open
 
@@ -2802,7 +2820,84 @@ status open
 
 \end_inset
 
-.
+, but this may depend on the application -- please report what your testing
+ gives.
+ 
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mycaution{
+\end_layout
+
+\end_inset
+
+
+Low 
+\lang english
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+post_group_no_match
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ or 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{post}
+\end_layout
+
+\end_inset
+
+
+ values by themselves do not necessarily mean that the counterpart is ruled
+ out.
+ It can also mean that there is not enough evidence/information 
+\lang english
+to declare it a counterpart.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -2864,6 +2959,8 @@ status open
 
 .
  Secondary solutions down to 0.1 may be interesting.
+ These thresholds may depend on the application -- please report what your
+ testing gives.
 \end_layout
 
 \begin_layout Enumerate
@@ -3360,7 +3457,24 @@ _OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 7 -{}-prior-completeness
 \end_layout
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
 The last two parts are new: 
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset ERT
 status open
 
@@ -3373,8 +3487,11 @@ code{-{}-mag OPT:MAG auto -{}-mag-radius 3.5}
 
 \end_inset
 
-.
- We use the column 
+
+\end_layout
+
+\begin_layout Plain Layout
+We use the column 
 \begin_inset ERT
 status open
 
@@ -3461,10 +3578,7 @@ status open
 
 \end_inset
 
-), by comparing the
- 
-\lang english
-
+), by comparing the 
 \begin_inset ERT
 status open
 
@@ -3494,6 +3608,12 @@ code{-{}-mag-radius}
 \end_layout
 
 \begin_layout Plain Layout
+(example continued below)
+\end_layout
+
+\end_inset
+
+
 \begin_inset ERT
 status open
 
@@ -3507,8 +3627,8 @@ status open
 
 \end_layout
 
-\begin_layout Plain Layout
-There are three ways to construct the prior are possible in 
+\begin_layout Standard
+There are three possible ways to specify the prior in 
 \begin_inset ERT
 status open
 
@@ -3521,11 +3641,7 @@ nway
 
 \end_inset
 
-: 
-\end_layout
-
-\begin_layout Enumerate
-If you do not specify 
+: In all cases you specify 
 \begin_inset ERT
 status open
 
@@ -3533,12 +3649,13 @@ status open
 
 
 \backslash
-code{-{}-mag-radius}
+code{-{}-mag column-name [filename|auto]}
 \end_layout
 
 \end_inset
 
-, Bayesian distance probabilities (
+.
+ You can use 
 \begin_inset ERT
 status open
 
@@ -3546,23 +3663,45 @@ status open
 
 
 \backslash
-code{bfpost}
+code{-{}-mag}
 \end_layout
 
 \end_inset
 
-) will be used (more details below).
+ several times.
 \end_layout
 
 \begin_layout Enumerate
-If we know the magnitude distribution of X-ray detected AGN we can provide
+\begin_inset Quotes eld
+\end_inset
+
+File-mode
+\begin_inset Quotes erd
+\end_inset
+
+: If we know the magnitude distribution of X-ray detected AGN we can provide
  this prior distribution as a table (histogram).
  This table contains the color histogram of the sources of interest (X-ray
- detected AGN) and a histogram of other, field sources (more details below).
+ detected AGN) and a histogram of other, field sources (more details below
+ 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "par:Providing-prior-file"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Enumerate
-Specifying 
+\begin_inset Quotes eld
+\end_inset
+
+Simple auto-mode
+\begin_inset Quotes erd
+\end_inset
+
+: Specifying 
 \begin_inset ERT
 status open
 
@@ -3575,10 +3714,8 @@ code{auto}
 
 \end_inset
 
- instead of a histogram file, as we do in our example, derives the two distribut
-ions from the data.
- For this, all sources inside 3.5 arcseconds of a X-ray source are put into
- one histogram, and all others into another histogram (
+ instead of a file name derives the two distributions from the data, as
+ we did in our example: All sources inside 3.5 arcseconds (
 \begin_inset ERT
 status open
 
@@ -3591,28 +3728,54 @@ code{-{}-mag-radius}
 
 \end_inset
 
- parameter).
- 
+ parameter) of a X-ray source are put into one histogram, and all others
+ into another histogram.
 \end_layout
 
-\begin_layout Plain Layout
-(continued below)
-\end_layout
-
+\begin_layout Enumerate
+\begin_inset Quotes eld
 \end_inset
 
+Bayesian auto-mode
+\begin_inset Quotes erd
+\end_inset
 
+: Bayesian distance probabilities (
 \begin_inset ERT
 status open
 
 \begin_layout Plain Layout
 
-}
+
+\backslash
+code{bfpost}
 \end_layout
 
 \end_inset
 
+) will be used if you leave out 
+\begin_inset ERT
+status open
 
+\begin_layout Plain Layout
+
+
+\backslash
+code{-{}-mag-radius}
+\end_layout
+
+\end_inset
+
+.
+ This is in general safer, but in small catalogues may under-sample the
+ histogram (more details below 
+\begin_inset CommandInset ref
+LatexCommand vpageref
+reference "par:auto-mode"
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -3658,7 +3821,8 @@ examplebox{
 
 \end_inset
 
-Lets look at the histograms it computed (
+Lets look at the histograms it computed.
+ 
 \begin_inset ERT
 status open
 
@@ -3705,7 +3869,7 @@ _fit.txt}
 
 \end_inset
 
- as a histogram file):
+ as a histogram file:
 \end_layout
 
 \begin_layout Plain Layout
@@ -3722,7 +3886,7 @@ _fit.txt}
 
 \begin_layout Plain Layout
 They are clearly different: Lower magnitude (bright) sources are more likely
- associated to AGN.
+ associated to X-ray sources.
  This will help our matching.
 \end_layout
 
@@ -3849,6 +4013,13 @@ status open
 
 \begin_layout Paragraph
 Providing a prior as a file
+\begin_inset CommandInset label
+LatexCommand label
+name "par:Providing-prior-file"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -4008,6 +4179,13 @@ nway~
 
 \begin_layout Paragraph
 Discovering a prior from distance matching
+\begin_inset CommandInset label
+LatexCommand label
+name "par:auto-mode"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
