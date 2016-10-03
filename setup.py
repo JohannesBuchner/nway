@@ -1,16 +1,23 @@
-from distutils.core import setup
+try:
+	from setuptools import setup
+except ImportError:
+	from distutils.core import setup
+
+long_description = ""
+with open('README.rst') as f:
+	long_description = f.read()
 
 setup(
 	name='nway',
 	version='0.93',
 	author='Johannes Buchner',
 	author_email='johannes.buchner.acad@gmx.com',
-	py_modules=['nwaylib'],
+	packages=['nwaylib'],
 	scripts=['nway.py', 'nway-write-header.py', 'nway-explain.py'],
 	url='http://pypi.python.org/pypi/nway/',
 	license='LICENSE',
 	description='Probabilistic Cross-Identification of Astronomical Sources',
-	long_description=open('README.rst').read(),
+	long_description=long_description,
 	install_requires=[
 		"scipy",
 		"numpy",
