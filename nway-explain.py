@@ -76,7 +76,7 @@ for col_ra, col_dec, col_err, marker, color in zip(cols_ra, cols_dec, cols_err, 
 	
 
 # go through each association and highlight
-for j, i in enumerate(numpy.argsort(data['bfpost'][mask])[::-1][:3]):
+for j, i in enumerate(numpy.argsort(data['p_i'][mask])[::-1][:3]):
 	ras = []
 	decs = []
 	for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
@@ -87,7 +87,7 @@ for j, i in enumerate(numpy.argsort(data['bfpost'][mask])[::-1][:3]):
 		ras.append(ra)
 		decs.append(dec)
 	
-	plt.plot(ras, decs, '-', lw=(3-j), label='top %s by distance (bfpost=%.2f)' % (j+1, data['bfpost'][mask][i]))
+	plt.plot(ras, decs, '-', lw=(3-j), label='top %s by distance (p_i=%.2f)' % (j+1, data['p_i'][mask][i]))
 
 for col in header['BIASING'].split(', '):
 	for col_ra, col_dec, color in zip(cols_ra, cols_dec, markers):

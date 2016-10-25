@@ -2679,7 +2679,18 @@ status open
 
 
 \backslash
-code{bf}
+code{
+\end_layout
+
+\end_inset
+
+dist_bayesfactor
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -2700,7 +2711,7 @@ code{
 
 \end_inset
 
-bfpost
+dist_post
 \begin_inset ERT
 status open
 
@@ -2711,7 +2722,15 @@ status open
 
 \end_inset
 
-: Distance posterior probability.
+: Distance posterior probability comparing this association vs.
+ no association, as in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Budavari2008"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Enumerate
@@ -2727,7 +2746,7 @@ code{
 
 \end_inset
 
-post
+p_single
 \begin_inset ERT
 status open
 
@@ -2738,8 +2757,31 @@ status open
 
 \end_inset
 
-: Posterior probability (same as bfpost unless additional information was
- added, see Section
+: Same as 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+dist_post
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ unless additional information was added, see Section
 \begin_inset space ~
 \end_inset
 
@@ -2750,7 +2792,8 @@ reference "chap:additional-priors"
 
 \end_inset
 
-).
+.
+ 
 \end_layout
 
 \begin_layout Enumerate
@@ -2768,7 +2811,7 @@ code{
 
 \end_inset
 
-post_group_no_match
+p_any
 \begin_inset ERT
 status open
 
@@ -2795,7 +2838,6 @@ status open
 
 
 \series bold
-\lang english
 
 \begin_inset ERT
 status open
@@ -2809,7 +2851,7 @@ code{
 
 \end_inset
 
-post_group_no_match<0.4
+p_any>0.6
 \begin_inset ERT
 status open
 
@@ -2841,10 +2883,7 @@ mycaution{
 
 \end_inset
 
-
-Low 
-\lang english
-
+High 
 \begin_inset ERT
 status open
 
@@ -2857,7 +2896,7 @@ code{
 
 \end_inset
 
-post_group_no_match
+p_any
 \begin_inset ERT
 status open
 
@@ -2868,25 +2907,10 @@ status open
 
 \end_inset
 
- or 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-code{post}
-\end_layout
-
-\end_inset
-
-
  values by themselves do not necessarily mean that the counterpart is ruled
  out.
- It can also mean that there is not enough evidence/information 
-\lang english
-to declare it a counterpart.
+ It can also mean that there is not enough evidence/information to declare
+ it a counterpart.
 \begin_inset ERT
 status open
 
@@ -2915,7 +2939,7 @@ code{
 
 \end_inset
 
-post_group_this_match
+p_i
 \begin_inset ERT
 status open
 
@@ -2946,7 +2970,7 @@ code{
 
 \end_inset
 
-post_group_this_match>0.6
+p_i>=0.1
 \begin_inset ERT
 status open
 
@@ -3064,7 +3088,42 @@ status open
 
 
 \backslash
-code{post>=0.1}
+code{
+\end_layout
+
+\end_inset
+
+p_i
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+>=0.1
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -3175,9 +3234,32 @@ examplebox{
 \end_inset
 
 Open the fits file and find XMM_ID=60388.
- As you can see, this is a ambiguous case, where more than one optical counterpa
-rt is possible.
- 
+ As you can see from the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_i
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ column, this is a ambiguous case, where more than one optical counterpart
+ is possible.
 \begin_inset ERT
 status open
 
@@ -3219,7 +3301,18 @@ status open
 
 
 \backslash
-code{bfpost}
+code{
+\end_layout
+
+\end_inset
+
+p_i
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -3748,7 +3841,18 @@ status open
 
 
 \backslash
-code{bfpost}
+code{
+\end_layout
+
+\end_inset
+
+dist_post
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -4254,7 +4358,18 @@ status open
 
 
 \backslash
-code{bfpost>0.9}
+code{
+\end_layout
+
+\end_inset
+
+dist_post>0.9
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -4279,7 +4394,18 @@ status open
 
 
 \backslash
-code{bfpost<0.01}
+code{
+\end_layout
+
+\end_inset
+
+dist_post<0.01
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -4498,7 +4624,18 @@ status open
 
 
 \backslash
-code{post}
+code{
+\end_layout
+
+\end_inset
+
+p_i
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -4529,9 +4666,18 @@ status open
 
 
 \backslash
-code{match
-\backslash
-_flag}
+code{
+\end_layout
+
+\end_inset
+
+match_flag
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
 \end_layout
 
 \end_inset
@@ -4883,7 +5029,7 @@ code{
 
 \end_inset
 
-bf
+dist_bayesfactor
 \begin_inset ERT
 status open
 
@@ -4958,7 +5104,7 @@ code{
 
 \end_inset
 
-bfpost
+dist_post
 \begin_inset ERT
 status open
 
@@ -5013,7 +5159,7 @@ code{
 
 \end_inset
 
-post_group_no_match
+p_any
 \begin_inset ERT
 status open
 
@@ -5031,15 +5177,7 @@ reference "eq:post-any"
 
 \end_inset
 
- through 
-\begin_inset Formula 
-\[
-\text{\texttt{post\_group\_no\_match}}=1-P(\text{"any real association"}|D).
-\]
-
-\end_inset
-
-
+.
 \end_layout
 
 \begin_layout Standard
@@ -5078,7 +5216,7 @@ code{
 
 \end_inset
 
-post_group_this_match
+p_i
 \begin_inset ERT
 status open
 
@@ -5480,7 +5618,7 @@ First, possible associations are found.
 \end_inset
 
  while the Cartesian product is reduced drastically to 
-\begin_inset Formula $O(N_{bins}\cdot\prod_{i=1}^{k}\frac{N_{i}}{N_{bins}})$
+\begin_inset Formula $O(N_{\text{bins}}\cdot\prod_{i=1}^{k}\frac{N_{i}}{N_{bins}})$
 \end_inset
 
 .

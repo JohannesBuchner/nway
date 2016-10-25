@@ -7,9 +7,9 @@ Features
 ----------
 
 * Bayesian match probabilities based on astronomical sky coordinates (RA, DEC)
-* Can handle varying errors
-* Can use additional prior information, such as the magnitude or color distributions of the sources to match
 * Works with arbitrarily many catalogues
+* Can handle varying errors
+* Can incorporate additional prior information, such as the magnitude or color distributions of the sources to match
 
 See the manual: doc/nway-manual.pdf
 

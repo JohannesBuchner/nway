@@ -1,0 +1,12 @@
+
+Version 1.0: 
+	
+	Column name changes:
+		bf -> dist_bayesfactor
+		bfpost -> dist_post
+		post -> p_single
+		post_group_no_match -> p_any (Note: p_any = 1 - post_group_no_match)
+		post_group_this_match -> p_i
+
+	match_flag was modified to use p_i instead of post.
+

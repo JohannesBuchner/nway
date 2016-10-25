@@ -109,6 +109,14 @@ mag_radius = args.mag_radius # in arc sec
 magnitude_columns = args.mag
 print '    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns])
 
+for mag, magfile in magnitude_columns:
+	table_name, col_name = mag.split(':', 1)
+	assert table_name in table_names, 'table name specified for magnitude ("%s") unknown. Known tables: %s' % (table_name, ', '.join(table_names))
+	ti = table_names.index(table_name)
+	col_names = tables[ti].dtype.names
+	assert col_name in col_names, 'column name specified for magnitude ("%s") unknown. Known columns in table "%s": %s' % (mag, table_name, ', '.join(col_names))
+
+
 # first match input catalogues, compute possible combinations in match_radius
 results, columns, match_header = match.match_multiple(tables, table_names, match_radius, fits_formats)
 table = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(columns)).data
@@ -181,8 +189,8 @@ for case in range(2**(len(table_names)-1)):
 post = bayesdist.posterior(prior, log_bf)
 
 # add the additional columns
-columns.append(pyfits.Column(name='bf', format='E', array=log_bf))
-columns.append(pyfits.Column(name='bfpost', format='E', array=post))
+#columns.append(pyfits.Column(name='dist_bayesfactor', format='E', array=log_bf))
+#columns.append(pyfits.Column(name='dist_post', format='E', array=post))
 
 # find magnitude biasing functions
 biases = {}
@@ -267,12 +275,12 @@ for col, weights in biases.iteritems():
 # add the posterior column
 total = log_bf + sum(biases.values())
 post = bayesdist.posterior(prior, total)
-columns.append(pyfits.Column(name='post', format='E', array=post))
+columns.append(pyfits.Column(name='p_single', format='E', array=post))
 
 
 # flagging of solutions. Go through groups by primary id (IDs in first catalogue)
 index = numpy.zeros_like(post)
-prob_no_match = numpy.zeros_like(post)
+prob_has_match = numpy.zeros_like(post)
 prob_this_match = numpy.zeros_like(post)
 
 primary_id_key = match.get_tablekeys(tables[0], 'ID')
@@ -286,34 +294,37 @@ primary_ids = sorted(set(table[primary_id_key]))
 for primary_id in primary_ids:
 	# group
 	mask = table[primary_id_key] == primary_id
-	group_posterior = post[mask]
-	best_index = group_posterior.argmax()
-	best_val = group_posterior[best_index]
-	
-	# flag second best
-	mask2 = logical_and(mask, best_val - post < diff_secondary)
-	# ignore very poor solutions
-	mask2 = logical_and(mask2, post > 0.1)
-	index[mask2] = 2
-	# flag best
-	mask1 = logical_and(mask, best_val == post)
-	index[mask1] = 1
-	
+
 	# compute no-match probability
 	offset = total[mask].max()
 	bfsum = log10((10**(total[mask] - offset)).sum()) + offset
-	prob_no_match[mask] = 1 - bayesdist.posterior(prior[mask], bfsum)
-	prob_this_match[mask] = 10**(total[mask] - bfsum)
+	p_any = bayesdist.posterior(prior[mask], bfsum)
+	p_i = 10**(total[mask] - bfsum)
+	prob_has_match[mask] = p_any
+	prob_this_match[mask] = p_i
 	
-columns.append(pyfits.Column(name='post_group_no_match', format='E', array=prob_no_match))
-columns.append(pyfits.Column(name='post_group_this_match', format='E', array=prob_this_match))
+	best_val = p_i.max()
+	
+	mask2 = mask.copy()
+	# flag second best
+	# ignore very poor solutions
+	mask2[mask2] = numpy.logical_and(p_i > 0.1, best_val - p_i > diff_secondary)
+	index[mask2] = 2
+	# flag best
+	mask1 = mask.copy()
+	mask1[mask1] = best_val == p_i
+	index[mask1] = 1
+	
+	
+columns.append(pyfits.Column(name='p_any', format='E', array=prob_has_match))
+columns.append(pyfits.Column(name='p_i', format='E', array=prob_this_match))
 
 # add the flagging column
 columns.append(pyfits.Column(name='match_flag', format='I', array=index))
 
 # cut away poor posteriors if requested
 if min_prob > 0:
-	mask = -(post < min_prob)
+	mask = -(prob_this_match < min_prob)
 	print '    cutting away %d (below minimum)' % (len(mask) - mask.sum())
 
 	for c in columns:
