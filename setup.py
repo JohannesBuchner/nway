@@ -9,13 +9,13 @@ with open('README.rst') as f:
 
 setup(
 	name='nway',
-	version='1.0',
+	version='1.1',
 	author='Johannes Buchner',
 	author_email='johannes.buchner.acad@gmx.com',
 	packages=['nwaylib'],
 	scripts=['nway.py', 'nway-write-header.py', 'nway-explain.py'],
 	url='http://pypi.python.org/pypi/nway/',
-	license='LICENSE',
+	license='AGPLv3 (see LICENSE file)',
 	description='Probabilistic Cross-Identification of Astronomical Sources',
 	long_description=long_description,
 	install_requires=[

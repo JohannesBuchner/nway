@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division
 
 __doc__ = """Multiway association between astrometric catalogue. Use --help for usage.
 
@@ -60,15 +61,15 @@ parser.add_argument('catalogues', type=str, nargs='+',
 # parsing arguments
 args = parser.parse_args()
 
-print 'nway arguments:'
+print('nway arguments:')
 
 diff_secondary = args.acceptable_prob
 outfile = args.out
 
 filenames = args.catalogues[::2]
-print '    catalogues: ', ', '.join(filenames)
+print('    catalogues: ', ', '.join(filenames))
 pos_errors = args.catalogues[1::2]
-print '    position errors/columns: ', ', '.join(pos_errors)
+print('    position errors/columns: ', ', '.join(pos_errors))
 
 fits_tables = []
 table_names = []
@@ -87,10 +88,10 @@ for fitsname in filenames:
 
 	n = len(table)
 	assert 'SKYAREA' in fits_table.header, 'file "%s", table "%s" does not have a field "SKYAREA", which should contain the area of the catalogue in square degrees' % (fitsname, table_name)
-	area = fits_table.header['SKYAREA'] # in square degrees
+	area = fits_table.header['SKYAREA'] * 1.0 # in square degrees
 	area_total = (4 * pi * (180 / pi)**2)
 	density = n / area * area_total
-	print '      from catalogue "%s" (%d), density is %e' % (table_name, n, density)
+	print('      from catalogue "%s" (%d), density is %e' % (table_name, n, density))
 	# this takes into account that the source may be absent
 	density_plus = (n + 1) / area * area_total
 	source_densities.append(density)
@@ -107,7 +108,7 @@ match_radius = args.radius / 60. / 60 # in degrees
 mag_radius = args.mag_radius # in arc sec
 
 magnitude_columns = args.mag
-print '    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns])
+print('    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns]))
 
 for mag, magfile in magnitude_columns:
 	table_name, col_name = mag.split(':', 1)
@@ -125,9 +126,9 @@ assert len(table) > 0, 'No matches.'
 
 # first pass: find secure matches and secure non-matches
 
-print 'finalizing catalogue'
+print('finalizing catalogue')
 
-print '    finding position error columns ...'
+print('    finding position error columns ...')
 # get the separation and error columns for the bayesian weighting
 errors    = []
 for table_name, pos_error in zip(table_names, pos_errors):
@@ -135,19 +136,19 @@ for table_name, pos_error in zip(table_names, pos_errors):
 		# get column
 		k = "%s_%s" % (table_name, pos_error[1:])
 		assert k in table.dtype.names, 'ERROR: Position error column for "%s" not in table "%s". Have these columns: %s' % (k, table_name, ', '.join(table.dtype.names))
-		print '    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table[k].min(), table[k].max())
+		print('    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table[k].min(), table[k].max()))
 		if table[k].min() <= 0:
-			print 'WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (table[k] <= 0).sum())
+			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (table[k] <= 0).sum()))
 		if table[k].max() > match_radius * 60 * 60:
-			print 'WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (k, table[k].max())
+			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (k, table[k].max()))
 		errors.append(table[k])
 	else:
-		print '    Position error for "%s": using fixed value %f' % (table_name, float(pos_error))
+		print('    Position error for "%s": using fixed value %f' % (table_name, float(pos_error)))
 		if float(pos_error) > match_radius * 60 * 60:
-			print 'WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (k, float(pos_error))
+			print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (k, float(pos_error)))
 		errors.append(float(pos_error) * numpy.ones(len(table)))
 
-print '    finding position columns ...'
+print('    finding position columns ...')
 # table is in arcsec, and therefore separations is in arcsec
 separations = []
 for ti, a in enumerate(table_names):
@@ -161,14 +162,14 @@ for ti, a in enumerate(table_names):
 			row.append(numpy.ones(len(table)) * numpy.nan)
 	separations.append(row)
 
-print '    computing probabilities from separations ...'
+print('    computing probabilities from separations ...')
 # compute n-way position evidence
 
 log_bf = numpy.zeros(len(table)) * numpy.nan
 prior = numpy.zeros(len(table)) * numpy.nan
 # handle all cases (also those with missing counterparts in some catalogues)
 for case in range(2**(len(table_names)-1)):
-	table_mask = numpy.array([True] + [(case / 2**(ti)) % 2 == 0 for ti in range(len(tables)-1)])
+	table_mask = numpy.array([True] + [(case // 2**(ti)) % 2 == 0 for ti in range(len(tables)-1)])
 	ncat = table_mask.sum()
 	# select those cases
 	mask = True
@@ -177,7 +178,6 @@ for case in range(2**(len(table_names)-1)):
 			mask = numpy.logical_and(mask, -numpy.isnan(separations[0][i]))
 		else:
 			mask = numpy.logical_and(mask, numpy.isnan(separations[0][i]))
-	
 	# select errors
 	errors_selected = [e[mask] for e, m in zip(errors, table_mask) if m]
 	separations_selected = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
@@ -185,17 +185,20 @@ for case in range(2**(len(table_names)-1)):
 	log_bf[mask] = bayesdist.log_bf(separations_selected, errors_selected)
 
 	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(numpy.asarray(source_densities_plus)[table_mask])
+	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(numpy.asarray(source_densities_plus)[table_mask]))
 
+assert numpy.isfinite(prior).all(), (prior, log_bf)
+assert numpy.isfinite(log_bf).all(), (prior, log_bf)
 post = bayesdist.posterior(prior, log_bf)
 
 # add the additional columns
-#columns.append(pyfits.Column(name='dist_bayesfactor', format='E', array=log_bf))
-#columns.append(pyfits.Column(name='dist_post', format='E', array=post))
+columns.append(pyfits.Column(name='dist_bayesfactor', format='E', array=log_bf))
+columns.append(pyfits.Column(name='dist_post', format='E', array=post))
 
 # find magnitude biasing functions
 biases = {}
 for mag, magfile in magnitude_columns:
-	print 'magnitude bias "%s" ...' % mag
+	print('magnitude bias "%s" ...' % mag)
 	table_name, col_name = mag.split(':', 1)
 	assert table_name in table_names, 'table name specified for magnitude ("%s") unknown. Known tables: %s' % (table_name, ', '.join(table_names))
 	ti = table_names.index(table_name)
@@ -219,7 +222,7 @@ for mag, magfile in magnitude_columns:
 	if magfile == 'auto':
 		if mag_radius is not None:
 			if mag_radius >= match_radius * 60 * 60:
-				print 'WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.'
+				print('WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.')
 			selection = table['Separation_max'] < mag_radius
 			#mask_radius = table['Separation_max'] < mag_radius
 			selection_possible = selection
@@ -246,7 +249,7 @@ for mag, magfile in magnitude_columns:
 
 		#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
 
-		print 'magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum())
+		print('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
 		
 		# make function fitting to ratio shape
 		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
@@ -256,7 +259,7 @@ for mag, magfile in magnitude_columns:
 				numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
 				fmt = ["%10.5f"]*4)
 	else:
-		print 'magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col)
+		print('magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col))
 		bins_lo, bins_hi, hist_sel, hist_all = numpy.loadtxt(magfile).transpose()
 		bins = numpy.array(list(bins_lo) + [bins_hi[-1]])
 	func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
@@ -268,7 +271,7 @@ for mag, magfile in magnitude_columns:
 
 
 # add the bias columns
-for col, weights in biases.iteritems():
+for col, weights in biases.items():
 	columns.append(pyfits.Column(name='bias_%s' % col, format='E', array=10**weights))
 
 
@@ -277,6 +280,10 @@ total = log_bf + sum(biases.values())
 post = bayesdist.posterior(prior, total)
 columns.append(pyfits.Column(name='p_single', format='E', array=post))
 
+# compute weights for group posteriors
+# 4pi comes from Eq. 
+ncat = table['ncat']
+log_post_weight = bayesdist.unnormalised_log_posterior(prior, total, ncat)
 
 # flagging of solutions. Go through groups by primary id (IDs in first catalogue)
 index = numpy.zeros_like(post)
@@ -287,7 +294,7 @@ primary_id_key = match.get_tablekeys(tables[0], 'ID')
 primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
 match_header['COL_PRIM'] = primary_id_key
 match_header['COLS_ERR'] = ' '.join(['%s_%s' % (ti, poscol) for ti, poscol in zip(table_names, pos_errors)])
-print '    grouping by column "%s" for flagging ...' % (primary_id_key)
+print('    grouping by column "%s" for flagging ...' % (primary_id_key))
 
 primary_ids = sorted(set(table[primary_id_key]))
 
@@ -296,10 +303,17 @@ for primary_id in primary_ids:
 	mask = table[primary_id_key] == primary_id
 
 	# compute no-match probability
-	offset = total[mask].max()
-	bfsum = log10((10**(total[mask] - offset)).sum()) + offset
-	p_any = bayesdist.posterior(prior[mask], bfsum)
-	p_i = 10**(total[mask] - bfsum)
+	values = log_post_weight[mask]
+	offset = values.max()
+	bfsum = log10((10**(values - offset)).sum()) - offset
+	
+	# for p_any, find the one without counterparts
+	p_none = float(values[ncat[mask] == 1])
+	p_any = 1 - 10**(p_none - bfsum)
+	p_i = 10**(values - bfsum)
+	
+	#p_any = bayesdist.posterior(prior[mask], bfsum)
+	#p_i = 10**(total[mask] - bfsum)
 	prob_has_match[mask] = p_any
 	prob_this_match[mask] = p_i
 	
@@ -325,7 +339,7 @@ columns.append(pyfits.Column(name='match_flag', format='I', array=index))
 # cut away poor posteriors if requested
 if min_prob > 0:
 	mask = -(prob_this_match < min_prob)
-	print '    cutting away %d (below minimum)' % (len(mask) - mask.sum())
+	print('    cutting away %d (below minimum)' % (len(mask) - mask.sum()))
 
 	for c in columns:
 		c.array = c.array[mask]
@@ -333,7 +347,7 @@ if min_prob > 0:
 
 # write out fits file
 tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(columns))
-print 'writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns))
+print('writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns)))
 
 hdulist = match.wraptable2fits(tbhdu, 'MULTIMATCH')
 hdulist[0].header['METHOD'] = 'multi-way matching'
@@ -341,7 +355,7 @@ hdulist[0].header['INPUT'] = ', '.join(filenames)
 hdulist[0].header['TABLES'] = ', '.join(table_names)
 hdulist[0].header['BIASING'] =  ', '.join(biases.keys())
 hdulist[0].header['NWAYCMD'] = ' '.join(sys.argv)
-for k, v in args.__dict__.iteritems():
+for k, v in args.__dict__.items():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
 hdulist[0].header.update(match_header)
 hdulist.writeto(outfile, clobber=True)

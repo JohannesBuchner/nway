@@ -3,7 +3,7 @@ Functions for finding pairs within a certain search distance "err".
 
 Very fast method based on hashing.
 """
-
+from __future__ import print_function, division
 import numpy
 import itertools
 import os, sys
@@ -16,28 +16,29 @@ cachedir = 'cache'
 if not os.path.isdir(cachedir): os.mkdir(cachedir)
 mem = joblib.Memory(cachedir=cachedir, verbose=False)
 
-"""
-From topcat: Haversine formula for spherical trigonometry.
-     * This does not have the numerical instabilities of the cosine formula
-     * at small angles.
-     * <p>
-     * This implementation derives from Bob Chamberlain's contribution
-     * to the comp.infosystems.gis FAQ; he cites
-     * R.W.Sinnott, "Virtues of the Haversine", Sky and Telescope vol.68,
-     * no.2, 1984, p159.
-     *
-     * @see  <http://www.census.gov/geo/www/gis-faq.txt>
-currently hosted at http://www.ciesin.org/gisfaq/gis-faq.txt
-"""
-def dist((a_ra, a_dec), (b_ra, b_dec)):
+def dist(apos, bpos):
+	"""
+	Adapted from topcat: Haversine formula for spherical trigonometry.
+	     * This does not have the numerical instabilities of the cosine formula
+	     * at small angles.
+	     * <p>
+	     * This implementation derives from Bob Chamberlain's contribution
+	     * to the comp.infosystems.gis FAQ; he cites
+	     * R.W.Sinnott, "Virtues of the Haversine", Sky and Telescope vol.68,
+	     * no.2, 1984, p159.
+	     *
+	     * @see  <http://www.census.gov/geo/www/gis-faq.txt>
+	currently hosted at http://www.ciesin.org/gisfaq/gis-faq.txt
+	"""
+	(a_ra, a_dec), (b_ra, b_dec) = apos, bpos
 	ra1 = a_ra / 180 * pi
 	dec1 = a_dec / 180 * pi
 	ra2 = b_ra / 180 * pi
 	dec2 = b_dec / 180 * pi
-        sd2 = sin(0.5 * (dec2 - dec1))
-        sr2 = sin(0.5 * (ra2 - ra1))
-        a = sd2**2 + sr2**2 * cos(dec1) * cos(dec2);
-        return numpy.where(a < 1.0, 2.0 * arcsin(a**0.5), pi) * 180 / pi;
+	sd2 = sin(0.5 * (dec2 - dec1))
+	sr2 = sin(0.5 * (ra2 - ra1))
+	a = sd2**2 + sr2**2 * cos(dec1) * cos(dec2);
+	return numpy.where(a < 1.0, 2.0 * arcsin(a**0.5), pi) * 180 / pi;
 
 def get_tablekeys(table, name):
 	keys = sorted(table.dtype.names, key=lambda k: 0 if k.upper() == name else 1 if k.upper().startswith(name) else 2)
@@ -66,33 +67,33 @@ def crossproduct(radectables, err):
 	# add no-counterpart options
 	results = set()
 	# now combine within buckets
-	print 'matching: %6d matches after hashing' % numpy.sum([
+	print('matching: %6d matches after hashing' % numpy.sum([
 		len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]]) 
-			for lists in buckets.values()])
+			for lists in buckets.values()]))
 
-	print 'matching: collecting from %d buckets' % len(buckets)
+	print('matching: collecting from %d buckets' % len(buckets))
 	pbar = progressbar.ProgressBar(widgets=[
 		progressbar.Percentage(), progressbar.Counter('%3d'), 
 		progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
 	while buckets:
 		k, lists = buckets.popitem()
+		pbar.update(pbar.currval + 1)
 		if len(lists[0]) == 0:
 			continue
 		for l in lists[1:]:
 			l.append(-1)
 		comb = itertools.product(*lists)
 		results.update(comb)
-		pbar.update(pbar.currval + 1)
 	pbar.finish()
 
-	print 'matching: %6d unique matches from crossproduct' % len(results)
+	print('matching: %6d unique matches from crossproduct' % len(results))
 	# now make results unique by sorting
 	results = numpy.array(sorted(results))
 	
-	onlyfirst = (results != -1).sum(axis=1) == 1
-	results = results[-onlyfirst]
-	
-	print 'matching: %6d matches' % len(results)
+	# delete those with only first object
+	#onlyfirst = (results != -1).sum(axis=1) == 1
+	#results = results[~onlyfirst]
+	#print('matching: %6d matches' % len(results))
 	return results
 
 def match_multiple(tables, table_names, err, fits_formats):
@@ -111,15 +112,15 @@ def match_multiple(tables, table_names, err, fits_formats):
 	
 	"""
 	
-	print 'matching with %f arcsec radius' % (err * 60 * 60)
-	print 'matching: %6d naive possibilities' % numpy.product([len(t) for t in tables])
+	print('matching with %f arcsec radius' % (err * 60 * 60))
+	print('matching: %6d naive possibilities' % numpy.product([len(t) for t in tables]))
 
-	print 'matching: hashing'
+	print('matching: hashing')
 
 	ra_keys = [get_tablekeys(table, 'RA') for table in tables]
-	print '    using RA  columns: %s' % ', '.join(ra_keys)
+	print('    using RA  columns: %s' % ', '.join(ra_keys))
 	dec_keys = [get_tablekeys(table, 'DEC') for table in tables]
-	print '    using DEC columns: %s' % ', '.join(dec_keys)
+	print('    using DEC columns: %s' % ', '.join(dec_keys))
 	#ra_min = min([table[k].min() for k, table in zip(ra_keys, tables)])
 	#ra_max = max([table[k].max() for k, table in zip(ra_keys, tables)])
 	#dec_min = min([table[k].min() for k, table in zip(dec_keys, tables)])
@@ -139,7 +140,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 	for table_name, table in zip(table_names, tables):
 		keys += ["%s_%s" % (table_name, n) for n in table.dtype.names]
 	
-	print 'merging columns ...', sum([1 + len(table.dtype.names) for table in tables])
+	print('merging columns ...', sum([1 + len(table.dtype.names) for table in tables]))
 	cat_columns = []
 	pbar = progressbar.ProgressBar(widgets=[
 		progressbar.Percentage(), progressbar.Counter('%3d'), 
@@ -160,7 +161,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 			try:
 				col[mask_missing] = -99
 			except Exception as e:
-				print '   setting "%s" to -99 failed (%d affected; column format "%s"): %s' % (k, mask_missing.sum(), format, e)
+				print('   setting "%s" to -99 failed (%d affected; column format "%s"): %s' % (k, mask_missing.sum(), format, e))
 			
 			fitscol = pyfits.Column(name=k, format=format, array=col)
 			#if mask_missing.any():
@@ -175,7 +176,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 		COLS_DEC = ' '.join(["%s_%s" % (ti, dec_key) for ti, dec_key in zip(table_names, dec_keys)])
 	)
 	
-	print 'merging columns: adding angular separation columns'
+	print('merging columns: adding angular separation columns')
 	cols = []
 	max_separation = numpy.zeros(len(results))
 	for i in range(len(tables)):
@@ -206,7 +207,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 	for c in cat_columns:
 		c.array = c.array[mask]
 	
-	print 'matching: %6d matches after filtering' % mask.sum()
+	print('matching: %6d matches after filtering' % mask.sum())
 	
 	return results[mask], cat_columns, header
 
@@ -242,7 +243,7 @@ if __name__ == '__main__':
 	for fitsname in filenames:
 		if os.path.exists(fitsname):
 			continue
-		print 'generating toy data for %s!' % fitsname
+		print('generating toy data for %s!' % fitsname)
 		hdulist = array2fits(gen(), fitsname.replace('.fits', ''))
 		hdulist[0].header['GENERAT'] = 'match test table, random'
 		hdulist.writeto(fitsname, clobber=False)
@@ -261,7 +262,7 @@ if __name__ == '__main__':
 	hdulist[0].header['INPUT'] = ', '.join(filenames)
 	hdulist.writeto('match.fits', clobber=True)
 
-	print 'plotting'
+	print('plotting')
 	import matplotlib.pyplot as plt
 	for table_name in table_names:
 		plt.plot(tbhdu.data['%s_RA'  % table_name], 
@@ -279,7 +280,7 @@ if __name__ == '__main__':
 def test_dist():
 	
 	d = dist((53.15964508, -27.92927742), (53.15953445, -27.9313736))
-	print 'distance', d
+	print('distance', d)
 	assert not numpy.isnan(d)
 	
 	ra = numpy.array([ 53.14784241,  53.14784241,  53.14749908, 53.16559982,     53.19423676,  53.1336441 ])
@@ -288,6 +289,6 @@ def test_dist():
 	dec2 = numpy.array([-27.79297447, -27.79297447, -27.81404877, -27.79223251,  -27.71365929, -27.76314735])
 
 	d = dist((ra, dec), (ra2, dec2))
-	print 'distance', d
+	print('distance', d)
 	assert not numpy.isnan(d).any()
 	
