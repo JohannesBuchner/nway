@@ -20,13 +20,19 @@ def ratio(hist_sel, hist_all):
 	return hist_sel / hist_all
 
 """
+fraction of selected
+"""
+def fraction(hist_sel, hist_all):
+	return hist_sel / (hist_all + hist_sel)
+
+"""
 Plotting
 """
 def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	mags = numpy.linspace(bin_mag.min(), bin_mag.max(), 400)
 	plt.figure()
 	plt.subplot(2, 1, 1)
-	hist_n = ratio(hist_sel, hist_all)
+	hist_n = fraction(hist_sel, hist_all)
 	plt.plot(bin_mag[:-1], hist_all, '-', 
 		drawstyle='steps-post', label='all')
 	plt.plot(bin_mag[:-1], hist_sel, '-', 
@@ -37,7 +43,7 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	plt.xlim(mags.min(), mags.max())
 	plt.subplot(2, 1, 2)
 	plt.plot(bin_mag[:-1], hist_n, '-',
-		drawstyle='steps-post', label='ratio histogram')
+		drawstyle='steps-post', label='fraction histogram')
 	plt.plot(mags, func(mags), '-', label='fit')
 	plt.legend(loc='best')
 	plt.ylabel('normalized weight')
@@ -50,7 +56,7 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 creates the biasing functions
 """
 def fitfunc_histogram(bin_mag, hist_sel, hist_all):
-	bin_n = ratio(hist_sel, hist_all)
+	bin_n = fraction(hist_sel, hist_all)
 	# w = scipy.signal.gaussian(5, 1)
 	# w /= w.sum()
 	# bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')

@@ -305,7 +305,7 @@ for primary_id in primary_ids:
 	# compute no-match probability
 	values = log_post_weight[mask]
 	offset = values.max()
-	bfsum = log10((10**(values - offset)).sum()) - offset
+	bfsum = log10((10**(values - offset)).sum()) + offset
 	
 	# for p_any, find the one without counterparts
 	p_none = float(values[ncat[mask] == 1])
