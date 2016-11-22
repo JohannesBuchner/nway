@@ -120,7 +120,7 @@ for mag, magfile in magnitude_columns:
 
 # first match input catalogues, compute possible combinations in match_radius
 results, columns, match_header = match.match_multiple(tables, table_names, match_radius, fits_formats)
-table = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(columns)).data
+table = match.fits_from_columns(pyfits.ColDefs(columns)).data
 
 assert len(table) > 0, 'No matches.'
 
@@ -346,7 +346,7 @@ if min_prob > 0:
 
 
 # write out fits file
-tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(columns))
+tbhdu = match.fits_from_columns(pyfits.ColDefs(columns))
 print('writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns)))
 
 hdulist = match.wraptable2fits(tbhdu, 'MULTIMATCH')

@@ -96,6 +96,12 @@ def crossproduct(radectables, err):
 	#print('matching: %6d matches' % len(results))
 	return results
 
+# use preferred newer astropy command if available
+if hasattr(pyfits.BinTableHDU, 'from_columns'):
+	fits_from_columns = pyfits.BinTableHDU.from_columns
+else:
+	fits_from_columns = pyfits.new_table
+
 def match_multiple(tables, table_names, err, fits_formats):
 	"""
 	computes the cartesian product of all possible matches,
@@ -170,7 +176,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 			pbar.update(pbar.currval + 1)
 	pbar.finish()
 	
-	tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(cat_columns))
+	tbhdu = fits_from_columns(pyfits.ColDefs(cat_columns))
 	header = dict(
 		COLS_RA = ' '.join(["%s_%s" % (ti, ra_key) for ti, ra_key in zip(table_names, ra_keys)]),
 		COLS_DEC = ' '.join(["%s_%s" % (ti, dec_key) for ti, dec_key in zip(table_names, dec_keys)])
@@ -212,12 +218,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 	return results[mask], cat_columns, header
 
 def wraptable2fits(cat_columns, extname):
-	# use preferred newer astropy command if available
-	if hasattr(pyfits.bin, 'from_columns'):
-		new_table = pyfits.BinTableHDU.from_columns
-	else:
-		new_table = pyfits.new_table
-	tbhdu = new_table(pyfits.ColDefs(cat_columns))
+	tbhdu = fits_from_columns(pyfits.ColDefs(cat_columns))
 	hdu = pyfits.PrimaryHDU()
 	import datetime, time
 	now = datetime.datetime.fromtimestamp(time.time())
@@ -260,7 +261,7 @@ if __name__ == '__main__':
 	err = 0.03
 	
 	results, columns = match_multiple(tables, table_names, err)
-	tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(columns))
+	tbhdu = fits_from_columns(pyfits.ColDefs(columns))
 	
 	hdulist = wraptable2fits(tbhdu, 'MATCH')
 	hdulist[0].header['ANALYSIS'] = 'match table from' + ', '.join(table_names)
