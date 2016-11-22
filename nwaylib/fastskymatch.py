@@ -212,7 +212,12 @@ def match_multiple(tables, table_names, err, fits_formats):
 	return results[mask], cat_columns, header
 
 def wraptable2fits(cat_columns, extname):
-	tbhdu = pyfits.BinTableHDU.from_columns(pyfits.ColDefs(cat_columns))
+	# use preferred newer astropy command if available
+	if hasattr(pyfits.bin, 'from_columns'):
+		new_table = pyfits.BinTableHDU.from_columns
+	else:
+		new_table = pyfits.new_table
+	tbhdu = new_table(pyfits.ColDefs(cat_columns))
 	hdu = pyfits.PrimaryHDU()
 	import datetime, time
 	now = datetime.datetime.fromtimestamp(time.time())
