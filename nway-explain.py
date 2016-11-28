@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import print_function, division
+
+__doc__ = """Explain a multiway association of astrometric catalogue. Use --help for usage.
+
+Example: nway-explain.py out.fits 179
+"""
+
 import matplotlib.pyplot as plt
 import numpy
 import astropy.io.fits as pyfits
@@ -27,27 +36,26 @@ parser.add_argument('id', type=str,
 # parsing arguments
 args = parser.parse_args()
 
-print 'loading catalogue %s' % args.matchcatalogue
+print('loading catalogue %s' % args.matchcatalogue)
 f = pyfits.open(args.matchcatalogue)
 header = f[0].header
 data = f[1].data
 primary_id_col = header['COL_PRIM']
-print '    searching for %s == %s' % (primary_id_col, args.id)
+print('    searching for %s == %s' % (primary_id_col, args.id))
 if issubclass(data.dtype[primary_id_col].type, numpy.integer):
-	print 'using int'
 	mask = data[primary_id_col] == int(args.id)
 elif issubclass(data.dtype[primary_id_col].type, numpy.float):
 	mask = data[primary_id_col] == float(args.id)
 else:
 	mask = data[primary_id_col] == args.id
-print '    %d rows found' % (mask.sum())
+print('    %d rows found' % (mask.sum()))
 if mask.sum() == 0:
-	print 'ERROR: ID not found. Was searching for %s == %s' % (primary_id_col, args.id)
+	print('ERROR: ID not found. Was searching for %s == %s' % (primary_id_col, args.id))
 	sys.exit(1)
 
 # make a plot of the positions
 
-plt.figure(figsize=(7,7))
+plt.figure(figsize=(12,12))
 plt.axis('equal')
 cols_ra = header['COLS_RA'].split(' ')
 cols_dec = header['COLS_DEC'].split(' ')
@@ -94,7 +102,6 @@ for col in header['BIASING'].split(', '):
 		if col.split('_', 2)[0] != col_ra.split('_', 2)[0]:
 			continue
 		bias = data['bias_' + col]
-		print bias[mask]
 		mask1 = numpy.logical_and(mask, data[col_ra] != -99)
 		mask2 = numpy.logical_and(mask1, bias > 1)
 		if mask2.any():
@@ -112,30 +119,37 @@ ras = []
 decs = []
 first = True
 for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
-	ra = data[col_ra][mask2] - center_ra
-	dec = data[col_dec][mask2] - center_dec
-	if not first and ra[0] != -99:
-		plt.text(ra[0], dec[0], ' 1', va='top', ha='left', alpha=0.5, size=16, fontweight='bold')
+	ra = float(data[col_ra][mask2])
+	dec = float(data[col_dec][mask2])
+	if ra == -99:
+		continue
+	if not first:
+		plt.text(ra - center_ra, dec - center_dec, ' 1', va='top', ha='left', alpha=0.5, size=16, fontweight='bold')
 	first = False
-	ras.append(ra[ra !=-99])
-	decs.append(dec[ra !=-99])
-plt.plot(ras, decs, '--', lw=7, label='Most probable association (match_flag=1)', color='orange')
+	if ra == -99:
+		continue
+	ras.append(ra - center_ra)
+	decs.append(dec - center_dec)
+plt.plot(ras, decs, '-', lw=1.7, label='Most probable association (match_flag=1)', color='orange')
 
 mask2 = numpy.logical_and(mask, data['match_flag'] == 2)
-ras = []
-decs = []
-first = True
-for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
-	ra = data[col_ra][mask2] - center_ra
-	dec = data[col_dec][mask2] - center_dec
-	if not first:
-		for rai, deci in zip(ra, dec):
-			if rai != -99:
-				plt.text(rai, deci, ' 2', va='top', ha='left', alpha=0.5, size=16, fontweight='bold')
-	first = False
-	ras.append(ra[ra != -99])
-	decs.append(dec[ra != -99])
-plt.plot(ras, decs, '--', lw=5, label='Socondary, similarly probable association (match_flag=2)', color='yellow')
+for i in numpy.where(mask2)[0]:
+	ras = []
+	decs = []
+	first = True
+	for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
+		ra = data[col_ra][i]
+		dec = data[col_dec][i]
+		if ra == -99: 
+			continue
+		if not first:
+			plt.text(ra - center_ra, dec - center_dec, 
+				' 2', va='top', ha='left', alpha=0.5, 
+				size=16, fontweight='bold')
+		first = False
+		ras.append(ra - center_ra)
+		decs.append(dec - center_dec)
+	plt.plot(ras, decs, '-', lw=0.5, label='Secondary, similarly probable association (match_flag=2)', color='yellow')
 
 plt.xlabel('$\Delta$RA')
 plt.ylabel('$\Delta$DEC')
@@ -146,7 +160,7 @@ plt.xlim(-hi, hi)
 plt.ylim(-hi, hi)
 plt.legend(loc='best', numpoints=1, prop=dict(size=8))
 outfilename = '%s_explain_%s.pdf' % (args.matchcatalogue, args.id)
-print 'plotting to %s' % outfilename
+print('plotting to %s' % outfilename)
 plt.savefig(outfilename, bbox_inches='tight')
 plt.close()
 
