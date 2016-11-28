@@ -23,7 +23,9 @@ def ratio(hist_sel, hist_all):
 fraction of selected
 """
 def fraction(hist_sel, hist_all):
-	return hist_sel / (hist_all + hist_sel)
+	with numpy.errstate(divide='ignore'):
+		return numpy.where(hist_all + hist_sel == 0, 1, 
+			hist_sel / (hist_all + hist_sel))
 
 """
 Plotting

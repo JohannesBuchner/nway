@@ -13,6 +13,7 @@ from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
 import astropy.io.fits as pyfits
 import argparse
+import progressbar
 import nwaylib.fastskymatch as match
 import nwaylib.bayesdistance as bayesdist
 import nwaylib.magnitudeweights as magnitudeweights
@@ -137,8 +138,9 @@ for table_name, pos_error in zip(table_names, pos_errors):
 		k = "%s_%s" % (table_name, pos_error[1:])
 		assert k in table.dtype.names, 'ERROR: Position error column for "%s" not in table "%s". Have these columns: %s' % (k, table_name, ', '.join(table.dtype.names))
 		print('    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table[k].min(), table[k].max()))
-		if table[k].min() <= 0:
-			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (table[k] <= 0).sum()))
+		ti = table_names.index(table_name)
+		if tables[ti][pos_error[1:]].min() <= 0:
+			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (tables[ti][pos_error[1:]] <= 0).sum()))
 		if table[k].max() > match_radius * 60 * 60:
 			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (k, table[k].max()))
 		errors.append(table[k])
@@ -298,7 +300,10 @@ print('    grouping by column "%s" for flagging ...' % (primary_id_key))
 
 primary_ids = sorted(set(table[primary_id_key]))
 
-for primary_id in primary_ids:
+pbar = progressbar.ProgressBar(widgets=[
+	progressbar.Percentage(), progressbar.Counter('%3d'),
+	progressbar.Bar(), progressbar.ETA()])
+for primary_id in pbar(primary_ids):
 	# group
 	mask = table[primary_id_key] == primary_id
 

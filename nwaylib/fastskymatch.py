@@ -163,7 +163,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 			k = "%s_%s" % (table_name, n)
 			keys.append(k)
 			col = tbl[n]
-			#print '   setting "%s" to -99 (%d affected; column format "%s")' % (k, mask_missing.sum(), format)
+			#print('   setting "%s" to -99 (%d affected; column format "%s")' % (k, mask_missing.sum(), format))
 			try:
 				col[mask_missing] = -99
 			except Exception as e:
