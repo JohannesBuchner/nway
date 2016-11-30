@@ -31,10 +31,8 @@ def posterior(prior, log_bf):
 def unnormalised_log_posterior(prior, log_bf, ncat):
 	"""
 	Returns posterior probability (without normalisation against alternatives)
-	
-	From comparing equation (A10) and (A12) of (Budavari+08).
 	"""
-	return log_bf - log10(4*pi) * ncat + log10(prior)
+	return log_bf + log10(prior)
 
 
 def log_bf2(psi, s1, s2):
