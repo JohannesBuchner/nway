@@ -311,11 +311,13 @@ for primary_id in pbar(primary_ids):
 	values = log_post_weight[mask]
 	offset = values.max()
 	bfsum = log10((10**(values - offset)).sum()) + offset
+	bfsum1 = log10((10**(values[1:] - offset)).sum()) + offset
 	
 	# for p_any, find the one without counterparts
-	p_none = float(values[ncat[mask] == 1])
+	p_none = float(values[0])
 	p_any = 1 - 10**(p_none - bfsum)
-	p_i = 10**(values - bfsum)
+	p_i = 10**(values - bfsum1)
+	p_i[0] = 0
 	
 	#p_any = bayesdist.posterior(prior[mask], bfsum)
 	#p_i = 10**(total[mask] - bfsum)
