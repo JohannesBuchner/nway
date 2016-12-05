@@ -192,23 +192,24 @@ for j, i in enumerate(numpy.argsort(data['p_single'][mask])[::-1][:3]):
 	
 	plt.plot(convx(ras), convy(decs), '-', lw=(3-j), label='top %s by distance (p_single=%.2f)' % (j+1, data['p_single'][mask][i]), color='y')
 
-for col in header['BIASING'].split(', '):
-	for col_ra, col_dec, color in zip(cols_ra, cols_dec, markers):
-		if col.split('_', 2)[0] != col_ra.split('_', 2)[0]:
-			continue
-		bias = data['bias_' + col]
-		mask1 = numpy.logical_and(mask, data[col_ra] != -99)
-		mask2 = numpy.logical_and(mask1, bias > 1.5)
-		if mask2.any():
-			ra = data[col_ra][mask2]
-			dec = data[col_dec][mask2]
-			plt.plot(convx(ra), convy(dec), 
-				's ', mew=4, ms=20, mec='g', mfc='None', label='%s prior boost (%.1f)' % (col, bias), alpha=0.3)
-		mask2 = numpy.logical_and(mask, bias < 0.5)
-		if mask2.any():
-			ra = data[col_ra][mask2]
-			dec = data[col_dec][mask2]
-			plt.plot(convx(ra), convy(dec), 'd ', mew=4, ms=20, mec='r', mfc='None', label='%s strong reject < -1' % col, alpha=0.3)
+#for col in header['BIASING'].split(', '):
+#	break
+#	for col_ra, col_dec, color in zip(cols_ra, cols_dec, markers):
+#		if col.split('_', 2)[0] != col_ra.split('_', 2)[0]:
+#			continue
+#		bias = data['bias_' + col]
+#		mask1 = numpy.logical_and(mask, data[col_ra] != -99)
+#		mask2 = numpy.logical_and(mask1, bias > 1.5)
+#		if mask2.any():
+#			ra = data[col_ra][mask2]
+#			dec = data[col_dec][mask2]
+#			plt.plot(convx(ra), convy(dec), 
+#				's ', mew=4, ms=20, mec='g', mfc='None', label='%s prior boost (%.1f)' % (col, bias), alpha=0.3)
+#		mask2 = numpy.logical_and(mask, bias < 0.5)
+#		if mask2.any():
+#			ra = data[col_ra][mask2]
+#			dec = data[col_dec][mask2]
+#			plt.plot(convx(ra), convy(dec), 'd ', mew=4, ms=20, mec='r', mfc='None', label='%s strong reject < -1' % col, alpha=0.3)
 
 mask2 = numpy.logical_and(mask, data['match_flag'] == 1)
 ras = []
@@ -249,6 +250,7 @@ for i in numpy.where(mask2)[0]:
 
 plt.xlabel('$\Delta$RA [arcsec]')
 plt.ylabel('$\Delta$DEC [arcsec]')
+plt.title('Source %s' % (args.id))
 xlo, xhi = plt.xlim()
 ylo, yhi = plt.ylim()
 hi = max(-xlo, xhi, -ylo, yhi)
