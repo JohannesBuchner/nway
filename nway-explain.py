@@ -37,23 +37,23 @@ parser.add_argument('id', type=str,
 # parsing arguments
 args = parser.parse_args()
 
-print('loading catalogue %s' % args.matchcatalogue)
+#print('loading catalogue %s' % args.matchcatalogue)
 f = pyfits.open(args.matchcatalogue)
 header = f[0].header
 data = f[1].data
 primary_id_col = header['COL_PRIM']
-print('    searching for %s == %s' % (primary_id_col, args.id))
+#print('    searching for %s == %s' % (primary_id_col, args.id))
 if issubclass(data.dtype[primary_id_col].type, numpy.integer):
 	mask = data[primary_id_col] == int(args.id)
 elif issubclass(data.dtype[primary_id_col].type, numpy.float):
 	mask = data[primary_id_col] == float(args.id)
 else:
 	mask = data[primary_id_col] == args.id
-print('    %d rows found' % (mask.sum()))
+#print('    %d rows found' % (mask.sum()))
 if mask.sum() == 0:
 	print('ERROR: ID not found. Was searching for %s == %s' % (primary_id_col, args.id))
 	sys.exit(1)
-
+#print()
 # make a plot of the positions
 
 plt.figure(figsize=(12,12))
@@ -61,9 +61,45 @@ plt.axis('equal')
 cols_ra = header['COLS_RA'].split(' ')
 cols_dec = header['COLS_DEC'].split(' ')
 cols_err = header['COLS_ERR'].split(' ')
+tablenames = header['TABLES'].split(', ')
 center_ra = data[cols_ra[0]][mask][0]
 center_dec = data[cols_dec[0]][mask][0]
+p_any = data['p_any'][mask][0]
 
+print('NWAY results for Source %s:' % args.id)
+print()
+if p_any > 0.8:
+	print('This source probably has a counterpart (p_any > 0.8, p_any=%.2f)' % p_any)
+elif p_any < 0.1:
+	print('This source probably does not a counterpart (p_any < 0.1, p_any=%.2f)' % p_any)
+else:
+	print('It is uncertain if this source has a counterpart (p_any=%.2f)' % p_any)
+print()
+print("Assuming it has a counterpart, we have the following possible associations:")
+print()
+
+j_option = 0
+def print_option(name, i):
+	global j_option
+	j_option += 1
+	matchflag = data['match_flag'][mask][i]
+	matchflagstars = '**' if matchflag == 1 else ('*' if matchflag==2 else '')
+	if p_any < 0.1:
+		matchflagstars = ''
+	if matchflag == 0:
+		print('Association %d: probability p_i=%.2f ' % (j_option, data['p_i'][mask][i]))
+	else:
+		print('Association %d%s[match_flag==%d]: probability p_i=%.2f ' % (j_option, matchflagstars, matchflag, data['p_i'][mask][i]))
+	print('     Involved catalogues:  %s ' % (name))
+	for col in header['BIASING'].split(', '):
+		bias = data['bias_' + col][mask][i]
+		if bias == 1.00:
+			pass
+		elif bias > 0.75:
+			print('     prior %-15s increased the probability (bias_%s=%.2f)' % (col, col, bias))
+		elif bias < 0.25:
+			print('     prior %-15s decreased the probability (bias_%s=%.2f)' % (col, col, bias))
+	print()
 
 def convx(ra):
 	return (ra - center_ra) * 3600
@@ -112,6 +148,7 @@ def graph_highlight(all_options, selected):
 	plt.plot(x, selected, '-', color='k')
 
 
+out_options = []
 outfilename = '%s_explain_%s_options.pdf' % (args.matchcatalogue, args.id)
 with PdfPages(outfilename) as pp:
 	maxy = max([len(o)-1 for o in all_options])
@@ -121,20 +158,28 @@ with PdfPages(outfilename) as pp:
 		plt.axis('off')
 		graph_make(all_options)
 		j = []
-		for col_ra, col_dec, options in zip(cols_ra, cols_dec, all_options):
+		name = []
+		for col_ra, col_dec, options, tablename in zip(cols_ra, cols_dec, all_options, tablenames):
 			radec = data[col_ra][mask][i], data[col_dec][mask][i]
 			plt.text(len(j), 0.1, col_ra + '\n' + col_dec, 
 				rotation=90, size=6, ha='center', va='bottom')
-			j.append(-options.index(radec))
+			k = options.index(radec)
+			j.append(-k)
+			if k == 0:
+				name.append("")
+			elif k == 1:
+				name.append("%s" % tablename)
+		print_option('-'.join(name), i)
 		graph_highlight(all_options, j)
 		plt.text(-0.1, -1, 'p_i=%.2f' % data['p_i'][mask][i], ha='right', va='center')
 		plt.ylim(-maxy-0.5, 0.5)
 		plt.xlim(-0.5, maxx+0.5)
 		plt.savefig(pp, format='pdf', bbox_inches='tight')
 		plt.close()
+print('plotting to %s' % outfilename)
 
 # go through each association and highlight
-for j, i in enumerate(numpy.argsort(data['p_i'][mask])[::-1][:3]):
+for j, i in enumerate(numpy.argsort(data['p_single'][mask])[::-1][:3]):
 	ras = []
 	decs = []
 	for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
@@ -145,7 +190,7 @@ for j, i in enumerate(numpy.argsort(data['p_i'][mask])[::-1][:3]):
 		ras.append(ra)
 		decs.append(dec)
 	
-	plt.plot(convx(ras), convy(decs), '-', lw=(3-j), label='top %s by distance (p_i=%.2f)' % (j+1, data['p_i'][mask][i]), color='y')
+	plt.plot(convx(ras), convy(decs), '-', lw=(3-j), label='top %s by distance (p_single=%.2f)' % (j+1, data['p_single'][mask][i]), color='y')
 
 for col in header['BIASING'].split(', '):
 	for col_ra, col_dec, color in zip(cols_ra, cols_dec, markers):
@@ -153,13 +198,13 @@ for col in header['BIASING'].split(', '):
 			continue
 		bias = data['bias_' + col]
 		mask1 = numpy.logical_and(mask, data[col_ra] != -99)
-		mask2 = numpy.logical_and(mask1, bias > 1)
+		mask2 = numpy.logical_and(mask1, bias > 1.5)
 		if mask2.any():
 			ra = data[col_ra][mask2]
 			dec = data[col_dec][mask2]
 			plt.plot(convx(ra), convy(dec), 
-				's ', mew=4, ms=20, mec='g', mfc='None', label='%s strong boost > 1' % col, alpha=0.3)
-		mask2 = numpy.logical_and(mask, bias < -0.5)
+				's ', mew=4, ms=20, mec='g', mfc='None', label='%s prior boost (%.1f)' % (col, bias), alpha=0.3)
+		mask2 = numpy.logical_and(mask, bias < 0.5)
 		if mask2.any():
 			ra = data[col_ra][mask2]
 			dec = data[col_dec][mask2]
@@ -212,6 +257,9 @@ plt.ylim(-hi, hi)
 plt.legend(loc='best', numpoints=1, prop=dict(size=8))
 outfilename = '%s_explain_%s.pdf' % (args.matchcatalogue, args.id)
 print('plotting to %s' % outfilename)
+print()
+print("Disclaimer: These results assume that the input (sky densities, positional errors, and priors) are correct.")
+print()
 plt.savefig(outfilename, bbox_inches='tight')
 plt.close()
 
