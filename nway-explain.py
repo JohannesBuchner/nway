@@ -150,32 +150,33 @@ def graph_highlight(all_options, selected):
 
 out_options = []
 outfilename = '%s_explain_%s_options.pdf' % (args.matchcatalogue, args.id)
-with PdfPages(outfilename) as pp:
-	maxy = max([len(o)-1 for o in all_options])
-	maxx = len(all_options)-1
-	for i in ii:
-		plt.figure(figsize=(3+maxx, 3))
-		plt.axis('off')
-		graph_make(all_options)
-		j = []
-		name = []
-		for col_ra, col_dec, options, tablename in zip(cols_ra, cols_dec, all_options, tablenames):
-			radec = data[col_ra][mask][i], data[col_dec][mask][i]
-			plt.text(len(j), 0.1, col_ra + '\n' + col_dec, 
-				rotation=90, size=6, ha='center', va='bottom')
-			k = options.index(radec)
-			j.append(-k)
-			if k == 0:
-				name.append("")
-			elif k == 1:
-				name.append("%s" % tablename)
-		print_option('-'.join(name), i)
-		graph_highlight(all_options, j)
-		plt.text(-0.1, -1, 'p_i=%.2f' % data['p_i'][mask][i], ha='right', va='center')
-		plt.ylim(-maxy-0.5, 0.5)
-		plt.xlim(-0.5, maxx+0.5)
-		plt.savefig(pp, format='pdf', bbox_inches='tight')
-		plt.close()
+pp = PdfPages(outfilename)
+maxy = max([len(o)-1 for o in all_options])
+maxx = len(all_options)-1
+for i in ii:
+	plt.figure(figsize=(3+maxx, 3))
+	plt.axis('off')
+	graph_make(all_options)
+	j = []
+	name = []
+	for col_ra, col_dec, options, tablename in zip(cols_ra, cols_dec, all_options, tablenames):
+		radec = data[col_ra][mask][i], data[col_dec][mask][i]
+		plt.text(len(j), 0.1, col_ra + '\n' + col_dec, 
+			rotation=90, size=6, ha='center', va='bottom')
+		k = options.index(radec)
+		j.append(-k)
+		if k == 0:
+			name.append("")
+		elif k == 1:
+			name.append("%s" % tablename)
+	print_option('-'.join(name), i)
+	graph_highlight(all_options, j)
+	plt.text(-0.1, -1, 'p_i=%.2f' % data['p_i'][mask][i], ha='right', va='center')
+	plt.ylim(-maxy-0.5, 0.5)
+	plt.xlim(-0.5, maxx+0.5)
+	plt.savefig(pp, format='pdf', bbox_inches='tight')
+	plt.close()
+pp.close()
 print('plotting to %s' % outfilename)
 
 # go through each association and highlight
