@@ -69,9 +69,9 @@ p_any = data['p_any'][mask][0]
 print('NWAY results for Source %s:' % args.id)
 print()
 if p_any > 0.8:
-	print('This source probably has a counterpart (p_any > 0.8, p_any=%.2f)' % p_any)
+	print('This source probably has a counterpart (p_any=%.2f)' % p_any)
 elif p_any < 0.1:
-	print('This source probably does not a counterpart (p_any < 0.1, p_any=%.2f)' % p_any)
+	print('This source probably does not a counterpart (p_any=%.2f)' % p_any)
 else:
 	print('It is uncertain if this source has a counterpart (p_any=%.2f)' % p_any)
 print()
@@ -228,7 +228,7 @@ for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
 		continue
 	ras.append(ra)
 	decs.append(dec)
-plt.plot(convx(ras), convy(decs), '-', lw=1.7, label='Most probable association (match_flag=1, p_i=%.2f)' % (float(data['p_i'][mask2])), color='orange')
+plt.plot(convx(ras), convy(decs), '-', lw=1.7, label='p_i=%.2f (match_flag=1)' % (float(data['p_i'][mask2])), color='orange')
 
 mask2 = numpy.logical_and(mask, data['match_flag'] == 2)
 for i in numpy.where(mask2)[0]:
@@ -247,11 +247,11 @@ for i in numpy.where(mask2)[0]:
 		first = False
 		ras.append(ra)
 		decs.append(dec)
-	plt.plot(convx(ras), convy(decs), '-', lw=0.5, label='Secondary, similarly probable association (match_flag=2, p_i=%.2f)' % (data['p_i'][i]), color='yellow')
+	plt.plot(convx(ras), convy(decs), '-', lw=0.5, label='p_i=%.2f (match_flag=2)' % (data['p_i'][i]), color='yellow')
 
 plt.xlabel('$\Delta$RA [arcsec]')
 plt.ylabel('$\Delta$DEC [arcsec]')
-plt.title('Source %s' % (args.id))
+plt.title('Source %s, p_any=%.2f' % (args.id, p_any))
 xlo, xhi = plt.xlim()
 ylo, yhi = plt.ylim()
 hi = max(-xlo, xhi, -ylo, yhi)
