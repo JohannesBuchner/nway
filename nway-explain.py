@@ -227,7 +227,7 @@ for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
 		continue
 	ras.append(ra)
 	decs.append(dec)
-plt.plot(convx(ras), convy(decs), '-', lw=1.7, label='Most probable association (match_flag=1)', color='orange')
+plt.plot(convx(ras), convy(decs), '-', lw=1.7, label='Most probable association (match_flag=1, p_i=%.2f)' % (float(data['p_i'][mask2])), color='orange')
 
 mask2 = numpy.logical_and(mask, data['match_flag'] == 2)
 for i in numpy.where(mask2)[0]:
@@ -246,7 +246,7 @@ for i in numpy.where(mask2)[0]:
 		first = False
 		ras.append(ra)
 		decs.append(dec)
-	plt.plot(convx(ras), convy(decs), '-', lw=0.5, label='Secondary, similarly probable association (match_flag=2)', color='yellow')
+	plt.plot(convx(ras), convy(decs), '-', lw=0.5, label='Secondary, similarly probable association (match_flag=2, p_i=%.2f)' % (data['p_i'][i]), color='yellow')
 
 plt.xlabel('$\Delta$RA [arcsec]')
 plt.ylabel('$\Delta$DEC [arcsec]')
