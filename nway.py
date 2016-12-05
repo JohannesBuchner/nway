@@ -45,8 +45,8 @@ parser.add_argument('--mag', metavar='MAGCOLUMN+MAGFILE', type=str, nargs=2, act
 	(use auto for auto-computation within mag-radius).
 	Example: --mag GOODS:mag_H auto --mag IRAC:mag_irac1 irac_histogram.txt""")
 
-parser.add_argument('--acceptable-prob', metavar='PROB', type=float, default=0.005,
-	help='limit up to which secondary solutions are flagged')
+parser.add_argument('--acceptable-prob', metavar='PROB', type=float, default=0.5,
+	help='ratio limit up to which secondary solutions are flagged')
 
 parser.add_argument('--min-prob', type=float, default=0,
 	help='lowest probability allowed in final catalogue. If 0, no trimming is performed.')
@@ -329,7 +329,7 @@ for primary_id in pbar(primary_ids):
 	mask2 = mask.copy()
 	# flag second best
 	# ignore very poor solutions
-	mask2[mask2] = numpy.logical_and(p_i > 0.1, best_val - p_i > diff_secondary)
+	mask2[mask2] = p_i / best_val > diff_secondary
 	index[mask2] = 2
 	# flag best
 	mask1 = mask.copy()
