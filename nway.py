@@ -311,7 +311,10 @@ for primary_id in pbar(primary_ids):
 	values = log_post_weight[mask]
 	offset = values.max()
 	bfsum = log10((10**(values - offset)).sum()) + offset
-	bfsum1 = log10((10**(values[1:] - offset)).sum()) + offset
+	if len(values) > 1:
+		bfsum1 = log10((10**(values[1:] - offset)).sum()) + offset
+	else:
+		bfsum1 = 0
 	
 	# for p_any, find the one without counterparts
 	p_none = float(values[0])
@@ -329,7 +332,7 @@ for primary_id in pbar(primary_ids):
 	mask2 = mask.copy()
 	# flag second best
 	# ignore very poor solutions
-	mask2[mask2] = p_i / best_val > diff_secondary
+	mask2[mask2] = p_i > diff_secondary * best_val
 	index[mask2] = 2
 	# flag best
 	mask1 = mask.copy()

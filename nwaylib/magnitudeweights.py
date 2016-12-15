@@ -22,10 +22,18 @@ def ratio(hist_sel, hist_all):
 """
 fraction of selected
 """
-def fraction(hist_sel, hist_all):
+def fraction(bin_mag, hist_sel, hist_all):
+	# need a re-normalisation so that unknown values can be set to prob=1
+	m = hist_all > 0
+	hist_sel_m = hist_sel[m]
+	hist_all_m = hist_all[m]
+	ratio = hist_sel_m / (hist_all_m + hist_sel_m)
+	delta = (bin_mag[1:] - bin_mag[:-1])[m]
+	avg = (ratio * hist_all_m * delta).sum() / (delta * hist_all_m).sum()
+	
 	with numpy.errstate(divide='ignore'):
 		return numpy.where(hist_all + hist_sel == 0, 1, 
-			hist_sel / (hist_all + hist_sel))
+			hist_sel / (hist_all + hist_sel) / avg )
 
 """
 Plotting
@@ -34,7 +42,7 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	mags = numpy.linspace(bin_mag.min(), bin_mag.max(), 400)
 	plt.figure()
 	plt.subplot(2, 1, 1)
-	hist_n = fraction(hist_sel, hist_all)
+	hist_n = fraction(bin_mag, hist_sel, hist_all)
 	plt.plot(bin_mag[:-1], hist_all, '-', 
 		drawstyle='steps-post', label='all')
 	plt.plot(bin_mag[:-1], hist_sel, '-', 
@@ -58,7 +66,7 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 creates the biasing functions
 """
 def fitfunc_histogram(bin_mag, hist_sel, hist_all):
-	bin_n = fraction(hist_sel, hist_all)
+	bin_n = fraction(bin_mag, hist_sel, hist_all)
 	# w = scipy.signal.gaussian(5, 1)
 	# w /= w.sum()
 	# bin_n_smooth = scipy.signal.convolve(bin_n, w, mode='same')
