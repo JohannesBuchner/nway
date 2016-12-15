@@ -31,7 +31,7 @@ def fraction(bin_mag, hist_sel, hist_all):
 	delta = (bin_mag[1:] - bin_mag[:-1])[m]
 	avg = (ratio * hist_all_m * delta).sum() / (delta * hist_all_m).sum()
 	
-	with numpy.errstate(divide='ignore'):
+	with numpy.errstate(divide='ignore', invalid='ignore'):
 		return numpy.where(hist_all + hist_sel == 0, 1, 
 			hist_sel / (hist_all + hist_sel) / avg )
 
