@@ -226,32 +226,26 @@ for mag, magfile in magnitude_columns:
 			if mag_radius >= match_radius * 60 * 60:
 				print('WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.')
 			selection = table['Separation_max'] < mag_radius
-			#mask_radius = table['Separation_max'] < mag_radius
-			selection_possible = selection
 		else:
 			selection = post > 0.9
-			selection_possible = post > 0.01
 		
 		# ignore cases where counterpart is missing
+		assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
 		selection = numpy.logical_and(selection, res_defined)
-		selection_possible = numpy.logical_and(selection_possible, res_defined)
 		
-		#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
+		#print '   selection', selection.sum()
 		
-		rows = list(set(results[table_name][selection]))
+		rows = results[table_name][selection].tolist()
 		assert len(rows) > 1, 'No magnitude values within mag_radius for "%s".' % mag
 		mag_sel = mag_all[rows]
 		
-		# remove vaguely possible options from alternative histogram
-		rows_possible = list(set(results[table_name][selection_possible]))
-		mask_others = mask_all.copy()
-		mask_others[rows_possible] = False
-		
+		# all options in the total (field+target sources) histogram
 		mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
+		mask_all = -numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
 
 		#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
 
-		print('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
+		print('magnitude histogram of column "%s": %d secure matches, %d total valid entries' % (col, mask_sel.sum(), mask_all.sum()))
 		
 		# make function fitting to ratio shape
 		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])

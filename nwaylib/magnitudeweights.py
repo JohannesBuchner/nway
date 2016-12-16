@@ -27,13 +27,16 @@ def fraction(bin_mag, hist_sel, hist_all):
 	m = hist_all > 0
 	hist_sel_m = hist_sel[m]
 	hist_all_m = hist_all[m]
-	ratio = hist_sel_m / (hist_all_m + hist_sel_m)
+	ratio = hist_sel_m / hist_all_m
 	delta = (bin_mag[1:] - bin_mag[:-1])[m]
 	avg = (ratio * hist_all_m * delta).sum() / (delta * hist_all_m).sum()
+	assert avg != 0
 	
-	with numpy.errstate(divide='ignore', invalid='ignore'):
-		return numpy.where(hist_all + hist_sel == 0, 1, 
-			hist_sel / (hist_all + hist_sel) / avg )
+	r = numpy.ones(len(hist_all))
+	r[m] = hist_sel_m / hist_all_m / avg
+	assert numpy.isfinite(r).all(), r[~numpy.isfinite(r)]
+	assert (r > 0).all(), r[~(r > 0)]
+	return r
 
 """
 Plotting
