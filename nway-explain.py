@@ -171,6 +171,7 @@ for i in ii:
 	print_option('-'.join(name), i)
 	graph_highlight(all_options, j)
 	plt.text(-0.1, -1, 'p_i=%.2f' % data['p_i'][mask][i], ha='right', va='center')
+	plt.text(maxx + 0.1, 0, '$\leftarrow$ absent', ha='left', va='center')
 	plt.ylim(-maxy-0.5, 0.5)
 	plt.xlim(-0.5, maxx+0.5)
 	plt.savefig(pp, format='pdf', bbox_inches='tight')
