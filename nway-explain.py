@@ -92,6 +92,7 @@ def print_option(name, i):
 		print('Association %d%s[match_flag==%d]: probability p_i=%.2f ' % (j_option, matchflagstars, matchflag, data['p_i'][mask][i]))
 	print('     Involved catalogues:  %s ' % (name))
 	for col in header['BIASING'].split(', '):
+		if col.strip() == '': continue
 		bias = data['bias_' + col][mask][i]
 		if bias >= 2:
 			print('     prior %-15s increased the probability (bias_%s=%.2f)' % (col, col, bias))
@@ -189,7 +190,7 @@ for j, i in enumerate(numpy.argsort(data['p_single'][mask])[::-1][:3]):
 		ras.append(ra)
 		decs.append(dec)
 	
-	plt.plot(convx(ras), convy(decs), '-', lw=(3-j), label='top %s by distance (p_single=%.2f)' % (j+1, data['p_single'][mask][i]), color='y')
+	plt.plot(convx(ras), convy(decs), '-', lw=(3-j), label='top %s by distance (p_single=%.2f, %d cat.)' % (j+1, data['p_single'][mask][i], data['ncat'][mask][i]), color='y')
 
 mask2 = numpy.logical_and(mask, data['match_flag'] == 1)
 ras = []
@@ -234,8 +235,8 @@ plt.title('Source %s, p_any=%.2f' % (args.id, p_any))
 xlo, xhi = plt.xlim()
 ylo, yhi = plt.ylim()
 hi = max(-xlo, xhi, -ylo, yhi)
-plt.xlim(-hi, hi)
-plt.ylim(-hi, hi)
+plt.xlim(-hi, hi) # RA
+plt.ylim(hi, -hi) # DEC goes the other way
 plt.legend(loc='best', numpoints=1, prop=dict(size=8))
 outfilename = '%s_explain_%s.pdf' % (args.matchcatalogue, args.id)
 print('plotting to %s' % outfilename)
