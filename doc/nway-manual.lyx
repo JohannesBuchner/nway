@@ -834,7 +834,187 @@ n added together.
 \end_layout
 
 \begin_layout Section
+Best practice matching
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Best-practice-matching"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To achieve reliable results, we recommend that you run matching with increasing
+ amount of information (distance-based first, §
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Simple-distance-based-matching"
+
+\end_inset
+
+, then adding priors on source properties §
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "chap:additional-priors"
+
+\end_inset
+
+) and understand how each influences the results.
+\end_layout
+
+\begin_layout Standard
+Typically, the goal is a compilation of 
+\begin_inset Quotes eld
+\end_inset
+
+best matches
+\begin_inset Quotes erd
+\end_inset
+
+, i.e.
+ choosing one reliable counterpart for each source.
+ Whatever method used, there are always false selection fractions and false
+ non-selection fractions in play, which should be characterized.
+ To this end, we recommend to shift the source catalogues by a distance
+ much larger than the positional errors to simulate the results for chance
+ alignment.
+ For this run, use 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ with the same settings on the shifted catalogues and from the output, choose
+ cut-off limits (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_any
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) that correspond to the desired false selection fraction.
+\end_layout
+
+\begin_layout Standard
+Then the 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ output on the real data can be truncated based on this criterion (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+-
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{}
+\end_layout
+
+\end_inset
+
+-min-prob
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+), and made into a best match catalogue.
+ It may be worth to not ambiguous cases with multiple solutions and to store
+ these secondary solutions with similar probabilities in another catalogue
+ (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_i
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
 Simple distance-based matching
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Simple-distance-based-matching"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2117,7 +2297,7 @@ examplebox{
 
 \end_inset
 
-Run this command:
+Run this command in the doc/ folder:
 \end_layout
 
 \begin_layout Plain Layout
@@ -2134,7 +2314,7 @@ _XMM.fits :pos
 \backslash
 _err COSMOS
 \backslash
-_OPTICAL.fits 0.1 -{}-out=example1.fits -{}-radius 7 -{}-prior-completeness
+_OPTICAL.fits 0.1 -{}-out=example1.fits -{}-radius 15 -{}-prior-completeness
  0.9}
 \end_layout
 
@@ -2231,7 +2411,7 @@ code{-{}-out}
 \end_layout
 
 \begin_layout Enumerate
-The largest XMM error is 5.66 arcsec, so we adopt a cropping radius of 7
+The largest XMM error is 7.3 arcsec, so we adopt a cropping radius of 15
  arcsec to speed up the matching (
 \begin_inset ERT
 status open
@@ -2240,7 +2420,7 @@ status open
 
 
 \backslash
-code{-{}-radius 7}
+code{-{}-radius 15}
 \end_layout
 
 \end_inset
@@ -2425,32 +2605,27 @@ matching: hashing
 
 \begin_layout Plain Layout
 
-100%562333|#####################################|Time: 0:00:24
+100%562333|###################################|Time: 0:00:24
 \end_layout
 
 \begin_layout Plain Layout
 
-matching:  32782 matches after hashing
+matching: 111360 matches after hashing
 \end_layout
 
 \begin_layout Plain Layout
 
-matching: collecting from 755640 buckets
+matching: collecting from 177918 buckets
 \end_layout
 
 \begin_layout Plain Layout
 
-100%755640|#####################################|Time: 0:00:02
+100%177918|###################################|Time: 0:00:03
 \end_layout
 
 \begin_layout Plain Layout
 
-matching:  14956 unique matches from crossproduct
-\end_layout
-
-\begin_layout Plain Layout
-
-matching:  13159 matches
+matching:  59336 unique matches from crossproduct
 \end_layout
 
 \begin_layout Plain Layout
@@ -2461,7 +2636,7 @@ merging columns ...
 
 \begin_layout Plain Layout
 
-100% 10|########################################|Time: 0:00:00
+100% 10|######################################|Time: 0:00:00
 \end_layout
 
 \begin_layout Plain Layout
@@ -2471,13 +2646,13 @@ merging columns: adding angular separation columns
 
 \begin_layout Plain Layout
 
-matching:   5259 matches after filtering
+matching:  22435 matches after filtering by search radius
 \end_layout
 
 \end_inset
 
-Within 30 seconds it created a cross-match of possible associations (1007283192
- in principle, 5259 within 7 arcseconds).
+Within 30 seconds it created a cross-match of remotely possible associations
+ (1,007,283,192 in principle, 22,435 within 15 arcseconds).
 \end_layout
 
 \begin_layout Enumerate
@@ -2502,12 +2677,8 @@ finalizing catalogue
 
 \begin_layout Plain Layout
 
-    Position error for "XMM": found column XMM_pos_err: 
-\end_layout
-
-\begin_layout Plain Layout
-
-        Values are [0.109000..5.660000]
+    Position error for "XMM": found column XMM_pos_err: Values are [0.109000..7.3010
+00]
 \end_layout
 
 \begin_layout Plain Layout
@@ -2530,6 +2701,11 @@ finalizing catalogue
     grouping by column "XMM_ID" for flagging ...
 \end_layout
 
+\begin_layout Plain Layout
+
+100%1797|#####################################|Time: 0:00:03
+\end_layout
+
 \end_inset
 
 It computed the probability of each association.
@@ -2543,7 +2719,7 @@ status open
 
 \begin_layout Plain Layout
 
-writing "example1.fits" (5259 rows, 17 columns)
+writing "example1.fits" (22435 rows, 17 columns)
 \end_layout
 
 \end_inset
@@ -2866,7 +3042,18 @@ status open
  gives.
  
 \series default
+Section
+\begin_inset space ~
+\end_inset
 
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Best-practice-matching"
+
+\end_inset
+
+ explains how to calibrate a threshold.
 \begin_inset Newline newline
 \end_inset
 
@@ -3065,8 +3252,8 @@ status open
 \end_inset
 
 .
- By default, the maximum allowed difference is at most 0.005, but the user
- can modify this threshold via the 
+ By default, the maximum allowed ratio is at most 0.5, but the user can modify
+ this threshold via the 
 \begin_inset ERT
 status open
 
@@ -3080,55 +3267,6 @@ code{-{}-acceptable-prob}
 \end_inset
 
  parameter.
- Additionally, 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-code{
-\end_layout
-
-\end_inset
-
-p_i
-\family roman
-\series medium
-\shape up
-\size normal
-\emph off
-\bar no
-\strikeout off
-\uuline off
-\uwave off
-\noun off
-\color none
->=0.1
-\family default
-\series default
-\shape default
-\size default
-\emph default
-\bar default
-\strikeout default
-\uuline default
-\uwave default
-\noun default
-\color inherit
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
- is required.
  All other associations are marked with 
 \begin_inset ERT
 status open
@@ -3167,7 +3305,31 @@ reference "sec:math"
 \end_inset
 
  explains how these quantities are computed.
- The 
+ To filter out low-probability associations (low 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_any
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) from the output catalogue, the 
 \begin_inset ERT
 status open
 
@@ -3180,7 +3342,7 @@ code{-{}-min-prob}
 
 \end_inset
 
- parameter can be used to remove low-probability associations from the catalogue.
+ parameter can be used.
 \end_layout
 
 \begin_layout Standard
@@ -3332,7 +3494,7 @@ reference "chap:additional-priors"
 
  solves this by adding more information (the magnitude distribution).
  But we can also solve this another way.
- We know AGN (the X-ray source) emits in the infrared, so you can also match
+ We know AGN (the X-ray source) emit in the infrared, so you can also match
  with an IRAC catalogue.
  
 \begin_inset ERT
@@ -3366,7 +3528,7 @@ _err COSMOS
 \backslash
 _OPTICAL.fits 0.1 COSMOS
 \backslash
-_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 7}
+_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 15}
 \end_layout
 
 \end_inset
@@ -3383,6 +3545,35 @@ status open
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
+However, overall we should note that 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_any
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ is low, indicating that probably neither of the two candidates is the counterpa
+rt.
 \end_layout
 
 \end_inset
@@ -3411,7 +3602,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename example1.fits_explain_60388.pdf
-	width 80col%
+	width 100col%
 
 \end_inset
 
@@ -3505,8 +3696,8 @@ Example - Using magnitude information
 \end_layout
 
 \begin_layout Plain Layout
-AGN (which we are looking for in our example) have a different optical magnitude
- distribution than other objects.
+X-ray sources (which we are looking for in our example) have a different
+ optical magnitude distribution than non-X-ray emitting objects.
  Lets take advantage of this information:
 \end_layout
 
@@ -3540,7 +3731,7 @@ _XMM.fits :pos
 \backslash
 _err COSMOS
 \backslash
-_OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 7 -{}-prior-completeness
+_OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 15 -{}-prior-completeness
  0.9 -{}-mag OPT:MAG auto -{}-mag-radius 3.5}
 \end_layout
 
@@ -3697,10 +3888,12 @@ code{-{}-mag-radius}
 
 \end_inset
 
-) to all those further away.
+) to that of full histogram.
 \end_layout
 
 \begin_layout Plain Layout
+
+\emph on
 (example continued below)
 \end_layout
 
@@ -3871,8 +4064,8 @@ code{-{}-mag-radius}
 \end_inset
 
 .
- This is in general safer, but in small catalogues may under-sample the
- histogram (more details below 
+ This is in general safer and recommended, but in small catalogues may under-sam
+ple the histogram (more details below 
 \begin_inset CommandInset ref
 LatexCommand vpageref
 reference "par:auto-mode"
@@ -4010,7 +4203,7 @@ status open
 
 \begin_layout Plain Layout
 As an example, we show below the ambiguous case from before.
- The lower association has been selected because it has a better match by
+ The upper association has been selected because it has a better match by
  magnitude, resolving the ambiguity.
 \end_layout
 
@@ -4093,8 +4286,8 @@ _err COSMOS
 \backslash
 _OPTICAL.fits 0.1 COSMOS
 \backslash
-_IRAC.fits 0.5  -{}-out=example3.fits -{}-radius 7 -{}-prior-completeness 0.9
- -{}-mag OPT:MAG auto -{}-mag IRAC:mag
+_IRAC.fits 0.5  -{}-out=example3.fits -{}-radius 15 -{}-prior-completeness
+ 0.9 -{}-mag OPT:MAG auto -{}-mag IRAC:mag
 \backslash
 _ch1 auto  -{}-mag-radius 3.5}
 \end_layout
@@ -4137,14 +4330,14 @@ status open
 
 
 \backslash
-nway
+nway~
 \end_layout
 
 \end_inset
 
  as a ASCII table histogram.
- This table contains the color histogram of the sources of interest (X-ray
- sources) and a histogram of other, field sources.
+ This table contains the histogram of the sources of interest (X-ray sources)
+ and a histogram of all sources (X-ray and non-X-ray sources).
  The file 
 \begin_inset ERT
 status open
@@ -4197,7 +4390,7 @@ status open
 
 \begin_layout Plain Layout
 
-# lo         hi          selected   others
+# lo         hi          selected   all
 \end_layout
 
 \begin_layout Plain Layout
@@ -4233,8 +4426,8 @@ mycaution{
 
 \end_inset
 
-Keep in mind that a prior created from a different data set used should
- be applicable to the present data set.
+Keep in mind that a prior created from a different data set can only be
+ used if it is applicable to the present data set.
  For example, in the introduction of the paper (Salvato et al., in prep)
  we stress that a prior from a comparable X-ray exposure depth must be used
  when deriving color distributions.
@@ -4345,8 +4538,19 @@ code{OPT:MAG}
 
 \end_inset
 
-.
- It divides association into three groups: 
+, as follows:
+\end_layout
+
+\begin_layout Enumerate
+The 
+\begin_inset Quotes eld
+\end_inset
+
+all
+\begin_inset Quotes erd
+\end_inset
+
+ histogram is computed from all entries.
 \end_layout
 
 \begin_layout Enumerate
@@ -4374,7 +4578,7 @@ status open
 
 \end_inset
 
- are considered safe matches and used for the 
+ are considered safe matches and are used for the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -4382,47 +4586,13 @@ selected
 \begin_inset Quotes erd
 \end_inset
 
- histogram (AGN in our example).
+ histogram.
 \end_layout
 
 \begin_layout Enumerate
-Those with 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-code{
-\end_layout
-
-\end_inset
-
-dist_post<0.01
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
- are considered safe non-matches and used for the 
-\begin_inset Quotes eld
-\end_inset
-
-all
-\begin_inset Quotes erd
-\end_inset
-
- histogram (non-AGN in our example).
-\end_layout
-
-\begin_layout Enumerate
-All others are considered ambiguous and not used for the histogram.
+Entries of -99 are always ignored.
+ It is usually better to assign -99 where the magnitude error is large,
+ to get cleaner histograms.
 \end_layout
 
 \begin_layout Standard
@@ -4855,15 +5025,15 @@ If each catalogue covers the same area with some respective, homogeneous
 \end_inset
 
 , the probability of a chance alignment on the sky of physically unrelated
- objects can then be written (
+ objects can then be written 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citep
+after "eq. 25"
 key "Budavari2008"
 
 \end_inset
 
-, eq.
- 25) as 
+ as 
 \begin_inset Formula 
 \begin{equation}
 P(H)=N_{1}/\prod_{i=1}^{k}N_{i}=1/\prod_{i=2}^{k}N_{i}=1/\prod_{i=2}^{k}\nu_{i}\Omega_{i}.
@@ -4907,7 +5077,7 @@ prior completeness factor
  Our prior can thus be written as 
 \begin_inset Formula 
 \begin{equation}
-P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.
+P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.\label{eq:prior}
 \end{equation}
 
 \end_inset
@@ -4931,92 +5101,76 @@ Bayes' theorem connects the prior probability
  via 
 \begin_inset Formula 
 \begin{equation}
-P(H|D)\propto P(H)\times P(D|H).
+P(H|D)\propto P(H)\times P(D|H).\label{eq:bayes}
 \end{equation}
 
 \end_inset
 
-Then, comparing two different hypotheses (
-\begin_inset Formula $H$
-\end_inset
-
- and 
-\begin_inset Formula $\bar{H}$
-\end_inset
-
-), we can write how probable one is compared to the other as 
-\begin_inset Formula 
-\begin{eqnarray}
-\frac{P(H|D)}{P(\bar{H}|D)} & \propto & \frac{P(H)}{P(\bar{H})}\times\frac{P(D|H)}{P(D|\bar{H})}\\
- & = & \frac{P(H)}{P(\bar{H})}\times B
-\end{eqnarray}
-
-\end_inset
-
- where the Bayes factor 
-\begin_inset Formula $B$
-\end_inset
-
- indicates the strength of hypothesis 
-\begin_inset Formula $H$
-\end_inset
-
- based on the observations.
- In the case considered here, for each association, the model 
-\begin_inset Quotes eld
-\end_inset
-
-chance alignment
-\begin_inset Quotes erd
-\end_inset
-
- is compared with the model 
-\begin_inset Quotes eld
-\end_inset
-
-real association
-\begin_inset Quotes erd
-\end_inset
-
-.
- The relevant Bayes factor, developed in (
+Comparing A12 and A14 in 
 \begin_inset CommandInset citation
-LatexCommand citealp
+LatexCommand citet
 key "Budavari2008"
 
 \end_inset
 
-, eq.
- 18), is dependent on the angular distance 
-\begin_inset Formula $\phi_{ij}$
+, assuming that positions lie on the celestial sphere and adopting the expansion
+s developed in their Appendix B, we can write down the likelihoods.
+ For a counterpart across 
+\begin_inset Formula $n$
 \end_inset
 
- between the source positions in catalogues 
-\begin_inset Formula $i$
+ catalogues, we obtain:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P(D|H)=2^{n-1}\frac{\prod\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\exp\left\{ -\frac{\sum_{i=1}^{j}\phi_{ij}\sigma_{j}^{-1}\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\right\} \label{eq:nwaylikelihood}
+\end{equation}
+
 \end_inset
 
- and 
-\begin_inset Formula $j$
+.
+ The likelihood for the hypothesis where some catalogues do not participate
+ in the association has the appropriate terms in the products and sums removed.
+ Therefore, the likelihood is unity for the hypothesis that there is no
+ counterpart in any of the catalogues.
+\end_layout
+
+\begin_layout Standard
+For completeness, we also compute probabilities following the approach of
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Budavari2008"
+
 \end_inset
 
-:
+, i.e.
+ comparing the likelihood for each association to the likelihood of no associati
+on:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray}
-B & = & \frac{P(\text{"real association"}|D)}{P(\text{"chance alignment"}|D)}\nonumber \\
- & = & 2^{n-1}\frac{\prod\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\exp\left\{ -\frac{\sum_{i=1}^{j}\phi_{ij}\sigma_{j}^{-1}\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\right\} \label{eq:assocBayes}
+\frac{P(H|D)}{P(\bar{H}|D)} & \propto & \frac{P(H)}{P(\bar{H})}\times\underbrace{\frac{P(D|H)}{P(D|\bar{H})}}_{B}
 \end{eqnarray}
 
 \end_inset
 
-Here, 
-\begin_inset Formula $\sigma_{i}$
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P(H|D)=\left[1+\frac{1-P(H)}{B\cdot P(H)}\right]^{-1}\label{eq:assocPost}
+\end{equation}
+
 \end_inset
 
- denotes the positional uncertainty in each catalogue.
- The output column 
+The output column 
 \begin_inset ERT
 status open
 
@@ -5044,54 +5198,7 @@ status open
 \begin_inset Formula $\log B$
 \end_inset
 
-.
-\end_layout
-
-\begin_layout Standard
-For each association the posterior of the hypothesis 
-\begin_inset Quotes eld
-\end_inset
-
-real association
-\begin_inset Quotes erd
-\end_inset
-
- is then 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{equation}
-P(\text{"real association"}|D)=\left[1+\frac{1-P(H)}{B\cdot P(H)}\right]^{-1}\label{eq:assocPost}
-\end{equation}
-
-\end_inset
-
-
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Grouping-by-primary"
-
-\end_inset
-
-For each combinatorically possible association across the catalogues, Equations
- 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:assocPost"
-
-\end_inset
-
- and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:assocBayes"
-
-\end_inset
-
- describe the probability that this association is real (i.e.
- not by chance).
- The output column 
+, while the output column 
 \begin_inset ERT
 status open
 
@@ -5123,29 +5230,91 @@ reference "eq:assocPost"
 \end_inset
 
 .
+ As mentioned several times in the literature, the 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Budavari2008"
+
+\end_inset
+
+ approach does not include sources absent in some of the catalogues, while
+ the formulae developed below incorporate all combinatorically possible
+ associations, including absent sources.
 \end_layout
 
 \begin_layout Standard
-The task now is to begin with the primary catalogue and find for each source
- one or more realistic associations to consider.
+In our approach, for each combinatorically possible way of associating a
+ source across the catalogues, the posterior probabilities 
+\begin_inset Formula $P(H|D)$
+\end_inset
+
+ are computed using Bayes theorem (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:bayes"
+
+\end_inset
+
+) with the likelihood (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:nwaylikelihood"
+
+\end_inset
+
+) and prior (eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:prior"
+
+\end_inset
+
+) appropriately adopted for the number of catalogues the particular association
+ draws from.
 \end_layout
 
 \begin_layout Standard
-First, we write the probability that the primary catalogue entry has any
- association at all, by summing the probability of its possible counterparts:
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Grouping-by-primary"
+
+\end_inset
+
+The first step in catalogue inference is whether the source has any counterpart
+ (
+\begin_inset Formula $p_{{\rm any}}$
+\end_inset
+
+).
+ For each entry in the primary catalogue, the posteriors of all possible
+ associations are normalised to unity, and 
+\begin_inset Formula $P(\bar{H}|D)$
+\end_inset
+
+, the posterior probability of the no-counterpart hypothesis, 
+\begin_inset Formula $H_{0}$
+\end_inset
+
+, i.e., no catalogue participates, computed.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P(\text{"any real association"}|D)=\left[1+\frac{1-P(H)}{\sum_{k}B_{k}\times P(H)}\right]^{-1}\label{eq:post-any}
+p_{{\rm any}}=1-P(H_{0}|D)/\sum P(H|D)\label{eq:post-any}
 \end{equation}
 
 \end_inset
 
-This is possible because associations are mutually exclusive.
- Based on this posterior we can reject or accept the hypothesis that a real
- association exists for each object in the primary catalogue.
+If 
+\begin_inset Formula $p_{any}$
+\end_inset
+
+ is low, this indicates that there is little evidence for any of the considered,
+ combinatorically possible associations, except for the no-association case.
  The output column 
 \begin_inset ERT
 status open
@@ -5178,31 +5347,37 @@ reference "eq:post-any"
 \end_inset
 
 .
+ 
 \end_layout
 
 \begin_layout Standard
-If we accept the hypothesis that this source has a counterpart, the probability
- for any specific association 
-\begin_inset Formula $k$
+If 
+\begin_inset Formula $p_{any}\approx1$
 \end_inset
 
- is
+, there is strong evidence for at least one of the associations to another
+ catalogue.
+ To compute the relative posterior probabilities of the options, we re-normalize
+ with the no-counterpart hypothesis, 
+\begin_inset Formula $H_{0}$
+\end_inset
+
+, excluded:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P(\text{k}|D,\,\text{"any real association"})=B_{k}/\sum_{k}B_{k}.\label{eq:post-assoc}
+p_{i}=P(H_{i}|D)/\sum_{i\notin0}P(H_{i}|D)\label{eq:post-assoc}
 \end{equation}
 
 \end_inset
 
-Here, I have used that 
-\emph on
-a priori
-\emph default
- all associations are equally likely.
- This posterior can be used to reject unlikely counterparts.
+If a particular association has a high 
+\begin_inset Formula $p_{i}$
+\end_inset
+
+, there is strong evidence that it is the true one, out of all present options.
  The output column 
 \begin_inset ERT
 status open
@@ -5235,7 +5410,10 @@ reference "eq:post-assoc"
 \end_inset
 
 .
- A 
+\end_layout
+
+\begin_layout Standard
+A 
 \begin_inset Quotes eld
 \end_inset
 
@@ -5244,56 +5422,17 @@ very secure
 \end_inset
 
  counterpart could be defined by the requirement 
-\begin_inset Formula $P(\text{"any real association"}|D)>99\%$
+\begin_inset Formula $p_{any}>95\%$
 \end_inset
 
  and 
-\begin_inset Formula $P(\text{k}|D,\,\text{"any real association"})>95\%$
+\begin_inset Formula $p_{i}>95\%$
 \end_inset
 
 , for example.
  However, it is useful to run simulations to understand the rate of false
  positives.
  Typically, much lower thresholds are acceptable.
-\end_layout
-
-\begin_layout Standard
-One subtlety of Equation 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:post-any"
-
-\end_inset
-
- is that it only considers the associations enumerated, i.e.
- the combinations of all detected objects.
- However, very faint counterparts may have not been detected with the current
- exposure depth.
- The possibility that another, undetected counterpart is the correct one
- is thus not included in Equation 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:post-any"
-
-\end_inset
-
- nor Equation 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:post-assoc"
-
-\end_inset
-
-.
- Low probabilities in Equation 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:assocPost"
-
-\end_inset
-
- even for the most probable association may indicate that no suitable counterpar
-t has been found yet.
 \end_layout
 
 \begin_layout Section
@@ -5318,6 +5457,7 @@ Astronomical objects of various classes often show distinct color and magnitude
  Previous works 
 \begin_inset CommandInset citation
 LatexCommand citep
+before "e.g."
 key "Brusa2005,Brusa2007"
 
 \end_inset
@@ -5353,14 +5493,14 @@ Here,
 \end_inset
 
  are associated with the magnitude distributions of source (e.g.
- AGN) and background objects (e.g.
+ X-ray sources) and background objects (e.g.
  stars, passive galaxies) respectively, but additionally contain sky density
  contributions.
 \end_layout
 
 \begin_layout Standard
 This idea can be put on solid footing within the Bayesian framework.
- Here, two Bayes factor are combined, by simply considering two independent
+ Here, two likelihoods are combined, by simply considering two independent
  observations, namely one for the positions, 
 \begin_inset Formula $D_{\phi}$
 \end_inset
@@ -5370,14 +5510,14 @@ This idea can be put on solid footing within the Bayesian framework.
 \end_inset
 
 .
- The Bayes factor thus becomes
+ The likelihood thus becomes
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray}
-B' & = & \frac{P(D_{\phi}|\text{"real association"})}{P(D_{\phi}|\text{"chance alignment"})}\times\frac{P(D_{m}|\text{"real association"})}{P(D_{m}|\text{"chance alignment"})}\\
- & = & B\times\frac{\bar{q}(m)}{\bar{n}(m)},
+P(D|H) & = & P(D_{\phi}|H)\times P(D_{m}|H)\\
+ & = & P(D_{\phi}|H)\times\frac{\bar{q}(m)}{\bar{n}(m)},
 \end{eqnarray}
 
 \end_inset
@@ -5390,7 +5530,7 @@ with
 \begin_inset Formula $\bar{n}(m)$
 \end_inset
 
- being the probability that a X-ray source or a background object has magnitude
+ being the probability that a X-ray source or a generic source has magnitude
  
 \begin_inset Formula $m$
 \end_inset
@@ -5400,7 +5540,7 @@ with
 \end_layout
 
 \begin_layout Standard
-For completeness, I mention the fully generalised case.
+For completeness, I mention the fully generalized case.
  This is attained when an arbitrary number of photometry bands are considered,
  each consisting of a magnitude measurement 
 \begin_inset Formula $m$
@@ -5416,7 +5556,7 @@ For completeness, I mention the fully generalised case.
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-B'=B\times\prod\frac{\int_{m}\bar{q}(m)\,p(m|D_{m})\,dm}{\int_{m}\bar{n}(m)\,p(m|D_{m})\,dm}
+P(D_{m}|H)=\prod\frac{\int_{m}\bar{q}(m)\,p(m|D_{m})\,dm}{\int_{m}\bar{n}(m)\,p(m|D_{m})\,dm}
 \end{equation}
 
 \end_inset
@@ -5440,33 +5580,22 @@ Here,
 \end_inset
 
  can also consider upper limits.
- The posterior formulae 
-\begin_inset Formula $P(\cdot|D)$
-\end_inset
+ However, such options are not yet implemented in 
+\begin_inset ERT
+status open
 
- introduced above (Equations 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:post-any"
+\begin_layout Plain Layout
 
-\end_inset
 
- and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:post-assoc"
+\backslash
+nway
+\end_layout
 
-\end_inset
-
-) remain the same, with 
-\begin_inset Formula $B'$
-\end_inset
-
- replacing 
-\begin_inset Formula $B$
 \end_inset
 
 .
+ Instead, we recommend removing magnitude values with large uncertainties
+ (setting them to -99).
 \end_layout
 
 \begin_layout Section
@@ -5482,16 +5611,16 @@ name "sub:Auto-calibration"
 
 \begin_layout Standard
 The probability distributions 
-\begin_inset Formula $\bar{q}(m)$
-\end_inset
-
- and 
 \begin_inset Formula $\bar{n}(m)$
 \end_inset
 
+ and 
+\begin_inset Formula $\bar{q}(m)$
+\end_inset
+
  can be taken from other observations by computing the magnitude histograms
- of the target population (e.g.
- X-ray sources, AGN) and other objects selected in other wavebands.
+ of the overall population and the target sub-population (e.g.
+ X-ray sources).
  
 \end_layout
 
@@ -5571,8 +5700,8 @@ nway
 
 \begin_layout Standard
 First, possible associations are found.
- It is unfeasible to consider all theoretical possibilities (complexity
- 
+ It is unfeasible and unnecessary to consider all theoretical possibilities
+ (complexity 
 \begin_inset Formula $O(\prod_{i=1}^{k}N_{i})$
 \end_inset
 
@@ -5630,7 +5759,7 @@ First, possible associations are found.
 \end_layout
 
 \begin_layout Standard
-The second step is the computation of Bayes factors using the angular distances
+The second step is the computation of posteriors using the angular distances
  between counterparts.
  The prior is also evaluated from the size of the catalogue and the effective
  coverage, as well as the user-supplied prior incompleteness factor.
@@ -5638,7 +5767,7 @@ The second step is the computation of Bayes factors using the angular distances
 \end_layout
 
 \begin_layout Standard
-In the third step the magnitudes are considered, and the Bayes factors modified.
+In the third step the magnitudes are considered, and the posteriors modified.
  An arbitrary number of magnitude columns in the input catalogues can be
  specified.
  It is possible to use external magnitude histograms (e.g.
@@ -5663,20 +5792,19 @@ reference "sub:Auto-calibration"
 
 \begin_layout Standard
 In the final step, associations are grouped by the object from the primary
- catalogue (here: the X-ray source).
+ catalogue (here: X-ray source catalogue).
  The posteriors 
-\begin_inset Formula $P(\text{"any real association"}|D)$
+\begin_inset Formula $p_{{\rm any}}$
 \end_inset
 
  and 
-\begin_inset Formula $P(\text{k}|D,\,\text{"any real association"})$
+\begin_inset Formula $p_{i}$
 \end_inset
 
- computed.
+ are computed.
  For the output catalogue a cut on the posterior probability (e.g.
  above 80%) is applied, and all associations with their posterior probability
  are written to the output fits catalogue file.
- 
 \end_layout
 
 \begin_layout Standard
