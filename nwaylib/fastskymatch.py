@@ -213,7 +213,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 	for c in cat_columns:
 		c.array = c.array[mask]
 	
-	print('matching: %6d matches after filtering' % mask.sum())
+	print('matching: %6d matches after filtering by search radius' % mask.sum())
 	
 	return results[mask], cat_columns, header
 
