@@ -236,8 +236,8 @@ plt.title('Source %s, p_any=%.2f' % (args.id, p_any))
 xlo, xhi = plt.xlim()
 ylo, yhi = plt.ylim()
 hi = max(-xlo, xhi, -ylo, yhi)
-plt.xlim(-hi, hi) # RA
-plt.ylim(hi, -hi) # DEC goes the other way
+plt.ylim(-hi, hi) # DEC
+plt.xlim(hi, -hi) # RA goes the other way
 plt.legend(loc='best', numpoints=1, prop=dict(size=8))
 outfilename = '%s_explain_%s.pdf' % (args.matchcatalogue, args.id)
 print('plotting to %s' % outfilename)
