@@ -5230,6 +5230,62 @@ reference "eq:assocPost"
 \end_inset
 
 .
+ The output column 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_single
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ gives 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+dist_post
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ but modified if any additional information is specified (see Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:mag-priors"
+
+\end_inset
+
+).
  As mentioned several times in the literature, the 
 \begin_inset CommandInset citation
 LatexCommand citet
@@ -5537,6 +5593,77 @@ with
 
  respectively.
  
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ stores the modifying factor, 
+\begin_inset Formula $P(D_{m}|H)$
+\end_inset
+
+, in 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+bias_*
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ output columns, one for each column giving a magnitude, color, or other
+ distribution.
+ This modifying factor is however renormalized so that 
+\begin_inset Formula $P(D_{m}|H)=\frac{\bar{q}(m)}{\bar{n}(m)}/\int\frac{\bar{q}(m')}{\bar{n}(m')}\bar{n}(m')dm'$
+\end_inset
+
+, which makes 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $P(D|H)=P(D_{\phi}|H)$
+\end_inset
+
+ when m is unknown and m is marginalised over the distribution of m in the
+ general population, i.e.
+ 
+\begin_inset Formula $\int P(D_{m}|H)\,\bar{n}(m')\,dm$
+\end_inset
+
+.
+ This has the benefit that when m is unknown, the modifying factor is unity
+ and the probabilities remain unmodified.
 \end_layout
 
 \begin_layout Standard
