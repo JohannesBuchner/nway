@@ -34,7 +34,10 @@ parser.add_argument('--radius', type=float, required=True,
 	help='exclusive search radius in arcsec for initial matching')
 
 parser.add_argument('--mag-radius', default=None, type=float,
-	help='search radius for magnitude histograms. By default, the Bayesian posterior is used.')
+	help='search radius for building the magnitude histogram of target sources. If not set, the Bayesian posterior is used.')
+
+parser.add_argument('--mag-exclude-radius', default=None, type=float,
+	help='exclusion radius for building the magnitude histogram of field sources. If not set, --mag-radius is used.')
 
 #nx/(1887*15e+18)
 parser.add_argument('--prior-completeness', metavar='COMPLETENESS', default=1, type=float,
@@ -106,7 +109,10 @@ match_radius = args.radius / 60. / 60 # in degrees
 #if args.mag_radius is not None:
 #	mag_radius = match_radius # in arc sec
 #else:
-mag_radius = args.mag_radius # in arc sec
+mag_include_radius = args.mag_radius # in arc sec
+mag_exclude_radius = args.mag_exclude_radius # in arc sec
+if mag_exclude_radius is None:
+	mag_exclude_radius = mag_include_radius
 
 magnitude_columns = args.mag
 print('    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns]))
@@ -222,33 +228,42 @@ for mag, magfile in magnitude_columns:
 	col = "%s_%s" % (table_name, col_name)
 	
 	if magfile == 'auto':
-		if mag_radius is not None:
-			if mag_radius >= match_radius * 60 * 60:
+		if mag_include_radius is not None:
+			if mag_include_radius >= match_radius * 60 * 60:
 				print('WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.')
-			selection = table['Separation_max'] < mag_radius
+			selection = table['Separation_max'] < mag_include_radius
+			selection_possible = table['Separation_max'] < mag_exclude_radius
 		else:
 			selection = post > 0.9
+			selection_possible = post > 0.01
 		
 		# ignore cases where counterpart is missing
 		assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
 		selection = numpy.logical_and(selection, res_defined)
+		selection_possible = numpy.logical_and(selection_possible, res_defined)
 		
-		#print '   selection', selection.sum()
+		#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
 		
-		rows = results[table_name][selection].tolist()
-		assert len(rows) > 1, 'No magnitude values within mag_radius for "%s".' % mag
+		#rows = results[table_name][selection].tolist()
+		rows = list(set(results[table_name][selection]))
+		
+		assert len(rows) > 1, 'No magnitude values within radius for "%s".' % mag
 		mag_sel = mag_all[rows]
+		
+		# remove vaguely possible options from alternative histogram
+		rows_possible = list(set(results[table_name][selection_possible]))
+		mask_others = mask_all.copy()
+		mask_others[rows_possible] = False
 		
 		# all options in the total (field+target sources) histogram
 		mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
-		mask_all = -numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
 
 		#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
 
-		print('magnitude histogram of column "%s": %d secure matches, %d total valid entries' % (col, mask_sel.sum(), mask_all.sum()))
+		print('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
 		
 		# make function fitting to ratio shape
-		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_all], mag_sel[mask_sel])
+		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel])
 		with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
 			f.write(b'# lo hi selected others\n')
 			numpy.savetxt(f,
