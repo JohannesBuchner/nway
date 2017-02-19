@@ -220,21 +220,20 @@ nway~
 \end_layout
 
 \begin_layout Enumerate
-Matching of N catalogues simultaneously
+Matching of N catalogues simultaneously.
 \end_layout
 
 \begin_layout Enumerate
-Consideration of all possible matches, partial matches and absence of counterpar
-ts in some catalogues.
+Consideration of all combinatorically possible matches.
+\end_layout
+
+\begin_layout Enumerate
+Consideration of partial matches across catalogues, i.e.
+ the absence of counterparts in some catalogues.
 \end_layout
 
 \begin_layout Enumerate
 Taking into account the positional uncertainty.
-\end_layout
-
-\begin_layout Enumerate
-Incorporating magnitude, color or other information about the sources of
- interest.
 \end_layout
 
 \begin_layout Enumerate
@@ -243,6 +242,11 @@ Computation of a probability for each possible match.
 
 \begin_layout Enumerate
 Computation of a probability that there is no match.
+\end_layout
+
+\begin_layout Enumerate
+Incorporating magnitude, color or other information about the sources of
+ interest, refining the match probabilities.
 \end_layout
 
 \begin_layout Section*
@@ -4337,7 +4341,7 @@ nway~
 
  as a ASCII table histogram.
  This table contains the histogram of the sources of interest (X-ray sources)
- and a histogram of all sources (X-ray and non-X-ray sources).
+ and a histogram of other sources (non-X-ray sources).
  The file 
 \begin_inset ERT
 status open
@@ -4390,7 +4394,7 @@ status open
 
 \begin_layout Plain Layout
 
-# lo         hi          selected   all
+# lo         hi          selected   others
 \end_layout
 
 \begin_layout Plain Layout
@@ -4542,18 +4546,6 @@ code{OPT:MAG}
 \end_layout
 
 \begin_layout Enumerate
-The 
-\begin_inset Quotes eld
-\end_inset
-
-all
-\begin_inset Quotes erd
-\end_inset
-
- histogram is computed from all entries.
-\end_layout
-
-\begin_layout Enumerate
 Those with 
 \begin_inset ERT
 status open
@@ -4583,6 +4575,42 @@ status open
 \end_inset
 
 selected
+\begin_inset Quotes erd
+\end_inset
+
+ histogram.
+\end_layout
+
+\begin_layout Enumerate
+Those with 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+dist_post<0.01
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ are considered safe non-matches and are used for the 
+\begin_inset Quotes eld
+\end_inset
+
+others
 \begin_inset Quotes erd
 \end_inset
 
@@ -5106,7 +5134,19 @@ P(H|D)\propto P(H)\times P(D|H).\label{eq:bayes}
 
 \end_inset
 
-Comparing A12 and A14 in 
+
+\end_layout
+
+\begin_layout Standard
+We now extend the approach of 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Budavari2008"
+
+\end_inset
+
+, to allow matches where some catalogues do not participate in a match.
+ Comparing A12 and A14 in 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Budavari2008"
@@ -5114,7 +5154,7 @@ key "Budavari2008"
 \end_inset
 
 , assuming that positions lie on the celestial sphere and adopting the expansion
-s developed in their Appendix B, we can write down the likelihoods.
+s developed in their Appendix B, we can write down likelihoods.
  For a counterpart across 
 \begin_inset Formula $n$
 \end_inset
@@ -5138,35 +5178,36 @@ P(D|H)=2^{n-1}\frac{\prod\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\exp\left\{ -\frac
 \end_layout
 
 \begin_layout Standard
-For completeness, we also compute probabilities following the approach of
- 
+In comparison to our method, the method of 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Budavari2008"
 
 \end_inset
 
-, i.e.
- comparing the likelihood for each association to the likelihood of no associati
-on:
+ only compares two hypotheses for a association: either all sources belong
+ to the same object (
+\begin_inset Formula $H_{1}$
+\end_inset
+
+), or they are coincidentally aligned (
+\begin_inset Formula $H_{0}$
+\end_inset
+
+).
+ In this computation each hypothesis test is run in isolation, and relative
+ match probabilities for a given source are not considered.
+ For completeness, we also compute the posterior of this simpler model compariso
+n:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray}
-\frac{P(H|D)}{P(\bar{H}|D)} & \propto & \frac{P(H)}{P(\bar{H})}\times\underbrace{\frac{P(D|H)}{P(D|\bar{H})}}_{B}
+\frac{P(H_{1}|D)}{P(H_{0}|D)} & \propto & \frac{P(H_{1})}{P(H_{0})}\times\frac{P(D|H_{1})}{P(D|H_{0})}\\
+B & = & \frac{P(D|H_{1})}{P(D|H_{0})}\\
+P(H_{1}|D) & = & \left[1+\frac{1-P(H_{1})}{B\cdot P(H_{1})}\right]^{-1}\label{eq:assocPost}
 \end{eqnarray}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{equation}
-P(H|D)=\left[1+\frac{1-P(H)}{B\cdot P(H)}\right]^{-1}\label{eq:assocPost}
-\end{equation}
 
 \end_inset
 
@@ -5194,7 +5235,7 @@ status open
 
 \end_inset
 
- is 
+ stores 
 \begin_inset Formula $\log B$
 \end_inset
 
@@ -5294,13 +5335,32 @@ key "Budavari2008"
 \end_inset
 
  approach does not include sources absent in some of the catalogues, while
- the formulae developed below incorporate all combinatorically possible
- associations, including absent sources.
+ the formulae we develop below incorporate absent sources.
+ This is similar in spirit to 
+\begin_inset CommandInset citation
+LatexCommand citealp
+key "Pineau2016"
+
+\end_inset
+
+, although the statistical approach is different.
+ We now go further and develop counterpart probabilities.
 \end_layout
 
 \begin_layout Standard
-In our approach, for each combinatorically possible way of associating a
- source across the catalogues, the posterior probabilities 
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Grouping-by-primary"
+
+\end_inset
+
+The first step in catalogue inference is whether the source has any counterpart
+ (
+\begin_inset Formula $p_{{\rm any}}$
+\end_inset
+
+).
+ The posterior probabilities 
 \begin_inset Formula $P(H|D)$
 \end_inset
 
@@ -5330,43 +5390,26 @@ reference "eq:prior"
 
 ) appropriately adopted for the number of catalogues the particular association
  draws from.
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Grouping-by-primary"
-
-\end_inset
-
-The first step in catalogue inference is whether the source has any counterpart
- (
-\begin_inset Formula $p_{{\rm any}}$
-\end_inset
-
-).
  For each entry in the primary catalogue, the posteriors of all possible
  associations are normalised to unity, and 
-\begin_inset Formula $P(\bar{H}|D)$
+\begin_inset Formula $P(H_{0}|D)$
 \end_inset
 
-, the posterior probability of the no-counterpart hypothesis, 
-\begin_inset Formula $H_{0}$
-\end_inset
-
-, i.e., no catalogue participates, computed.
+, the posterior probability of the no-counterpart hypothesis, i.e., no catalogue
+ participates, computed.
+ From this we compute:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-p_{{\rm any}}=1-P(H_{0}|D)/\sum P(H|D)\label{eq:post-any}
+p_{{\rm any}}=1-P(H_{0}|D)/\sum_{i}P(H_{i}|D)\label{eq:post-any}
 \end{equation}
 
 \end_inset
 
 If 
-\begin_inset Formula $p_{any}$
+\begin_inset Formula $p_{{\rm any}}$
 \end_inset
 
  is low, this indicates that there is little evidence for any of the considered,
@@ -5408,7 +5451,7 @@ reference "eq:post-any"
 
 \begin_layout Standard
 If 
-\begin_inset Formula $p_{any}\approx1$
+\begin_inset Formula $p_{{\rm any}}\approx1$
 \end_inset
 
 , there is strong evidence for at least one of the associations to another
@@ -5424,7 +5467,7 @@ If
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-p_{i}=P(H_{i}|D)/\sum_{i\notin0}P(H_{i}|D)\label{eq:post-assoc}
+p_{i}=P(H_{i}|D)/\sum_{i>0}P(H_{i}|D)\label{eq:post-assoc}
 \end{equation}
 
 \end_inset
@@ -5586,8 +5629,8 @@ with
 \begin_inset Formula $\bar{n}(m)$
 \end_inset
 
- being the probability that a X-ray source or a generic source has magnitude
- 
+ being the probability that a X-ray (target) source or a generic (field)
+ source has magnitude 
 \begin_inset Formula $m$
 \end_inset
 
@@ -5655,8 +5698,16 @@ status open
 \begin_inset Formula $P(D|H)=P(D_{\phi}|H)$
 \end_inset
 
- when m is unknown and m is marginalised over the distribution of m in the
- general population, i.e.
+ when 
+\begin_inset Formula $m$
+\end_inset
+
+ is unknown.
+ In that case, 
+\begin_inset Formula $m$
+\end_inset
+
+ is marginalised over its distribution in the general population, i.e.
  
 \begin_inset Formula $\int P(D_{m}|H)\,\bar{n}(m')\,dm$
 \end_inset

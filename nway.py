@@ -352,6 +352,7 @@ for primary_id in pbar(primary_ids):
 columns.append(pyfits.Column(name='p_any', format='E', array=prob_has_match))
 columns.append(pyfits.Column(name='p_i', format='E', array=prob_this_match))
 
+#index[ncat == 1] == -1
 # add the flagging column
 columns.append(pyfits.Column(name='match_flag', format='I', array=index))
 
