@@ -138,13 +138,12 @@ print('finalizing catalogue')
 print('    finding position error columns ...')
 # get the separation and error columns for the bayesian weighting
 errors    = []
-for table_name, pos_error in zip(table_names, pos_errors):
+for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 	if pos_error[0] == ':':
 		# get column
 		k = "%s_%s" % (table_name, pos_error[1:])
 		assert k in table.dtype.names, 'ERROR: Position error column for "%s" not in table "%s". Have these columns: %s' % (k, table_name, ', '.join(table.dtype.names))
 		print('    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table[k].min(), table[k].max()))
-		ti = table_names.index(table_name)
 		if tables[ti][pos_error[1:]].min() <= 0:
 			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (tables[ti][pos_error[1:]] <= 0).sum()))
 		if table[k].max() > match_radius * 60 * 60:
