@@ -49,7 +49,7 @@ def get_tablekeys(table, name):
 def crossproduct(radectables, err):
 	buckets = {}
 	pbar = progressbar.ProgressBar(widgets=[
-		progressbar.Percentage(), progressbar.Counter('%3d'),
+		progressbar.Percentage(), ' | ', progressbar.Counter('%3d'),
 		progressbar.Bar(), progressbar.ETA()], maxval=sum([len(t[0]) for t in radectables])).start()
 	for ti, (ra_table, dec_table) in enumerate(radectables):
 		for ei, (ra, dec) in enumerate(zip(ra_table, dec_table)):
@@ -73,7 +73,7 @@ def crossproduct(radectables, err):
 
 	print('matching: collecting from %d buckets' % len(buckets))
 	pbar = progressbar.ProgressBar(widgets=[
-		progressbar.Percentage(), progressbar.Counter('%3d'), 
+		progressbar.Percentage(), '|', progressbar.Counter('%5d'), 
 		progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
 	while buckets:
 		k, lists = buckets.popitem()
@@ -127,26 +127,16 @@ def match_multiple(tables, table_names, err, fits_formats):
 	print('    using RA  columns: %s' % ', '.join(ra_keys))
 	dec_keys = [get_tablekeys(table, 'DEC') for table in tables]
 	print('    using DEC columns: %s' % ', '.join(dec_keys))
-	#ra_min = min([table[k].min() for k, table in zip(ra_keys, tables)])
-	#ra_max = max([table[k].max() for k, table in zip(ra_keys, tables)])
-	#dec_min = min([table[k].min() for k, table in zip(dec_keys, tables)])
-	#dec_max = max([table[k].max() for k, table in zip(dec_keys, tables)])
-	#print ra_min, ra_max, dec_min, dec_max
 
 	ratables = [(t[ra_key], t[dec_key]) for t, ra_key, dec_key in zip(tables, ra_keys, dec_keys)]
 	resultstable = crossproduct(ratables, err)
-	#print results[:100]
-	#print results.shape, results.dtype, len(table_names)
 	results = resultstable.view(dtype=[(table_name, resultstable.dtype) for table_name in table_names]).reshape((-1,))
-	#print results.shape, results.dtype, len(table_names)
-
-	#print results[:100]
 
 	keys = []
 	for table_name, table in zip(table_names, tables):
 		keys += ["%s_%s" % (table_name, n) for n in table.dtype.names]
 	
-	print('merging columns ...', sum([1 + len(table.dtype.names) for table in tables]))
+	print('merging in %d columns from input catalogues ...' % sum([1 + len(table.dtype.names) for table in tables]))
 	cat_columns = []
 	pbar = progressbar.ProgressBar(widgets=[
 		progressbar.Percentage(), progressbar.Counter('%3d'), 
@@ -156,7 +146,6 @@ def match_multiple(tables, table_names, err, fits_formats):
 		tbl = table[results[table_name]]
 		# set missing to nan
 		mask_missing = results[table_name] == -1
-		#tbl[mask_missing]
 		
 		pbar.update(pbar.currval + 1)
 		for n, format in zip(table.dtype.names, fits_format):
@@ -170,8 +159,6 @@ def match_multiple(tables, table_names, err, fits_formats):
 				print('   setting "%s" to -99 failed (%d affected; column format "%s"): %s' % (k, mask_missing.sum(), format, e))
 			
 			fitscol = pyfits.Column(name=k, format=format, array=col)
-			#if mask_missing.any():
-			#	print table_name, n, k, tbl[n][:100], '-->', fitscol.array[:100]
 			cat_columns.append(fitscol)
 			pbar.update(pbar.currval + 1)
 	pbar.finish()
@@ -182,7 +169,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 		COLS_DEC = ' '.join(["%s_%s" % (ti, dec_key) for ti, dec_key in zip(table_names, dec_keys)])
 	)
 	
-	print('merging columns: adding angular separation columns')
+	print('    adding angular separation columns')
 	cols = []
 	max_separation = numpy.zeros(len(results))
 	for i in range(len(tables)):
@@ -224,9 +211,8 @@ def wraptable2fits(cat_columns, extname):
 	now = datetime.datetime.fromtimestamp(time.time())
 	nowstr = now.isoformat()
 	nowstr = nowstr[:nowstr.rfind('.')]
-	#hdu.header['CREATOR'] = """Johannes Buchner <johannes.buchner.acad@gmx.com>"""
 	hdu.header['DATE'] = nowstr
-	hdu.header['ANALYSIS'] = '3WAY matching'
+	hdu.header['ANALYSIS'] = 'NWAY matching'
 	tbhdu.header['EXTNAME'] = extname
 	hdulist = pyfits.HDUList([hdu, tbhdu])
 	return hdulist
