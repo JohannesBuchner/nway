@@ -27,7 +27,7 @@ class HelpfulParser(argparse.ArgumentParser):
 		sys.exit(2)
 
 parser = HelpfulParser(description=__doc__,
-	epilog="""Johannes Buchner (C) 2013-2016 <johannes.buchner.acad@gmx.com>""",
+	epilog="""Johannes Buchner (C) 2013-2017 <johannes.buchner.acad@gmx.com>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--radius', type=float, required=True,
@@ -42,8 +42,10 @@ parser.add_argument('--mag-exclude-radius', default=None, type=float,
 parser.add_argument('--prior-completeness', metavar='COMPLETENESS', default=1, type=float,
 	help='expected matching completeness of sources (prior)')
 
-parser.add_argument('--consider-unrelated-associations', default=True, type=bool,
-	help='Include in the calculation tight pairs near but unrelated to the primary source')
+parser.add_argument('--ignore-unrelated-associations', dest='consider_unrelated_associations', action='store_false',
+	help='Ignore in the calculation source pairings unrelated to the primary source (not recommended)')
+
+parser.set_defaults(consider_unrelated_associations=True)
 
 parser.add_argument('--mag', metavar='MAGCOLUMN+MAGFILE', type=str, nargs=2, action='append', default=[],
 	help="""name of <table>:<column> for magnitude biasing, and filename for magnitude histogram 
@@ -67,7 +69,7 @@ parser.add_argument('catalogues', type=str, nargs='+',
 # parsing arguments
 args = parser.parse_args()
 
-print('nway arguments:')
+print('NWAY arguments:')
 
 diff_secondary = args.acceptable_prob
 outfile = args.out
@@ -221,50 +223,52 @@ ncat = table['ncat']
 ncats = len(tables)
 
 if args.consider_unrelated_associations:
-	print('Correcting for unrelated associations ...')
-	# correct for unrelated associations
-	# identify those in need of correction
-	# two unconsidered catalogues are needed for an unrelated association
 	candidates = numpy.where(ncat <= ncats - 2)[0]
-	pbar = progressbar.ProgressBar(widgets=[
-		progressbar.Percentage(), progressbar.Counter('%3d'),
-		progressbar.Bar(), progressbar.ETA()])
-	for i in pbar(candidates):
-		# list which ones we are missing
-		missing_cats = [k for k, sep in enumerate(separations[0]) if numpy.isnan(sep[i])]
-		pid = table[primary_id_key][i]
-		pid_index = primary_ids.index(pid)
-		best_logpost = 0
-		# go through more complex associations
-		for j in range(primary_id_start[pid_index], primary_id_end[pid_index]):
-			if not (ncat[j] > 2): continue
-			# check if this association has sufficient overlap with the one we are looking for
-			# it must contain at least two of the catalogues we are missing
-			augmented_cats = []
-			for k in missing_cats:
-				if not numpy.isnan(separations[0][k][j]):
-					augmented_cats.append(k)
-			n_augmented_cats = len(augmented_cats)
-			if n_augmented_cats >= 2:
-				# ok, this is helpful.
-				# identify the separations and errors
-				separations_selected = [[[separations[k][k2][j]] for k2 in augmented_cats] for k in augmented_cats]
-				errors_selected = [[errors[k][j]] for k in augmented_cats]
-				# identify the prior
-				prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
-				# compute a log_bf
-				log_bf_j = bayesdist.log_bf(numpy.array(separations_selected), numpy.array(errors_selected))
-				logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
-				if logpost_j > best_logpost:
-					#print('post:', logpost_j, log_bf_j, prior_j)
-					best_logpost = logpost_j
+	if len(candidates) > 0:
+		print('Correcting for unrelated associations ...')
+		# correct for unrelated associations
+		# identify those in need of correction
+		# two unconsidered catalogues are needed for an unrelated association
+		pbar = progressbar.ProgressBar(widgets=[
+			progressbar.Percentage(), '|', progressbar.Counter('%6d'),
+			progressbar.Bar(), progressbar.ETA()])
+		for i in pbar(candidates):
+			# list which ones we are missing
+			missing_cats = [k for k, sep in enumerate(separations[0]) if numpy.isnan(sep[i])]
+			pid = table[primary_id_key][i]
+			pid_index = primary_ids.index(pid)
+			best_logpost = 0
+			# go through more complex associations
+			for j in range(primary_id_start[pid_index], primary_id_end[pid_index]):
+				if not (ncat[j] > 2): continue
+				# check if this association has sufficient overlap with the one we are looking for
+				# it must contain at least two of the catalogues we are missing
+				augmented_cats = []
+				for k in missing_cats:
+					if not numpy.isnan(separations[0][k][j]):
+						augmented_cats.append(k)
+				n_augmented_cats = len(augmented_cats)
+				if n_augmented_cats >= 2:
+					# ok, this is helpful.
+					# identify the separations and errors
+					separations_selected = [[[separations[k][k2][j]] for k2 in augmented_cats] for k in augmented_cats]
+					errors_selected = [[errors[k][j]] for k in augmented_cats]
+					# identify the prior
+					prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
+					# compute a log_bf
+					log_bf_j = bayesdist.log_bf(numpy.array(separations_selected), numpy.array(errors_selected))
+					logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
+					if logpost_j > best_logpost:
+						#print('post:', logpost_j, log_bf_j, prior_j)
+						best_logpost = logpost_j
 	
-		# ok, we have our correction factor, best_logpost
-		# lets multiply it onto log_bf
-		if best_logpost > 0:
-			log_bf[i] += best_logpost
-
-	columns.append(pyfits.Column(name='dist_bayesfactor_corrected', format='E', array=log_bf))
+			# ok, we have our correction factor, best_logpost
+			# lets multiply it onto log_bf
+			if best_logpost > 0:
+				log_bf[i] += best_logpost
+		columns.append(pyfits.Column(name='dist_bayesfactor_corrected', format='E', array=log_bf))
+	else:
+		print('Correcting for unrelated associations ... not necessary')
 
 # add the additional columns
 post = bayesdist.posterior(prior, log_bf)
@@ -334,11 +338,15 @@ for mag, magfile in magnitude_columns:
 		
 		# make function fitting to ratio shape
 		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel])
+		print('magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
 		with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
 			f.write(b'# lo hi selected others\n')
 			numpy.savetxt(f,
 				numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
 				fmt = ["%10.5f"]*4)
+		if mask_sel.sum() < 100:
+			print('ERROR: too few secure matches to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename.')
+			sys.exit(1)
 	else:
 		print('magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col))
 		bins_lo, bins_hi, hist_sel, hist_all = numpy.loadtxt(magfile).transpose()
@@ -376,7 +384,7 @@ match_header['COLS_ERR'] = ' '.join(['%s_%s' % (ti, poscol) for ti, poscol in zi
 print('    grouping by column "%s" and flagging ...' % (primary_id_key))
 
 pbar = progressbar.ProgressBar(widgets=[
-	progressbar.Percentage(), progressbar.Counter('%3d'),
+	progressbar.Percentage(), '|', progressbar.Counter('%6d'),
 	progressbar.Bar(), progressbar.ETA()])
 pid_index = primary_ids.index(pid)
 best_log_bf = 0
@@ -390,6 +398,7 @@ for primary_id, ilo, ihi in pbar(list(zip(primary_ids, primary_id_start, primary
 	offset = values.max()
 	bfsum = log10((10**(values - offset)).sum()) + offset
 	if len(values) > 1:
+		offset = values[1:].max()
 		bfsum1 = log10((10**(values[1:] - offset)).sum()) + offset
 	else:
 		bfsum1 = 0
@@ -397,11 +406,12 @@ for primary_id, ilo, ihi in pbar(list(zip(primary_ids, primary_id_start, primary
 	# for p_any, find the one without counterparts
 	p_none = float(values[0])
 	p_any = 1 - 10**(p_none - bfsum)
+	# this avoids overflows in the no-counterpart solution, 
+	# which we want to set to 0
+	values[0] = bfsum1
 	p_i = 10**(values - bfsum1)
 	p_i[0] = 0
 	
-	#p_any = bayesdist.posterior(prior[mask], bfsum)
-	#p_i = 10**(total[mask] - bfsum)
 	prob_has_match[mask] = p_any
 	prob_this_match[mask] = p_i
 	
