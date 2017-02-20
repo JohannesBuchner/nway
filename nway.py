@@ -39,9 +39,11 @@ parser.add_argument('--mag-radius', default=None, type=float,
 parser.add_argument('--mag-exclude-radius', default=None, type=float,
 	help='exclusion radius for building the magnitude histogram of field sources. If not set, --mag-radius is used.')
 
-#nx/(1887*15e+18)
 parser.add_argument('--prior-completeness', metavar='COMPLETENESS', default=1, type=float,
 	help='expected matching completeness of sources (prior)')
+
+parser.add_argument('--consider-unrelated-associations', default=True, type=bool,
+	help='Include in the calculation tight pairs near but unrelated to the primary source')
 
 parser.add_argument('--mag', metavar='MAGCOLUMN+MAGFILE', type=str, nargs=2, action='append', default=[],
 	help="""name of <table>:<column> for magnitude biasing, and filename for magnitude histogram 
@@ -103,6 +105,7 @@ for fitsname in filenames:
 
 # source can not be absent in primary catalogue
 source_densities_plus[0] = source_densities[0]
+source_densities_plus = numpy.array(source_densities_plus)
 min_prob = args.min_prob
 
 match_radius = args.radius / 60. / 60 # in degrees
@@ -131,9 +134,24 @@ table = match.fits_from_columns(pyfits.ColDefs(columns)).data
 
 assert len(table) > 0, 'No matches.'
 
-# first pass: find secure matches and secure non-matches
+print('Building primary_id index ...')
+primary_id_key = match.get_tablekeys(tables[0], 'ID')
+primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
 
-print('finalizing catalogue')
+primary_ids = []
+primary_id_start = []
+last_primary_id = None
+primary_id_column = table[primary_id_key]
+for i, pid in enumerate(primary_id_column):
+	if pid != last_primary_id:
+		last_primary_id = pid
+		primary_ids.append(pid)
+		primary_id_start.append(i)
+
+primary_id_end = primary_id_start[1:] + [len(primary_id_column)]
+
+# first pass: find secure matches and secure non-matches
+print('Computing distance-based probabilities ...')
 
 print('    finding position error columns ...')
 # get the separation and error columns for the bayesian weighting
@@ -170,7 +188,7 @@ for ti, a in enumerate(table_names):
 			row.append(numpy.ones(len(table)) * numpy.nan)
 	separations.append(row)
 
-print('    computing probabilities from separations ...')
+print('    computing probabilities ...')
 # compute n-way position evidence
 
 log_bf = numpy.zeros(len(table)) * numpy.nan
@@ -192,21 +210,73 @@ for case in range(2**(len(table_names)-1)):
 		for row, m in zip(separations, table_mask) if m]
 	log_bf[mask] = bayesdist.log_bf(separations_selected, errors_selected)
 
-	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(numpy.asarray(source_densities_plus)[table_mask])
-	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(numpy.asarray(source_densities_plus)[table_mask]))
+	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(source_densities_plus[table_mask])
+	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(source_densities_plus[table_mask]))
 
 assert numpy.isfinite(prior).all(), (prior, log_bf)
 assert numpy.isfinite(log_bf).all(), (prior, log_bf)
-post = bayesdist.posterior(prior, log_bf)
+columns.append(pyfits.Column(name='dist_bayesfactor', format='E', array=log_bf))
+
+ncat = table['ncat']
+ncats = len(tables)
+
+if args.consider_unrelated_associations:
+	print('Correcting for unrelated associations ...')
+	# correct for unrelated associations
+	# identify those in need of correction
+	# two unconsidered catalogues are needed for an unrelated association
+	candidates = numpy.where(ncat <= ncats - 2)[0]
+	pbar = progressbar.ProgressBar(widgets=[
+		progressbar.Percentage(), progressbar.Counter('%3d'),
+		progressbar.Bar(), progressbar.ETA()])
+	for i in pbar(candidates):
+		# list which ones we are missing
+		missing_cats = [k for k, sep in enumerate(separations[0]) if numpy.isnan(sep[i])]
+		pid = table[primary_id_key][i]
+		pid_index = primary_ids.index(pid)
+		best_logpost = 0
+		# go through more complex associations
+		for j in range(primary_id_start[pid_index], primary_id_end[pid_index]):
+			if not (ncat[j] > 2): continue
+			# check if this association has sufficient overlap with the one we are looking for
+			# it must contain at least two of the catalogues we are missing
+			augmented_cats = []
+			for k in missing_cats:
+				if not numpy.isnan(separations[0][k][j]):
+					augmented_cats.append(k)
+			n_augmented_cats = len(augmented_cats)
+			if n_augmented_cats >= 2:
+				# ok, this is helpful.
+				# identify the separations and errors
+				separations_selected = [[[separations[k][k2][j]] for k2 in augmented_cats] for k in augmented_cats]
+				errors_selected = [[errors[k][j]] for k in augmented_cats]
+				# identify the prior
+				prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
+				# compute a log_bf
+				log_bf_j = bayesdist.log_bf(numpy.array(separations_selected), numpy.array(errors_selected))
+				logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
+				if logpost_j > best_logpost:
+					#print('post:', logpost_j, log_bf_j, prior_j)
+					best_logpost = logpost_j
+	
+		# ok, we have our correction factor, best_logpost
+		# lets multiply it onto log_bf
+		if best_logpost > 0:
+			log_bf[i] += best_logpost
+
+	columns.append(pyfits.Column(name='dist_bayesfactor_corrected', format='E', array=log_bf))
 
 # add the additional columns
-columns.append(pyfits.Column(name='dist_bayesfactor', format='E', array=log_bf))
+post = bayesdist.posterior(prior, log_bf)
 columns.append(pyfits.Column(name='dist_post', format='E', array=post))
 
+
 # find magnitude biasing functions
+if magnitude_columns:
+	print('Incorporating magnitude biases ...')
 biases = {}
 for mag, magfile in magnitude_columns:
-	print('magnitude bias "%s" ...' % mag)
+	print('    magnitude bias "%s" ...' % mag)
 	table_name, col_name = mag.split(':', 1)
 	assert table_name in table_names, 'table name specified for magnitude ("%s") unknown. Known tables: %s' % (table_name, ', '.join(table_names))
 	ti = table_names.index(table_name)
@@ -285,6 +355,7 @@ for mag, magfile in magnitude_columns:
 for col, weights in biases.items():
 	columns.append(pyfits.Column(name='bias_%s' % col, format='E', array=10**weights))
 
+print('Computing final probabilities ...')
 
 # add the posterior column
 total = log_bf + sum(biases.values())
@@ -293,7 +364,6 @@ columns.append(pyfits.Column(name='p_single', format='E', array=post))
 
 # compute weights for group posteriors
 # 4pi comes from Eq. 
-ncat = table['ncat']
 log_post_weight = bayesdist.unnormalised_log_posterior(prior, total, ncat)
 
 # flagging of solutions. Go through groups by primary id (IDs in first catalogue)
@@ -301,21 +371,20 @@ index = numpy.zeros_like(post)
 prob_has_match = numpy.zeros_like(post)
 prob_this_match = numpy.zeros_like(post)
 
-primary_id_key = match.get_tablekeys(tables[0], 'ID')
-primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
 match_header['COL_PRIM'] = primary_id_key
 match_header['COLS_ERR'] = ' '.join(['%s_%s' % (ti, poscol) for ti, poscol in zip(table_names, pos_errors)])
-print('    grouping by column "%s" for flagging ...' % (primary_id_key))
-
-primary_ids = sorted(set(table[primary_id_key]))
+print('    grouping by column "%s" and flagging ...' % (primary_id_key))
 
 pbar = progressbar.ProgressBar(widgets=[
 	progressbar.Percentage(), progressbar.Counter('%3d'),
 	progressbar.Bar(), progressbar.ETA()])
-for primary_id in pbar(primary_ids):
+pid_index = primary_ids.index(pid)
+best_log_bf = 0
+# go through more complex associations
+for primary_id, ilo, ihi in pbar(list(zip(primary_ids, primary_id_start, primary_id_end))):
 	# group
-	mask = table[primary_id_key] == primary_id
-
+	mask = slice(ilo, ihi)
+	
 	# compute no-match probability
 	values = log_post_weight[mask]
 	offset = values.max()
@@ -338,15 +407,10 @@ for primary_id in pbar(primary_ids):
 	
 	best_val = p_i.max()
 	
-	mask2 = mask.copy()
-	# flag second best
+	# flag best & second best
 	# ignore very poor solutions
-	mask2[mask2] = p_i > diff_secondary * best_val
-	index[mask2] = 2
-	# flag best
-	mask1 = mask.copy()
-	mask1[mask1] = best_val == p_i
-	index[mask1] = 1
+	index[mask] = numpy.where(best_val == p_i, 1, 
+		numpy.where(p_i > diff_secondary * best_val, 2, 0))
 	
 	
 columns.append(pyfits.Column(name='p_any', format='E', array=prob_has_match))
@@ -366,8 +430,8 @@ if min_prob > 0:
 
 
 # write out fits file
+print('creating output FITS file ...')
 tbhdu = match.fits_from_columns(pyfits.ColDefs(columns))
-print('writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns)))
 
 hdulist = match.wraptable2fits(tbhdu, 'MULTIMATCH')
 hdulist[0].header['METHOD'] = 'multi-way matching'
@@ -378,6 +442,7 @@ hdulist[0].header['NWAYCMD'] = ' '.join(sys.argv)
 for k, v in args.__dict__.items():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
 hdulist[0].header.update(match_header)
+print('writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns)))
 hdulist.writeto(outfile, clobber=True)
 
 
