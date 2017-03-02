@@ -883,46 +883,7 @@ best matches
  To this end, we recommend to shift the source catalogues by a distance
  much larger than the positional errors to simulate the results for chance
  alignment.
- For this run, use 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-nway~
-\end_layout
-
-\end_inset
-
- with the same settings on the shifted catalogues and from the output, choose
- cut-off limits (
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-code{
-\end_layout
-
-\end_inset
-
-p_any
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
-) that correspond to the desired false selection fraction.
- The tools 
+ This fake catalogue should not coincide with original positions (tool 
 \begin_inset ERT
 status open
 
@@ -946,11 +907,45 @@ status open
 
 \end_inset
 
- and 
-\begin_inset Newline newline
+ may help).
+ For the matching run with this fake catalogue, use 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
 \end_inset
 
+ with the same settings and from the output, choose cut-off limits (
+\begin_inset ERT
+status open
 
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_any
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+) that correspond to the desired false selection fraction (tool 
 \begin_inset ERT
 status open
 
@@ -974,7 +969,8 @@ status open
 
 \end_inset
 
- may help; the output of your first 
+ may help).
+ The output of your first 
 \begin_inset ERT
 status open
 
@@ -987,11 +983,7 @@ nway~
 
 \end_inset
 
- 
-\begin_inset Newline newline
-\end_inset
-
-run advises how to use these tools to characterise false selection rates
+ run advises how to use these tools to characterise false selection rates
  and to find an appropriate 
 \begin_inset ERT
 status open
