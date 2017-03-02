@@ -922,6 +922,94 @@ status open
 \end_inset
 
 ) that correspond to the desired false selection fraction.
+ The tools 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+nway-create-shifted-catalogue.py
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+nway-calibrate-cutoff.py
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ may help.
+ The output of your first 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway
+\end_layout
+
+\end_inset
+
+ run advise how to use these tools to characterise false selection rates
+ and to find an appropriate 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_any
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ threshold.
 \end_layout
 
 \begin_layout Standard
@@ -2318,7 +2406,7 @@ _XMM.fits :pos
 \backslash
 _err COSMOS
 \backslash
-_OPTICAL.fits 0.1 -{}-out=example1.fits -{}-radius 15 -{}-prior-completeness
+_OPTICAL.fits 0.1 -{}-out=example1.fits -{}-radius 20 -{}-prior-completeness
  0.9}
 \end_layout
 
@@ -2415,7 +2503,7 @@ code{-{}-out}
 \end_layout
 
 \begin_layout Enumerate
-The largest XMM error is 7.3 arcsec, so we adopt a cropping radius of 15
+The largest XMM error is 7.3 arcsec, so we adopt a cropping radius of 20
  arcsec to speed up the matching (
 \begin_inset ERT
 status open
@@ -2424,7 +2512,7 @@ status open
 
 
 \backslash
-code{-{}-radius 15}
+code{-{}-radius 20}
 \end_layout
 
 \end_inset
@@ -2543,7 +2631,7 @@ status open
 
 \begin_layout Plain Layout
 
-nway arguments:
+NWAY arguments:
 \end_layout
 
 \begin_layout Plain Layout
@@ -2584,7 +2672,7 @@ status open
 
 \begin_layout Plain Layout
 
-matching with 7.000000 arcsec radius
+matching with 20.000000 arcsec radius
 \end_layout
 
 \begin_layout Plain Layout
@@ -2609,54 +2697,53 @@ matching: hashing
 
 \begin_layout Plain Layout
 
-100%562333|###################################|Time: 0:00:24
+100% | 562333|########################################|Time: 0:00:12
 \end_layout
 
 \begin_layout Plain Layout
 
-matching: 111360 matches after hashing
+matching: 189341 matches after hashing
 \end_layout
 
 \begin_layout Plain Layout
 
-matching: collecting from 177918 buckets
+matching: collecting from 100537 buckets
 \end_layout
 
 \begin_layout Plain Layout
 
-100%177918|###################################|Time: 0:00:03
+100%|100537|##########################################|Time: 0:00:01
 \end_layout
 
 \begin_layout Plain Layout
 
-matching:  59336 unique matches from crossproduct
+matching: 103094 unique matches from crossproduct
 \end_layout
 
 \begin_layout Plain Layout
 
-merging columns ...
- 10
+merging in 10 columns from input catalogues ...
 \end_layout
 
 \begin_layout Plain Layout
 
-100% 10|######################################|Time: 0:00:00
+100% 10|##############################################|Time: 0:00:00
 \end_layout
 
 \begin_layout Plain Layout
 
-merging columns: adding angular separation columns
+    adding angular separation columns
 \end_layout
 
 \begin_layout Plain Layout
 
-matching:  22435 matches after filtering by search radius
+matching:  37836 matches after filtering by search radius
 \end_layout
 
 \end_inset
 
 Within 30 seconds it created a cross-match of remotely possible associations
- (1,007,283,192 in principle, 22,435 within 15 arcseconds).
+ (1,007,283,192 in principle, 37,836 within 20 arcseconds).
 \end_layout
 
 \begin_layout Enumerate
@@ -2671,12 +2758,12 @@ status open
 
 \begin_layout Plain Layout
 
-finalizing catalogue
+Computing distance-based probabilities ...
 \end_layout
 
 \begin_layout Plain Layout
 
-    finding position error columns ...
+  finding position error columns ...
 \end_layout
 
 \begin_layout Plain Layout
@@ -2692,22 +2779,46 @@ finalizing catalogue
 
 \begin_layout Plain Layout
 
-    finding position columns ...
+  finding position columns ...
 \end_layout
 
 \begin_layout Plain Layout
 
-    computing probabilities from separations ...
 \end_layout
 
 \begin_layout Plain Layout
 
-    grouping by column "XMM_ID" for flagging ...
+  building primary_id index ...
 \end_layout
 
 \begin_layout Plain Layout
 
-100%1797|#####################################|Time: 0:00:03
+  computing probabilities ...
+\end_layout
+
+\begin_layout Plain Layout
+
+      correcting for unrelated associations ...
+ not necessary
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Computing final probabilities ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    grouping by column "XMM_ID" and flagging ...
+\end_layout
+
+\begin_layout Plain Layout
+
+100%|  1797|##########################################|Time: 0:00:00
 \end_layout
 
 \end_inset
@@ -2723,7 +2834,12 @@ status open
 
 \begin_layout Plain Layout
 
-writing "example1.fits" (22435 rows, 17 columns)
+creating output FITS file ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    writing "example1.fits" (37836 rows, 17 columns)
 \end_layout
 
 \end_inset
@@ -3532,7 +3648,7 @@ _err COSMOS
 \backslash
 _OPTICAL.fits 0.1 COSMOS
 \backslash
-_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 15}
+_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 20}
 \end_layout
 
 \end_inset
@@ -3735,7 +3851,7 @@ _XMM.fits :pos
 \backslash
 _err COSMOS
 \backslash
-_OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 15 -{}-prior-completeness
+_OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 20 -{}-prior-completeness
  0.9 -{}-mag OPT:MAG auto -{}-mag-radius 3.5}
 \end_layout
 
@@ -4290,7 +4406,7 @@ _err COSMOS
 \backslash
 _OPTICAL.fits 0.1 COSMOS
 \backslash
-_IRAC.fits 0.5  -{}-out=example3.fits -{}-radius 15 -{}-prior-completeness
+_IRAC.fits 0.5  -{}-out=example3.fits -{}-radius 20 -{}-prior-completeness
  0.9 -{}-mag OPT:MAG auto -{}-mag IRAC:mag
 \backslash
 _ch1 auto  -{}-mag-radius 3.5}
@@ -5942,6 +6058,25 @@ The second step is the computation of posteriors using the angular distances
  The prior is also evaluated from the size of the catalogue and the effective
  coverage, as well as the user-supplied prior incompleteness factor.
  The posterior for each association based on the distances only is calculated.
+ These posteriors have to be modified (
+\begin_inset Quotes eld
+\end_inset
+
+correcting for unrelated associations
+\begin_inset Quotes erd
+\end_inset
+
+), to consider associations unrelated to primary catalogue sources (described
+ in the paper, Salvato et al.
+ in prep, in the appendix section 
+\begin_inset Quotes eld
+\end_inset
+
+Computing all possible matches
+\begin_inset Quotes erd
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Standard
@@ -5981,8 +6116,8 @@ In the final step, associations are grouped by the object from the primary
 
  are computed.
  For the output catalogue a cut on the posterior probability (e.g.
- above 80%) is applied, and all associations with their posterior probability
- are written to the output fits catalogue file.
+ above 80%) can be applied, and all associations with their posterior probabilit
+y are written to the output fits catalogue file.
 \end_layout
 
 \begin_layout Standard

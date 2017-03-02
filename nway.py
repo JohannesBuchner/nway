@@ -136,26 +136,10 @@ table = match.fits_from_columns(pyfits.ColDefs(columns)).data
 
 assert len(table) > 0, 'No matches.'
 
-print('Building primary_id index ...')
-primary_id_key = match.get_tablekeys(tables[0], 'ID')
-primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
-
-primary_ids = []
-primary_id_start = []
-last_primary_id = None
-primary_id_column = table[primary_id_key]
-for i, pid in enumerate(primary_id_column):
-	if pid != last_primary_id:
-		last_primary_id = pid
-		primary_ids.append(pid)
-		primary_id_start.append(i)
-
-primary_id_end = primary_id_start[1:] + [len(primary_id_column)]
-
 # first pass: find secure matches and secure non-matches
 print('Computing distance-based probabilities ...')
 
-print('    finding position error columns ...')
+print('  finding position error columns ...')
 # get the separation and error columns for the bayesian weighting
 errors    = []
 for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
@@ -175,7 +159,7 @@ for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 			print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (k, float(pos_error)))
 		errors.append(float(pos_error) * numpy.ones(len(table)))
 
-print('    finding position columns ...')
+print('  finding position columns ...')
 # table is in arcsec, and therefore separations is in arcsec
 separations = []
 for ti, a in enumerate(table_names):
@@ -189,8 +173,25 @@ for ti, a in enumerate(table_names):
 			row.append(numpy.ones(len(table)) * numpy.nan)
 	separations.append(row)
 
-print('    computing probabilities ...')
+print()
+print('  building primary_id index ...')
+primary_id_key = match.get_tablekeys(tables[0], 'ID')
+primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
+
+primary_ids = []
+primary_id_start = []
+last_primary_id = None
+primary_id_column = table[primary_id_key]
+for i, pid in enumerate(primary_id_column):
+	if pid != last_primary_id:
+		last_primary_id = pid
+		primary_ids.append(pid)
+		primary_id_start.append(i)
+
+primary_id_end = primary_id_start[1:] + [len(primary_id_column)]
+
 # compute n-way position evidence
+print('  computing probabilities ...')
 
 log_bf = numpy.zeros(len(table)) * numpy.nan
 prior = numpy.zeros(len(table)) * numpy.nan
@@ -224,7 +225,7 @@ ncats = len(tables)
 if args.consider_unrelated_associations:
 	candidates = numpy.where(ncat <= ncats - 2)[0]
 	if len(candidates) > 0:
-		print('Correcting for unrelated associations ...')
+		print('    correcting for unrelated associations ...')
 		# correct for unrelated associations
 		# identify those in need of correction
 		# two unconsidered catalogues are needed for an unrelated association
@@ -267,15 +268,15 @@ if args.consider_unrelated_associations:
 				log_bf[i] += best_logpost
 		columns.append(pyfits.Column(name='dist_bayesfactor_corrected', format='E', array=log_bf))
 	else:
-		print('Correcting for unrelated associations ... not necessary')
+		print('      correcting for unrelated associations ... not necessary')
 
 # add the additional columns
 post = bayesdist.posterior(prior, log_bf)
 columns.append(pyfits.Column(name='dist_post', format='E', array=post))
 
-
 # find magnitude biasing functions
 if magnitude_columns:
+	print()
 	print('Incorporating magnitude biases ...')
 biases = {}
 for mag, magfile in magnitude_columns:
@@ -362,6 +363,7 @@ for mag, magfile in magnitude_columns:
 for col, weights in biases.items():
 	columns.append(pyfits.Column(name='bias_%s' % col, format='E', array=10**weights))
 
+print()
 print('Computing final probabilities ...')
 
 # add the posterior column
@@ -432,13 +434,51 @@ columns.append(pyfits.Column(name='match_flag', format='I', array=index))
 # cut away poor posteriors if requested
 if min_prob > 0:
 	mask = -(prob_this_match < min_prob)
-	print('    cutting away %d (below minimum)' % (len(mask) - mask.sum()))
+	print('    cutting away %d (below p_i minimum)' % (len(mask) - mask.sum()))
 
 	for c in columns:
 		c.array = c.array[mask]
 
-
+if not filenames[0].endswith('shifted.fits'):
+	print()
+	print()
+	print('  You can calibrate a p_any cut-off with the following steps:')
+	print('   1) Create a offset catalogue to simulate random sky positions:')
+	shiftfile = filenames[0].replace('.fits', '').replace('.FITS', '') + '-shifted.fits'
+	shiftoutfile = outfile + '-fake.fits'
+	print('      nway-create-shifted-catalogue.py --radius %d --shift-dec %d %s %s' % (args.radius, args.radius*3, filenames[0], shiftfile))
+	print('   2) Match the offset catalogue in the same way as this run:')
+	newargv = []
+	i = 0
+	while i < len(sys.argv):
+		v = sys.argv[i]
+		if v == filenames[0]:
+			newargv.append(shiftfile)
+		elif v == '--mag':
+			newargv.append(v)
+			v = sys.argv[i+1]
+			newargv.append(v)
+			if sys.argv[i+2] == 'auto':
+				newargv.append(v.replace(':', '_') + '_fit.txt')
+			else:
+				newargv.append(sys.argv[i+2])
+			i = i + 2
+		elif v == '--out':
+			newargv.append(v)
+			i = i + 1
+			newargv.append(shiftoutfile)
+		elif v.startswith('--out='):
+			newargv.append('--out=' + shiftoutfile)
+		else:
+			newargv.append(v)
+		i = i + 1
+	print('      ' + ' '.join(newargv))
+	print('   3) determining the p_any cutoff that corresponds to a false-detection rate')
+	print('      nway-calibrate-cutoff.py %s %s' % (outfile, shiftoutfile))
+	print()
+	
 # write out fits file
+print()
 print('creating output FITS file ...')
 tbhdu = match.fits_from_columns(pyfits.ColDefs(columns))
 
@@ -451,7 +491,7 @@ hdulist[0].header['NWAYCMD'] = ' '.join(sys.argv)
 for k, v in args.__dict__.items():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
 hdulist[0].header.update(match_header)
-print('writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns)))
+print('    writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns)))
 hdulist.writeto(outfile, clobber=True)
 
 

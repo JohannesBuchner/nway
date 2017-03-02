@@ -117,7 +117,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 	header: which columns were used in each table for RA/DEC
 	
 	"""
-	
+	print()
 	print('matching with %f arcsec radius' % (err * 60 * 60))
 	print('matching: %6d naive possibilities' % numpy.product([len(t) for t in tables]))
 
@@ -201,7 +201,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 		c.array = c.array[mask]
 	
 	print('matching: %6d matches after filtering by search radius' % mask.sum())
-	
+	print()
 	return results[mask], cat_columns, header
 
 def wraptable2fits(cat_columns, extname):
