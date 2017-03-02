@@ -947,6 +947,10 @@ status open
 \end_inset
 
  and 
+\begin_inset Newline newline
+\end_inset
+
+
 \begin_inset ERT
 status open
 
@@ -970,8 +974,7 @@ status open
 
 \end_inset
 
- may help.
- The output of your first 
+ may help; the output of your first 
 \begin_inset ERT
 status open
 
@@ -979,12 +982,16 @@ status open
 
 
 \backslash
-nway
+nway~
 \end_layout
 
 \end_inset
 
- run advise how to use these tools to characterise false selection rates
+ 
+\begin_inset Newline newline
+\end_inset
+
+run advises how to use these tools to characterise false selection rates
  and to find an appropriate 
 \begin_inset ERT
 status open
@@ -1039,18 +1046,7 @@ code{
 
 \end_inset
 
--
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-{}
-\end_layout
-
-\end_inset
-
--min-prob
+p_any>cutoff
 \begin_inset ERT
 status open
 
@@ -1061,8 +1057,32 @@ status open
 
 \end_inset
 
-), and made into a best match catalogue.
- It may be worth to not ambiguous cases with multiple solutions and to store
+), and made into a best match catalogue (
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+match_flag==1
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+).
+ It may be worth noting ambiguous cases with multiple solutions and to store
  these secondary solutions with similar probabilities in another catalogue
  (
 \begin_inset ERT
@@ -1077,7 +1097,7 @@ code{
 
 \end_inset
 
-p_i
+match_flag==2
 \begin_inset ERT
 status open
 
