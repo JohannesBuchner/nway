@@ -28,13 +28,13 @@ parser = HelpfulParser(description=__doc__,
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--shift-dec', default=0, type=float,
-	help='Shift to add in dec')
+	help='Shift to add in dec (arcsec)')
 
 parser.add_argument('--shift-ra', default=0, type=float,
-	help='Shift to add in ra')
+	help='Shift to add in ra (arcsec)')
 
 parser.add_argument('--radius', type=float, required=True,
-	help='Remove sources which are near original sources within this radius.')
+	help='Remove sources which are near original sources, within this radius (arcsec).')
 
 parser.add_argument('inputfile', type=str, help="input catalogue fits file")
 parser.add_argument('outputfile', help='output catalogue fits file')
