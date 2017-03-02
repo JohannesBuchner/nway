@@ -1,4 +1,13 @@
 
+Version 2.0:
+	
+	Added correction for associations additional to association with the 
+	primary catalogue source. 
+
+	Using magnitude histogram ratios rather than fractions (1.9)
+
+	Corrected magnitude prior normalisation for the case of NaNs or missing source (1.7)
+	
 Version 1.0: 
 	
 	Column name changes:
