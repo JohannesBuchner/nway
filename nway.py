@@ -99,7 +99,7 @@ for fitsname in filenames:
 	area = fits_table.header['SKYAREA'] * 1.0 # in square degrees
 	area_total = (4 * pi * (180 / pi)**2)
 	density = n / area * area_total
-	print('      from catalogue "%s" (%d), density is %e' % (table_name, n, density))
+	print('      from catalogue "%s" (%d), density gives %.2e on entire sky' % (table_name, n, density))
 	# this takes into account that the source may be absent
 	density_plus = (n + 1) / area * area_total
 	source_densities.append(density)
@@ -173,7 +173,6 @@ for ti, a in enumerate(table_names):
 			row.append(numpy.ones(len(table)) * numpy.nan)
 	separations.append(row)
 
-print()
 print('  building primary_id index ...')
 primary_id_key = match.get_tablekeys(tables[0], 'ID')
 primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
@@ -491,7 +490,7 @@ hdulist[0].header['NWAYCMD'] = ' '.join(sys.argv)
 for k, v in args.__dict__.items():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
 hdulist[0].header.update(match_header)
-print('    writing "%s" (%d rows, %d columns)' % (outfile, len(tbhdu.data), len(columns)))
+print('    writing "%s" (%d rows, %d columns) ...' % (outfile, len(tbhdu.data), len(columns)))
 hdulist.writeto(outfile, clobber=True)
 
 

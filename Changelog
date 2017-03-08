@@ -1,3 +1,8 @@
+Version 3.0:
+
+	Healpix-based hashing instead of a ra/dec grid. Works now accurately
+	also on the poles and near ra=0. 
+	More accurate great-arc distance formula.:
 
 Version 2.0:
 	

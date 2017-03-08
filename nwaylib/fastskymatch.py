@@ -6,10 +6,12 @@ Very fast method based on hashing.
 from __future__ import print_function, division
 import numpy
 import itertools
+from collections import defaultdict
 import os, sys
 import astropy.io.fits as pyfits
 import progressbar
-from numpy import sin, cos, arccos, arcsin, pi, exp, log
+from numpy import sin, cos, arctan2, hypot, arccos, arcsin, pi, exp, log
+import healpy
 import joblib
 import os
 cachedir = 'cache'
@@ -18,82 +20,107 @@ mem = joblib.Memory(cachedir=cachedir, verbose=False)
 
 def dist(apos, bpos):
 	"""
-	Adapted from topcat: Haversine formula for spherical trigonometry.
-	     * This does not have the numerical instabilities of the cosine formula
-	     * at small angles.
-	     * <p>
-	     * This implementation derives from Bob Chamberlain's contribution
-	     * to the comp.infosystems.gis FAQ; he cites
-	     * R.W.Sinnott, "Virtues of the Haversine", Sky and Telescope vol.68,
-	     * no.2, 1984, p159.
-	     *
-	     * @see  <http://www.census.gov/geo/www/gis-faq.txt>
-	currently hosted at http://www.ciesin.org/gisfaq/gis-faq.txt
+	Angular separation between two points on a sphere.
+	http://en.wikipedia.org/wiki/Great-circle_distance
 	"""
 	(a_ra, a_dec), (b_ra, b_dec) = apos, bpos
-	ra1 = a_ra / 180 * pi
-	dec1 = a_dec / 180 * pi
-	ra2 = b_ra / 180 * pi
-	dec2 = b_dec / 180 * pi
-	sd2 = sin(0.5 * (dec2 - dec1))
-	sr2 = sin(0.5 * (ra2 - ra1))
-	a = sd2**2 + sr2**2 * cos(dec1) * cos(dec2);
-	return numpy.where(a < 1.0, 2.0 * arcsin(a**0.5), pi) * 180 / pi;
+	lon1 = a_ra / 180 * pi
+	lat1 = a_dec / 180 * pi
+	lon2 = b_ra / 180 * pi
+	lat2 = b_dec / 180 * pi
+	sdlon = sin(lon2 - lon1)
+	cdlon = cos(lon2 - lon1)
+	slat1 = sin(lat1)
+	slat2 = sin(lat2)
+	clat1 = cos(lat1)
+	clat2 = cos(lat2)
+
+	num1 = clat2 * sdlon
+	num2 = clat1 * slat2 - slat1 * clat2 * cdlon
+	denominator = slat1 * slat2 + clat1 * clat2 * cdlon
+
+	return arctan2(hypot(num1, num2), denominator) * 180 / pi
 
 def get_tablekeys(table, name):
 	keys = sorted(table.dtype.names, key=lambda k: 0 if k.upper() == name else 1 if k.upper().startswith(name) else 2)
 	assert len(keys) > 0 and name in keys[0].upper(), 'ERROR: No "%s"  column found in input catalogue. Only have: %s' % (name, ', '.join(table.dtype.names))
 	return keys[0]
 
+
+def get_healpix_resolution_degrees(nside):
+	resol = healpy.pixelfunc.nside2resol(nside) / pi * 180
+	# according to monte carlo simulations, distances up to this factor
+	# are completely contained within the pixel and its neighbors
+	resfactor = 0.7
+	return resfactor * resol
+
 @mem.cache
 def crossproduct(radectables, err):
-	buckets = {}
+	# choose appropriate nside for err (in deg)
+	nside = 1
+	for nside_next in range(30): 
+		# largest distance still contained within pixels
+		dist_neighbors_complete = get_healpix_resolution_degrees(2**nside_next)
+		# we are looking for a pixel size which ensures bigger distances than the error radius
+		# but we want the smallest pixels possible, to reduce the cartesian product
+		if dist_neighbors_complete < err:
+			# too small, do not accept
+			# sources within err will be outside the neighbor pixels
+			break
+		nside = 2**nside_next
+	resol = get_healpix_resolution_degrees(nside) * 60 * 60
+	print('matching: healpix hashing on pixel resolution ~ %f arcsec (nside=%d)' % (resol, nside))
+	
+	buckets = defaultdict(lambda : [[] for _ in range(len(radectables))])
+	
 	pbar = progressbar.ProgressBar(widgets=[
 		progressbar.Percentage(), ' | ', progressbar.Counter('%3d'),
 		progressbar.Bar(), progressbar.ETA()], maxval=sum([len(t[0]) for t in radectables])).start()
 	for ti, (ra_table, dec_table) in enumerate(radectables):
-		for ei, (ra, dec) in enumerate(zip(ra_table, dec_table)):
-			i, j = int(ra / err), int(dec / err)
-			
-			# put in bucket, and neighbors
-			for jj, ii in (j,i), (j,i+1), (j+1,i), (j+1, i+1):
-				k = (ii, jj)
-				if k not in buckets: # prepare bucket
-					buckets[k] = [[] for _ in range(len(radectables))]
-				buckets[k][ti].append(ei)
+		# get healpixels
+		ra, dec = ra_table, dec_table
+		phi = ra / 180 * pi
+		theta = dec / 180 * pi + pi/2.
+		i = healpy.pixelfunc.ang2pix(nside, phi=phi, theta=theta, nest=True)
+		j = healpy.pixelfunc.get_all_neighbours(nside, phi=phi, theta=theta, nest=True)
+		# only consider four neighbours in one direction (N)
+		# does not work, sometimes A is south of B, but B is east of A
+		# so need to consider all neighbors, and deduplicate
+		neighbors = numpy.hstack((i.reshape((-1,1)), j.transpose()))
+		
+		# put in bucket, and neighbors
+		for ei, keys in enumerate(neighbors):
+			for kk in keys:
+				buckets[kk][ti].append(ei)
 			pbar.update(pbar.currval + 1)
 	pbar.finish()
 	
 	# add no-counterpart options
 	results = set()
 	# now combine within buckets
-	print('matching: %6d matches after hashing' % numpy.sum([
-		len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]]) 
-			for lists in buckets.values()]))
+	print('matching: collecting from %d buckets, creating cartesian products ...' % len(buckets))
+	#print('matching: %6d matches expected after hashing' % numpy.sum([
+	#	len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]]) 
+	#		for lists in buckets.values()]))
 
-	print('matching: collecting from %d buckets' % len(buckets))
 	pbar = progressbar.ProgressBar(widgets=[
 		progressbar.Percentage(), '|', progressbar.Counter('%5d'), 
 		progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
 	while buckets:
 		k, lists = buckets.popitem()
 		pbar.update(pbar.currval + 1)
+		if k == -1: continue
 		if len(lists[0]) == 0:
 			continue
 		for l in lists[1:]:
-			l.append(-1)
-		comb = itertools.product(*lists)
-		results.update(comb)
+			l.insert(0, -1)
+		results.update(itertools.product(*[sorted(l) for l in lists]))
 	pbar.finish()
 
-	print('matching: %6d unique matches from crossproduct' % len(results))
+	n = len(results)
+	print('matching: %6d unique matches from cartesian product. sorting ...' % n)
 	# now make results unique by sorting
 	results = numpy.array(sorted(results))
-	
-	# delete those with only first object
-	#onlyfirst = (results != -1).sum(axis=1) == 1
-	#results = results[~onlyfirst]
-	#print('matching: %6d matches' % len(results))
 	return results
 
 # use preferred newer astropy command if available
