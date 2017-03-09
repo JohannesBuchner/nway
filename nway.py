@@ -443,9 +443,9 @@ if not filenames[0].endswith('shifted.fits'):
 	print()
 	print('  You can calibrate a p_any cut-off with the following steps:')
 	print('   1) Create a offset catalogue to simulate random sky positions:')
-	shiftfile = filenames[0].replace('.fits', '').replace('.FITS', '') + '-shifted.fits'
+	shiftfile = filenames[0].replace('.fits', '').replace('.FITS', '') + '-fake.fits'
 	shiftoutfile = outfile + '-fake.fits'
-	print('      nway-create-shifted-catalogue.py --radius %d --shift-dec %d %s %s' % (args.radius, args.radius*3, filenames[0], shiftfile))
+	print('      nway-create-fake-catalogue.py --radius %d %s %s' % (args.radius*2, filenames[0], shiftfile))
 	print('   2) Match the offset catalogue in the same way as this run:')
 	newargv = []
 	i = 0

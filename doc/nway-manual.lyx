@@ -896,7 +896,7 @@ code{
 
 \end_inset
 
-nway-create-shifted-catalogue.py
+nway-create-fake-catalogue.py
 \begin_inset ERT
 status open
 
@@ -2418,7 +2418,7 @@ _XMM.fits :pos
 \backslash
 _err COSMOS
 \backslash
-_OPTICAL.fits 0.1 -{}-out=example1.fits -{}-radius 20 -{}-prior-completeness
+_OPTICAL.fits 0.1 -{}-out=example1.fits -{}-radius 15 -{}-prior-completeness
  0.9}
 \end_layout
 
@@ -2515,7 +2515,7 @@ code{-{}-out}
 \end_layout
 
 \begin_layout Enumerate
-The largest XMM error is 7.3 arcsec, so we adopt a cropping radius of 20
+The largest XMM error is 7.3 arcsec, so we adopt a cropping radius of 15
  arcsec to speed up the matching (
 \begin_inset ERT
 status open
@@ -2524,12 +2524,15 @@ status open
 
 
 \backslash
-code{-{}-radius 20}
+code{-{}-radius 15}
 \end_layout
 
 \end_inset
 
 ).
+ A larger radius produces a more complete catalogue.
+ For dense catalogues larger radii can be much slower to compute, as the
+ number of combinations to consider rises exponentially.
 \end_layout
 
 \begin_layout Enumerate
@@ -2684,7 +2687,7 @@ status open
 
 \begin_layout Plain Layout
 
-matching with 20.000000 arcsec radius
+matching with 15.000000 arcsec radius
 \end_layout
 
 \begin_layout Plain Layout
@@ -2709,27 +2712,28 @@ matching: hashing
 
 \begin_layout Plain Layout
 
-100% | 562333|########################################|Time: 0:00:12
+matching: healpix hashing on pixel resolution ~ 18.036304 arcsec (nside=8192)
 \end_layout
 
 \begin_layout Plain Layout
 
-matching: 189341 matches after hashing
+100% | 562333|############################################|Time: 0:00:13
 \end_layout
 
 \begin_layout Plain Layout
 
-matching: collecting from 100537 buckets
+matching: collecting from 61787 buckets, creating cartesian products ...
 \end_layout
 
 \begin_layout Plain Layout
 
-100%|100537|##########################################|Time: 0:00:01
+100%|61787|###############################################|Time: 0:00:02
 \end_layout
 
 \begin_layout Plain Layout
 
-matching: 103094 unique matches from crossproduct
+matching: 462267 unique matches from cartesian product.
+ sorting ...
 \end_layout
 
 \begin_layout Plain Layout
@@ -2739,7 +2743,7 @@ merging in 10 columns from input catalogues ...
 
 \begin_layout Plain Layout
 
-100% 10|##############################################|Time: 0:00:00
+100% 10|##################################################|Time: 0:00:00
 \end_layout
 
 \begin_layout Plain Layout
@@ -2749,13 +2753,13 @@ merging in 10 columns from input catalogues ...
 
 \begin_layout Plain Layout
 
-matching:  37836 matches after filtering by search radius
+matching:  22435 matches after filtering by search radius
 \end_layout
 
 \end_inset
 
-Within 30 seconds it created a cross-match of remotely possible associations
- (1,007,283,192 in principle, 37,836 within 20 arcseconds).
+Within 20 seconds it created a cross-match of remotely possible associations
+ (1,007,283,192 in principle, 22,435 within 15 arcseconds).
 \end_layout
 
 \begin_layout Enumerate
@@ -2796,10 +2800,6 @@ Computing distance-based probabilities ...
 
 \begin_layout Plain Layout
 
-\end_layout
-
-\begin_layout Plain Layout
-
   building primary_id index ...
 \end_layout
 
@@ -2830,7 +2830,7 @@ Computing final probabilities ...
 
 \begin_layout Plain Layout
 
-100%|  1797|##########################################|Time: 0:00:00
+100%|  1797|###################################|Time: 0:00:00
 \end_layout
 
 \end_inset
@@ -3136,42 +3136,9 @@ status open
  A) the probability that no association is the correct one is computed.
  Because every catalogue is limited by its depth, it is possible that the
  true counterpart has not been found yet.
- Our testing suggest that secure catalogue
+ Our testing suggest that the 
 \series bold
- should require 
-\series default
-
-\begin_inset Newline newline
-\end_inset
-
-
-\series bold
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-code{
-\end_layout
-
-\end_inset
-
-p_any>0.6
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
-, but this may depend on the application -- please report what your testing
- gives.
+threshold for a secure catalogue depends on the application.
  
 \series default
 Section
@@ -3450,7 +3417,7 @@ code{
 
 \end_inset
 
-p_any
+p_i
 \begin_inset ERT
 status open
 
@@ -3660,7 +3627,7 @@ _err COSMOS
 \backslash
 _OPTICAL.fits 0.1 COSMOS
 \backslash
-_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 20}
+_IRAC.fits 0.5 -{}-out=example3.fits -{}-radius 15}
 \end_layout
 
 \end_inset
@@ -3863,7 +3830,7 @@ _XMM.fits :pos
 \backslash
 _err COSMOS
 \backslash
-_OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 20 -{}-prior-completeness
+_OPTICAL.fits 0.1 -{}-out=example2.fits -{}-radius 15 -{}-prior-completeness
  0.9 -{}-mag OPT:MAG auto -{}-mag-radius 3.5}
 \end_layout
 
@@ -4196,8 +4163,22 @@ code{-{}-mag-radius}
 \end_inset
 
 .
- This is in general safer and recommended, but in small catalogues may under-sam
-ple the histogram (more details below 
+ This is in general safer and recommended.
+ In small catalogues the histogram may not be sufficiently filled, in which
+ case 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ will give a warning (more details below 
 \begin_inset CommandInset ref
 LatexCommand vpageref
 reference "par:auto-mode"
@@ -4766,7 +4747,21 @@ mycaution{
 \end_inset
 
 However, if you only have a small catalogue you may build a poorly sampled
- histogram, potentially leading to biases
+ histogram, potentially leading to biases.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ will warn you when only few sources were selected.
 \begin_inset ERT
 status open
 
@@ -4851,8 +4846,8 @@ code{python ../nway.py -{}-radius}
  This radius (in degrees) is used to discard distant pairs.
  Always choose a value that is much larger than the largest positional uncertain
 ty, then this value will not change the results.
- Smaller values just make the code run faster by reducing the number of
- combinations to explore.
+ Smaller values make the code run faster and use less memory by reducing
+ the number of combinations to explore.
 \end_layout
 
 \begin_layout Enumerate
@@ -6012,38 +6007,30 @@ First, possible associations are found.
 \end_inset
 
 ), so the sky is split first to cluster nearby objects.
- For this, a hashing procedure puts each object into square bins.
+ For this, a hashing procedure puts each object into HEALPix bins 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Gorski2005"
+
+\end_inset
+
+.
  The bin width 
 \begin_inset Formula $w$
 \end_inset
 
- is chosen so that an association of distance 
+ is chosen so that any association of distance 
 \begin_inset Formula $w$
 \end_inset
 
- is improbable, i.e.
+ are improbable and negligible in practice, i.e.
  much larger than the largest positional error.
  An object with coordinates 
 \begin_inset Formula $\phi,\,\theta$
 \end_inset
 
- is thus put into bin 
-\begin_inset Formula $(i,\,j)=(\left\lfloor \phi/w\right\rfloor ,\left\lfloor \theta/w\right\rfloor )$
-\end_inset
-
-, but also into bins 
-\begin_inset Formula $(i+1,\,j)$
-\end_inset
-
-, 
-\begin_inset Formula $(i,\,j+1)$
-\end_inset
-
- and 
-\begin_inset Formula $(i+1,\,j+1)$
-\end_inset
-
- to avoid boundary effects.
+ is placed in the bin corresponding to its coordinate, but also into its
+ neighboring bins to avoid boundary effects.
  This is done for each catalogue separately.
  Then, in each bin, the Cartesian product across catalogues (every possible
  combination of sources) is computed.
