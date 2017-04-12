@@ -5279,7 +5279,7 @@ key "Budavari2008"
 , assuming that positions lie on the celestial sphere and adopting the expansion
 s developed in their Appendix B, we can write down likelihoods.
  For a counterpart across 
-\begin_inset Formula $n$
+\begin_inset Formula $k$
 \end_inset
 
  catalogues, we obtain:
@@ -5288,13 +5288,12 @@ s developed in their Appendix B, we can write down likelihoods.
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P(D|H)=2^{n-1}\frac{\prod\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\exp\left\{ -\frac{\sum_{i=1}^{j}\phi_{ij}\sigma_{j}^{-1}\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\right\} \label{eq:nwaylikelihood}
+P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\exp\left\{ -\frac{\sum_{i<j}\phi_{ij}\sigma_{j}^{-1}\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\right\} \label{eq:nwaylikelihood}
 \end{equation}
 
 \end_inset
 
-.
- The likelihood for the hypothesis where some catalogues do not participate
+The likelihood for the hypothesis where some catalogues do not participate
  in the association has the appropriate terms in the products and sums removed.
  Therefore, the likelihood is unity for the hypothesis that there is no
  counterpart in any of the catalogues.

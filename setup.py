@@ -9,7 +9,7 @@ with open('README.rst') as f:
 
 setup(
 	name='nway',
-	version='3.1',
+	version='3.2',
 	author='Johannes Buchner',
 	author_email='johannes.buchner.acad@gmx.com',
 	packages=['nwaylib'],
@@ -26,6 +26,7 @@ setup(
 		"matplotlib",
 		"argparse",
 		"joblib"
+		"healpy",
 	],
 )
 
