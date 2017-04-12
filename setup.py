@@ -25,7 +25,7 @@ setup(
 		"progressbar",
 		"matplotlib",
 		"argparse",
-		"joblib"
+		"joblib",
 		"healpy",
 	],
 )
