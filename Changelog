@@ -6,6 +6,10 @@ Version 3.0:
 	
 	Updated fake catalogue script (3.1)
 
+	Added healpy to install dependencies (3.2)
+
+	Use faster ra/dec grid when safe in off-pole/off-ra-origin fields (3.3)
+
 Version 2.0:
 	
 	Added correction for associations additional to association with the 

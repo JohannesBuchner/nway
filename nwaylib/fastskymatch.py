@@ -56,20 +56,27 @@ def get_healpix_resolution_degrees(nside):
 
 @mem.cache
 def crossproduct(radectables, err):
-	# choose appropriate nside for err (in deg)
-	nside = 1
-	for nside_next in range(30): 
-		# largest distance still contained within pixels
-		dist_neighbors_complete = get_healpix_resolution_degrees(2**nside_next)
-		# we are looking for a pixel size which ensures bigger distances than the error radius
-		# but we want the smallest pixels possible, to reduce the cartesian product
-		if dist_neighbors_complete < err:
-			# too small, do not accept
-			# sources within err will be outside the neighbor pixels
-			break
-		nside = 2**nside_next
-	resol = get_healpix_resolution_degrees(nside) * 60 * 60
-	print('matching: healpix hashing on pixel resolution ~ %f arcsec (nside=%d)' % (resol, nside))
+	use_flat_bins = False
+	ra, dec = radectables[0]
+	# away from the poles and RA=0
+	if False and err < 1 and (ra > 5).all() and (ra < 355).all() and (numpy.abs(dec) < 60).all():
+		print('matching: using fast flat-sky approximation for this match')
+		use_flat_bins = True
+	else:
+		# choose appropriate nside for err (in deg)
+		nside = 1
+		for nside_next in range(30): 
+			# largest distance still contained within pixels
+			dist_neighbors_complete = get_healpix_resolution_degrees(2**nside_next)
+			# we are looking for a pixel size which ensures bigger distances than the error radius
+			# but we want the smallest pixels possible, to reduce the cartesian product
+			if dist_neighbors_complete < err:
+				# too small, do not accept
+				# sources within err will be outside the neighbor pixels
+				break
+			nside = 2**nside_next
+		resol = get_healpix_resolution_degrees(nside) * 60 * 60
+		print('matching: healpix hashing on pixel resolution ~ %f arcsec (nside=%d)' % (resol, nside))
 	
 	buckets = defaultdict(lambda : [[] for _ in range(len(radectables))])
 	
@@ -77,22 +84,34 @@ def crossproduct(radectables, err):
 		progressbar.Percentage(), ' | ', progressbar.Counter('%3d'),
 		progressbar.Bar(), progressbar.ETA()], maxval=sum([len(t[0]) for t in radectables])).start()
 	for ti, (ra_table, dec_table) in enumerate(radectables):
-		# get healpixels
-		ra, dec = ra_table, dec_table
-		phi = ra / 180 * pi
-		theta = dec / 180 * pi + pi/2.
-		i = healpy.pixelfunc.ang2pix(nside, phi=phi, theta=theta, nest=True)
-		j = healpy.pixelfunc.get_all_neighbours(nside, phi=phi, theta=theta, nest=True)
-		# only consider four neighbours in one direction (N)
-		# does not work, sometimes A is south of B, but B is east of A
-		# so need to consider all neighbors, and deduplicate
-		neighbors = numpy.hstack((i.reshape((-1,1)), j.transpose()))
+		if use_flat_bins:
+			for ei, (ra, dec) in enumerate(zip(ra_table, dec_table)):
+				i, j = int(ra / err), int(dec / err)
+				
+				# put in bucket, and neighbors
+				for jj, ii in (j,i), (j,i+1), (j+1,i), (j+1, i+1):
+					k = (ii, jj)
+					if k not in buckets: # prepare bucket
+						buckets[k] = [[] for _ in range(len(radectables))]
+					buckets[k][ti].append(ei)
+				pbar.update(pbar.currval + 1)
+		else:
+			# get healpixels
+			ra, dec = ra_table, dec_table
+			phi = ra / 180 * pi
+			theta = dec / 180 * pi + pi/2.
+			i = healpy.pixelfunc.ang2pix(nside, phi=phi, theta=theta, nest=True)
+			j = healpy.pixelfunc.get_all_neighbours(nside, phi=phi, theta=theta, nest=True)
+			# only consider four neighbours in one direction (N)
+			# does not work, sometimes A is south of B, but B is east of A
+			# so need to consider all neighbors, and deduplicate
+			neighbors = numpy.hstack((i.reshape((-1,1)), j.transpose()))
 		
-		# put in bucket, and neighbors
-		for ei, keys in enumerate(neighbors):
-			for kk in keys:
-				buckets[kk][ti].append(ei)
-			pbar.update(pbar.currval + 1)
+			# put in bucket, and neighbors
+			for ei, keys in enumerate(neighbors):
+				for kk in keys:
+					buckets[kk][ti].append(ei)
+				pbar.update(pbar.currval + 1)
 	pbar.finish()
 	
 	# add no-counterpart options
