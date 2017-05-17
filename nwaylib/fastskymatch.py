@@ -56,12 +56,15 @@ def get_healpix_resolution_degrees(nside):
 
 @mem.cache
 def crossproduct(radectables, err):
-	use_flat_bins = False
-	ra, dec = radectables[0]
-	# away from the poles and RA=0
-	if False and err < 1 and (ra > 5).all() and (ra < 355).all() and (numpy.abs(dec) < 60).all():
+	# check if away from the poles and RA=0
+	use_flat_bins = True
+	for ra, dec in radectables:
+		if not(err < 1 and (ra > 10*err).all() and (ra < 360-10*err).all() and (numpy.abs(dec) < 45).all()):
+			use_flat_bins = False
+			break
+	
+	if use_flat_bins:
 		print('matching: using fast flat-sky approximation for this match')
-		use_flat_bins = True
 	else:
 		# choose appropriate nside for err (in deg)
 		nside = 1
