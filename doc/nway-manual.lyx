@@ -5288,7 +5288,7 @@ s developed in their Appendix B, we can write down likelihoods.
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\exp\left\{ -\frac{\sum_{i<j}\phi_{ij}\sigma_{j}^{-1}\sigma_{i}^{-1}}{\sum\sigma_{i}^{-1}}\right\} \label{eq:nwaylikelihood}
+P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-2}}{\sum\sigma_{i}^{-2}}\exp\left\{ -\frac{\sum_{i<j}\phi_{ij}\sigma_{j}^{-2}\sigma_{i}^{-2}}{2\sum\sigma_{i}^{-2}}\right\} \label{eq:nwaylikelihood}
 \end{equation}
 
 \end_inset
