@@ -15,7 +15,7 @@ Features
 Documentation
 ---------------
 
-See the manual: doc/nway-manual.pdf
+See the manual in the doc/ folder, https://github.com/JohannesBuchner/nway/raw/master/doc/nway-manual.pdf
 
 A full worked example with demo catalogues is included.
 
