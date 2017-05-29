@@ -1,7 +1,7 @@
-nway catalogue matcher
+nway
 ======================================
 
-nway is a catalogue association program for arbitrarily many catalogues. 
+nway is a source cross-matching tool for arbitrarily many astronomical catalogues. 
 
 Features
 ----------
