@@ -1,0 +1,15 @@
+Patches welcome for the following tasks:
+
+* allow elliptical errors for the primary catalogue
+  * This would require, instead of one error column, three: sigma, correlation strength and orientation. 
+* Parallelisation:
+  * For the hashing: catalogues could be processed in parallel and the hash bins merged at the end.
+    * This should be relatively easy to implement if really needed.
+    * Since this is only done once, then cached, and scales with O(Nentries) of each catalogue, this step should not be very slow.
+  * For the matching: 
+    * For matches with large and/or many catalogues, this is typically memory-limited, so parallelisation would not help much.
+  * For the grouping:
+    * This should be easy to parallelise. Each group has a start and length, and computations are embarrassingly parallel.
+  * For other processing:
+    * Most computations operaten on the entire arrays. These could benefit from parallelisation in chunks, but usually these steps are not the slowest parts.
+
