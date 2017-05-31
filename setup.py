@@ -9,7 +9,7 @@ with open('README.rst') as f:
 
 setup(
 	name='nway',
-	version='3.3',
+	version='3.4',
 	author='Johannes Buchner',
 	author_email='johannes.buchner.acad@gmx.com',
 	packages=['nwaylib'],
@@ -22,7 +22,7 @@ setup(
 		"scipy",
 		"numpy",
 		"astropy",
-		"progressbar",
+		"progressbar-latest",
 		"matplotlib",
 		"argparse",
 		"joblib",
