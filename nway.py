@@ -202,7 +202,7 @@ for case in range(2**(len(table_names)-1)):
 	mask = True
 	for i in range(1, len(tables)):
 		if table_mask[i]: # require not nan
-			mask = numpy.logical_and(mask, -numpy.isnan(separations[0][i]))
+			mask = numpy.logical_and(mask, ~numpy.isnan(separations[0][i]))
 		else:
 			mask = numpy.logical_and(mask, numpy.isnan(separations[0][i]))
 	# select errors
@@ -296,7 +296,7 @@ for mag, magfile in magnitude_columns:
 	mag_all[mag_all == -99] = numpy.nan
 	
 	# get magnitudes of selected
-	mask_all = -numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
+	mask_all = ~numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
 
 	col = "%s_%s" % (table_name, col_name)
 	
@@ -329,7 +329,7 @@ for mag, magfile in magnitude_columns:
 		mask_others[rows_possible] = False
 		
 		# all options in the total (field+target sources) histogram
-		mask_sel = -numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
+		mask_sel = ~numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
 
 		#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
 
