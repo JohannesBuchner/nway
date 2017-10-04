@@ -1,7 +1,7 @@
 import astropy.io.fits as pyfits
 import sys
 
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
 	sys.stderr.write("""SYNOPSIS: %s <catalogue.fits> <tablename> <skyarea>
 
 tablename: name of the catalogue
