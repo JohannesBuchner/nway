@@ -746,6 +746,76 @@ code{scipy, astropy, matplotlib, progressbar-latest, argparse, joblib, healpy}
 .
 \end_layout
 
+\begin_layout Paragraph
+Upgrading from older 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ versions
+\end_layout
+
+\begin_layout Standard
+To upgrade, uninstall the older 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ version first: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\backslash
+$ pip uninstall nway}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Repeat until it says that 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+nway~
+\end_layout
+
+\end_inset
+
+ is not installed.
+ Then follow the installation instructions above.
+\end_layout
+
 \begin_layout Section
 Citing 
 \begin_inset ERT
