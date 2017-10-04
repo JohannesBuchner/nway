@@ -575,7 +575,7 @@ status open
 \backslash
 code{
 \backslash
-$ pip install nway --user}
+$ pip install nway -{}-user}
 \end_layout
 
 \end_inset
@@ -2317,7 +2317,7 @@ status open
 
 
 \backslash
-nway
+nway~
 \end_layout
 
 \end_inset
