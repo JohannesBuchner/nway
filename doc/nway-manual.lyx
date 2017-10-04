@@ -7,15 +7,21 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage{fourier}
 
-\definecolor{MyYellow}{HTML}{CBD90F}
-\definecolor{MyGreen}{HTML}{DFEF11}
-\definecolor{MyOrange}{HTML}{FEC34D}
+%\definecolor{MyGreen}{HTML}{CBD90F}
+%\definecolor{MyYellow}{HTML}{DFEF11}
+%\definecolor{MyOrange}{HTML}{FEC34D}
+
+\definecolor{MyYellow}{HTML}{D8D9E9}
+%\definecolor{MyGreen}{HTML}{B3B4DA}
+\definecolor{MyOrange}{HTML}{FFC57A}
+\definecolor{MyGreen}{HTML}{EBEBF1}
+
 
 
 \newcommand{\nwayversion}{1.0}
 \newcommand{\nway}{\textsc{Nway}}
-\newcommand{\examplebox}[1]{\colorbox{MyYellow}{\begin{minipage}{10.3cm}#1\end{minipage}}}
-\newcommand{\otherbox}[1]{\colorbox{MyGreen}{\begin{minipage}#1\end{minipage}}}
+\newcommand{\examplebox}[1]{\colorbox{MyGreen}{\begin{minipage}{10.3cm}#1\end{minipage}}}
+\newcommand{\otherbox}[1]{\colorbox{MyYellow}{\begin{minipage}#1\end{minipage}}}
 \newcommand{\code}[1]{{\texttt{#1}}}
 \newcommand{\apj}{ApJ}
 \newcommand{\apjs}{ApJS}
@@ -72,11 +78,11 @@
 \pdf_bookmarksopen false
 \pdf_bookmarksopenlevel 1
 \pdf_breaklinks false
-\pdf_pdfborder true
+\pdf_pdfborder false
 \pdf_colorlinks true
 \pdf_backref false
 \pdf_pdfusetitle true
-\pdf_quoted_options "linkcolor=blue,citecolor=green"
+\pdf_quoted_options "linkcolor=blue,citecolor=black"
 \papersize a5paper
 \use_geometry true
 \use_package amsmath 1
@@ -312,7 +318,7 @@ status open
 
 
 \backslash
-colorbox{Yellow}{
+colorbox{MyYellow}{
 \end_layout
 
 \end_inset
@@ -345,7 +351,7 @@ nway~
 
 \end_inset
 
- are found in yellow boxes.
+ are found in blue boxes.
 \end_layout
 
 \begin_layout Plain Layout
@@ -361,7 +367,7 @@ examplebox{
 
 \end_inset
 
-Green boxes indicate examples you can run yourself to learn 
+Light blue boxes indicate examples you can run yourself to learn 
 \begin_inset ERT
 status open
 
@@ -720,6 +726,26 @@ $ python setup.py install -{}-user}
 .
 \end_layout
 
+\begin_layout Standard
+You need to install these python packages:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{scipy, astropy, matplotlib, progressbar-latest, argparse, joblib, healpy}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Section
 Citing 
 \begin_inset ERT
@@ -738,8 +764,29 @@ nway~
 \end_layout
 
 \begin_layout Standard
-Please cite Salvato et al.
- (in prep.).
+Please cite Salvato et al., MNRAS, 2017 (ArXiV: 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://arxiv.org/abs/1705.10711
+\end_layout
+
+\end_inset
+
+, ADS: 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://adsabs.harvard.edu/abs/2017arXiv170510711S
+\end_layout
+
+\end_inset
+
+).
 \end_layout
 
 \begin_layout Section
@@ -2034,7 +2081,7 @@ status open
 
 
 \backslash
-colorbox{Yellow}{
+colorbox{MyYellow}{
 \end_layout
 
 \end_inset
@@ -2160,9 +2207,7 @@ status open
 
 
 \backslash
-code{python write
-\backslash
-_header.py mycat.fits mytablename myskyarea}
+code{python nway-write-header.py mycat.fits mytablename myskyarea}
 \end_layout
 
 \end_inset
@@ -2198,9 +2243,7 @@ status open
 
 
 \backslash
-code{python write
-\backslash
-_header.py COSMOS
+code{python nway-write-header.py COSMOS
 \backslash
 _OPTICAL.fits OPT 2}
 \end_layout
@@ -2219,9 +2262,7 @@ status open
 
 
 \backslash
-code{python write
-\backslash
-_header.py COSMOS
+code{python nway-write-header.py COSMOS
 \backslash
 _IRAC.fits IRAC 2}
 \end_layout
@@ -2240,9 +2281,7 @@ status open
 
 
 \backslash
-code{python write
-\backslash
-_header.py COSMOS
+code{python nway-write-header.py COSMOS
 \backslash
 _XMM.fits XMM 2}
 \end_layout
@@ -2358,7 +2397,7 @@ status open
 
 
 \backslash
-colorbox{Yellow}{
+colorbox{MyYellow}{
 \end_layout
 
 \end_inset
@@ -2583,7 +2622,7 @@ status open
 
 
 \backslash
-colorbox{Yellow}{
+colorbox{MyYellow}{
 \end_layout
 
 \end_inset
@@ -2944,9 +2983,7 @@ status open
 
 
 \backslash
-code{python write
-\backslash
-_header.py mycat.fits mytablename myskyarea}
+code{python nway-write-header.py mycat.fits mytablename myskyarea}
 \end_layout
 
 \end_inset
@@ -3452,7 +3489,7 @@ status open
 
 
 \backslash
-colorbox{Yellow}{
+colorbox{MyYellow}{
 \end_layout
 
 \end_inset
@@ -3771,7 +3808,7 @@ status open
 
 
 \backslash
-colorbox{Yellow}{
+colorbox{MyYellow}{
 \end_layout
 
 \end_inset
@@ -4196,7 +4233,7 @@ status open
 
 
 \backslash
-colorbox{Yellow}{
+colorbox{MyYellow}{
 \end_layout
 
 \end_inset
@@ -5478,7 +5515,7 @@ name "sub:Grouping-by-primary"
 
 The first step in catalogue inference is whether the source has any counterpart
  (
-\begin_inset Formula $p_{{\rm any}}$
+\begin_inset Formula $p_{\mathrm{any}}$
 \end_inset
 
 ).
@@ -5525,13 +5562,13 @@ reference "eq:prior"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-p_{{\rm any}}=1-P(H_{0}|D)/\sum_{i}P(H_{i}|D)\label{eq:post-any}
+p_{\mathrm{any}}=1-P(H_{0}|D)/\sum_{i}P(H_{i}|D)\label{eq:post-any}
 \end{equation}
 
 \end_inset
 
 If 
-\begin_inset Formula $p_{{\rm any}}$
+\begin_inset Formula $p_{\mathrm{any}}$
 \end_inset
 
  is low, this indicates that there is little evidence for any of the considered,
@@ -5573,7 +5610,7 @@ reference "eq:post-any"
 
 \begin_layout Standard
 If 
-\begin_inset Formula $p_{{\rm any}}\approx1$
+\begin_inset Formula $p_{\mathrm{any}}\approx1$
 \end_inset
 
 , there is strong evidence for at least one of the associations to another
@@ -6105,7 +6142,7 @@ reference "sub:Auto-calibration"
 In the final step, associations are grouped by the object from the primary
  catalogue (here: X-ray source catalogue).
  The posteriors 
-\begin_inset Formula $p_{{\rm any}}$
+\begin_inset Formula $p_{\mathrm{any}}$
 \end_inset
 
  and 
