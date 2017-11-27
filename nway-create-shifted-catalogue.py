@@ -93,7 +93,7 @@ for k, v in inputfitsfile[1].header.items():
 		tbhdu.header[k] = v
 
 hdulist = pyfits.HDUList([header_hdu, tbhdu])
-hdulist.writeto(outfile, clobber=True)
+hdulist.writeto(outfile, overwrite=True)
 
 
 

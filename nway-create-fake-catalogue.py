@@ -195,7 +195,7 @@ tbhdu = inputfitsfile[1]
 print('writing "%s" (%d rows)' % (outfile, len(tbhdu.data)))
 
 hdulist = pyfits.HDUList([header_hdu, tbhdu])
-hdulist.writeto(outfile, clobber=True)
+hdulist.writeto(outfile, overwrite=True)
 
 
 

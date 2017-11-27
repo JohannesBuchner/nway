@@ -287,7 +287,7 @@ if __name__ == '__main__':
 		print('generating toy data for %s!' % fitsname)
 		hdulist = array2fits(gen(), fitsname.replace('.fits', ''))
 		hdulist[0].header['GENERAT'] = 'match test table, random'
-		hdulist.writeto(fitsname, clobber=False)
+		hdulist.writeto(fitsname, overwrite=False)
 	
 	tables = [pyfits.open(fitsname)[1] for fitsname in filenames]
 	table_names = [t.name for t in tables]
@@ -301,7 +301,7 @@ if __name__ == '__main__':
 	hdulist = wraptable2fits(tbhdu, 'MATCH')
 	hdulist[0].header['ANALYSIS'] = 'match table from' + ', '.join(table_names)
 	hdulist[0].header['INPUT'] = ', '.join(filenames)
-	hdulist.writeto('match.fits', clobber=True)
+	hdulist.writeto('match.fits', overwrite=True)
 
 	print('plotting')
 	import matplotlib.pyplot as plt

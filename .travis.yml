@@ -51,36 +51,56 @@ script:
   - cd doc/
   - 'echo "backend: Agg" > matplotlibrc'
   
+  # creating offset catalogues
+  - nway-create-fake-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits
+  - test -e COSMOS_XMM-fake.fits
+  - nway-create-shifted-catalogue.py --radius 40 --shift-ra 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits
+  - test -e COSMOS_XMM-shift.fits
+  - rm -f COSMOS_XMM-shift.fits
+  - nway-create-shifted-catalogue.py --radius 40 --shift-dec 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits
+  - test -e COSMOS_XMM-shift.fits
+
   # 2 catalogue match
   - nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2.fits --radius 20
-  - nway-create-fake-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits
-  - nway-create-shifted-catalogue.py --radius 40 --shift-ra 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits
-  - nway-create-shifted-catalogue.py --radius 40 --shift-dec 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits
+  - test -e example2.fits
   - nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-offset.fits --radius 20
+  - test -e example2-offset.fits
 
   # 2 catalogue match, with magnitudes
-
   - nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-mag.fits --radius 20 --mag OPT:MAG auto --mag-radius=4
+  - test -e example2-mag.fits
+  - test -e OPT_MAG_fit.pdf
+  - test -e OPT_MAG_fit.txt
   - nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt
+  - test -e example2-mag-offset.fits
 
   # 3 catalogue match
   - nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3.fits --radius 20
+  - test -e example3.fits
   - nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-offset.fits --radius 20
+  - test -e example3-offset.fits
 
   # 3 catalogue match, with magnitudes
-
   - nway.py --radius 20 COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --mag OPT:MAG auto --mag IRAC:mag_ch1 auto --mag-radius 4 --out=example3-mag.fits
+  - test -e example3-mag.fits
+  - test -e IRAC_mag_ch1_fit.pdf
+  - test -e IRAC_mag_ch1_fit.txt
   - nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt  --mag IRAC:mag_ch1 IRAC_mag_ch1_fit.txt 
+  - test -e example3-mag-offset.fits
 
   # create fake catalogues
+  - nway-explain.py example3.fits 422
   - nway-explain.py example3-offset.fits 422
 
   - nway-calibrate-cutoff.py example2.fits example2-offset.fits 
-  - nway-calibrate-cutoff.py python cutoffquality.py example2-mag.fits example2-mag-offset.fits 
+  - test -e example2.fits_p_any_cutoffquality.pdf
+  - test -e example2.fits_p_any_p_i.pdf
+  - nway-calibrate-cutoff.py example2-mag.fits example2-mag-offset.fits 
   - nway-calibrate-cutoff.py example3.fits example3-offset.fits 
   - nway-calibrate-cutoff.py example3-mag.fits example3-mag-offset.fits 
   
   # we should test for created output files
   - ls
+  
 
 after_success: codecov
