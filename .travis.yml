@@ -34,7 +34,8 @@ install:
   # Customise the testing environment
   # ---------------------------------
   - conda install --quiet --file conda-requirements.txt
-  - pip install --user codecov
+  - pip install setuptools
+  - pip install codecov
 
   # Summerise environment
   # ---------------------
