@@ -53,8 +53,8 @@ script:
   
   # 2 catalogue match
   - nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2.fits --radius 20
-  - nway-create-fake-catalogue --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits
-  - nway-create-shifted-catalogue --radius 20 COSMOS_XMM.fits COSMOS_XMM-shift.fits
+  - nway-create-fake-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits
+  - nway-create-shifted-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-shift.fits
   - nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-offset.fits --radius 20
 
   # 2 catalogue match, with magnitudes
