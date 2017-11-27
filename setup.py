@@ -9,7 +9,7 @@ with open('README.rst') as f:
 
 setup(
 	name='nway',
-	version='3.7',
+	version=open(os.path.join('nwaylib', 'VERSION')).read().strip(),
 	author='Johannes Buchner',
 	author_email='johannes.buchner.acad@gmx.com',
 	packages=['nwaylib'],
@@ -28,6 +28,8 @@ setup(
 		"joblib",
 		"healpy",
 	],
+	setup_requires=['pytest-runner'],
+	tests_require=['pytest'],
 )
 
 

@@ -1,0 +1,85 @@
+language: python
+
+sudo: false
+
+python:
+  - "2.7"
+#  - "3.4"
+#  - "3.5"
+
+git:
+  depth: 10000
+
+env:
+  
+
+install:
+  # Fetch and install conda
+  # -----------------------
+  - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
+  - if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
+      wget ${CONDA_BASE}2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget ${CONDA_BASE}3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p ${HOME}/miniconda
+  - export PATH="${HOME}/miniconda/bin:${PATH}"
+
+  # Create the testing environment
+  # ------------------------------
+  - conda config --set always_yes true
+  - conda config --set changeps1 no
+  - conda config --set show_channel_urls true
+  - conda config --add channels conda-forge
+  - conda update --quiet conda
+  - ENV_NAME="test-environment"
+  - conda create --quiet -n ${ENV_NAME} python=${TRAVIS_PYTHON_VERSION}
+  - source activate ${ENV_NAME}
+
+  # Customise the testing environment
+  # ---------------------------------
+  - conda install --quiet --file conda-requirements.txt
+  - pip install coveralls
+
+  # Summerise environment
+  # ---------------------
+  - conda list
+  - conda info -a
+
+  # Install and test imagehash
+  - python setup.py install
+
+script:
+  - coverage run setup.py test
+  # 2 catalogue match
+  - nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2.fits --radius 20
+  - nway.py XMM_xray_offset_clean_errors.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-offset.fits --radius 20
+
+  # 2 catalogue match, with magnitudes
+
+  - nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-mag.fits --radius 20 --mag OPT:MAG auto --mag-radius=4
+  - nway.py XMM_xray_offset_clean_errors.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt
+
+  # 3 catalogue match
+  - nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3.fits --radius 20
+  - nway.py XMM_xray_offset_clean_errors.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-offset.fits --radius 20
+
+  # 3 catalogue match, with magnitudes
+
+  - nway.py --radius 20 COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --mag OPT:MAG auto --mag IRAC:mag_ch1 auto --mag-radius 4 --out=example3-mag.fits
+  - nway.py XMM_xray_offset_clean_errors.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt  --mag IRAC:mag_ch1 IRAC_mag_ch1_fit.txt 
+
+  # create fake catalogues
+  - nway-create-fake-catalogue --radius 20 COSMOS_XMM.fits example2-fake-offset.fits
+  - nway-create-shifted-catalogue --radius 20 COSMOS_XMM.fits example2-fake-offset.fits
+  - nway-explain.py example3-offset.fits 422
+
+  - nway-calibrate-cutoff.py example2.fits example2-offset.fits 
+  - nway-calibrate-cutoff.py python cutoffquality.py example2-mag.fits example2-mag-offset.fits 
+  - nway-calibrate-cutoff.py example3.fits example3-offset.fits 
+  - nway-calibrate-cutoff.py example3-mag.fits example3-mag-offset.fits 
+  
+  # we should test for created output files
+  - ls
+
+after_success: coveralls

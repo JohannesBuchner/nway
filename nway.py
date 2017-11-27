@@ -147,11 +147,12 @@ for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 		# get column
 		k = "%s_%s" % (table_name, pos_error[1:])
 		assert k in table.dtype.names, 'ERROR: Position error column for "%s" not in table "%s". Have these columns: %s' % (k, table_name, ', '.join(table.dtype.names))
-		print('    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table[k].min(), table[k].max()))
-		if tables[ti][pos_error[1:]].min() <= 0:
-			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (tables[ti][pos_error[1:]] <= 0).sum()))
-		if table[k].max() > match_radius * 60 * 60:
-			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (k, table[k].max()))
+		table_errors = tables[ti][pos_error[1:]]
+		print('    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table_errors.min(), table_errors.max()))
+		if table_errors.min() <= 0:
+			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (table_errors <= 0).sum()))
+		if table_errors.max() > match_radius * 60 * 60:
+			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (k, table_errors.max()))
 		errors.append(table[k])
 	else:
 		print('    Position error for "%s": using fixed value %f' % (table_name, float(pos_error)))
@@ -493,7 +494,8 @@ hdulist[0].header.update(match_header)
 print('    writing "%s" (%d rows, %d columns) ...' % (outfile, len(tbhdu.data), len(columns)))
 hdulist.writeto(outfile, clobber=True)
 
-
+import nwaylib.checkupdates
+nwaylib.checkupdates.checkupdates()
 
 
 

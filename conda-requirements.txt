@@ -1,0 +1,8 @@
+scipy
+numpy
+astropy
+progressbar-latest
+matplotlib
+argparse
+joblib
+healpy
