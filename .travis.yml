@@ -7,12 +7,6 @@ python:
 #  - "3.4"
 #  - "3.5"
 
-git:
-  depth: 10000
-
-env:
-  
-
 install:
   # Fetch and install conda
   # -----------------------
@@ -40,7 +34,7 @@ install:
   # Customise the testing environment
   # ---------------------------------
   - conda install --quiet --file conda-requirements.txt
-  - pip install coveralls
+  - pip install --user codecov
 
   # Summerise environment
   # ---------------------
@@ -83,4 +77,4 @@ script:
   # we should test for created output files
   - ls
 
-after_success: coveralls
+after_success: codecov
