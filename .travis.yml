@@ -102,5 +102,6 @@ script:
   # we should test for created output files
   - ls
   
+  - cd -
 
 after_success: codecov
