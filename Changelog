@@ -15,6 +15,8 @@ Version 3.0:
 	fixed warnings for very recent numpy versions (3.5)
 	
 	updated manual and made nway-write-header.py more user-friendly (3.7)
+	
+	added Continuous Integration builds, checking for updates (3.8)
 
 Version 2.0:
 	

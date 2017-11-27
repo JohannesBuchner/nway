@@ -12,6 +12,9 @@ Features
 * Can incorporate additional prior information, such as the magnitude or color distributions of the sources to match
 * Works accurately and fast in small areas and all-sky catalogues
 
+.. image:: https://travis-ci.org/JohannesBuchner/nway.svg?branch=master
+    :target: https://travis-ci.org/JohannesBuchner/nway
+
 Documentation
 ---------------
 
@@ -48,8 +51,7 @@ Please file an issue on Github if you have any problems.
 Citing nway correctly
 ----------------------
 
-Please cite Salvato et al (in prep.). https://arxiv.org/abs/1705.10711
-
+Please cite Salvato et al (2017). https://arxiv.org/abs/1705.10711 (`Get BibTex <http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2017arXiv170510711S&data_type=BIBTEX&db_key=PRE&nocookieset=1>`_)
 Licence
 ---------------
 
