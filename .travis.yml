@@ -46,6 +46,9 @@ install:
 
 script:
   - coverage run setup.py test
+  
+  - cd doc/
+  
   # 2 catalogue match
   - nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2.fits --radius 20
   - nway.py XMM_xray_offset_clean_errors.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-offset.fits --radius 20
