@@ -12,9 +12,6 @@ Features
 * Can incorporate additional prior information, such as the magnitude or color distributions of the sources to match
 * Works accurately and fast in small areas and all-sky catalogues
 
-.. image:: https://travis-ci.org/JohannesBuchner/nway.svg?branch=master
-    :target: https://travis-ci.org/JohannesBuchner/nway
-
 Documentation
 ---------------
 
