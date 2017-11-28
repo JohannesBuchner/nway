@@ -27,7 +27,7 @@ def run_match(nfiles, ngen=40):
 	def gen():
 		ra  = numpy.random.uniform(size=ngen)
 		dec = numpy.random.uniform(size=ngen)
-		return numpy.array(zip(ra, dec), dtype=[('ra', 'f'), ('dec', 'f')])
+		return numpy.array(list(zip(ra, dec)), dtype=[('ra', 'f'), ('dec', 'f')])
 	
 	filenames = ['test_input_%d.fits' % i for i in range(nfiles)]
 
