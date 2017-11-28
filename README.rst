@@ -53,6 +53,7 @@ Citing nway correctly
 ----------------------
 
 Please cite Salvato et al (2017). https://arxiv.org/abs/1705.10711 (`Get BibTex <http://adsabs.harvard.edu/cgi-bin/nph-bib_query?bibcode=2017arXiv170510711S&data_type=BIBTEX&db_key=PRE&nocookieset=1>`_)
+
 Licence
 ---------------
 
