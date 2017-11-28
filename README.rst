@@ -25,7 +25,7 @@ A full worked example with demo catalogues is included.
 Installation
 ---------------
 
-The easiest way to install nway is with pip: 
+The easiest way to install nway is with pip::
 
 	$ pip install nway
 
@@ -40,7 +40,12 @@ nway uses the following python packages:
 * joblib
 * healpy
 
-nway should work both with Python 3 and Python 2. 
+nway works with both Python 3 and Python 2 and various astropy versions.
+
+.. image:: https://codecov.io/gh/JohannesBuchner/nway/branch/master/graph/badge.svg
+	:target: https://codecov.io/gh/JohannesBuchner/nway
+.. image:: https://travis-ci.org/JohannesBuchner/nway.svg?branch=master
+	:target: https://travis-ci.org/JohannesBuchner/nway
 
 Reporting issues
 -----------------
