@@ -25,7 +25,6 @@ setup(
 		"astropy",
 		"progressbar2",
 		"matplotlib",
-		"argparse",
 		"joblib",
 		"healpy",
 	],

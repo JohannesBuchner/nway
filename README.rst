@@ -37,7 +37,6 @@ nway uses the following python packages:
 * numpy, scipy, matplotlib
 * astropy
 * progressbar2 or progressbar or progressbar-latest
-* argparse
 * joblib
 * healpy
 
