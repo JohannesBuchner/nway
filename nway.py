@@ -13,7 +13,7 @@ from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
 import astropy.io.fits as pyfits
 import argparse
-import progressbar
+from nwaylib import progress
 import nwaylib.fastskymatch as match
 import nwaylib.bayesdistance as bayesdist
 import nwaylib.magnitudeweights as magnitudeweights
@@ -229,9 +229,7 @@ if args.consider_unrelated_associations:
 		# correct for unrelated associations
 		# identify those in need of correction
 		# two unconsidered catalogues are needed for an unrelated association
-		pbar = progressbar.ProgressBar(widgets=[
-			progressbar.Percentage(), '|', progressbar.Counter('%6d'),
-			progressbar.Bar(), progressbar.ETA()])
+		pbar = progress.bar(ndigits=6)
 		for i in pbar(candidates):
 			# list which ones we are missing
 			missing_cats = [k for k, sep in enumerate(separations[0]) if numpy.isnan(sep[i])]
@@ -384,9 +382,7 @@ match_header['COL_PRIM'] = primary_id_key
 match_header['COLS_ERR'] = ' '.join(['%s_%s' % (ti, poscol) for ti, poscol in zip(table_names, pos_errors)])
 print('    grouping by column "%s" and flagging ...' % (primary_id_key))
 
-pbar = progressbar.ProgressBar(widgets=[
-	progressbar.Percentage(), '|', progressbar.Counter('%6d'),
-	progressbar.Bar(), progressbar.ETA()])
+pbar = progress.bar(ndigits=6)
 pid_index = primary_ids.index(pid)
 best_log_bf = 0
 # go through more complex associations
@@ -492,7 +488,7 @@ for k, v in args.__dict__.items():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
 hdulist[0].header.update(match_header)
 print('    writing "%s" (%d rows, %d columns) ...' % (outfile, len(tbhdu.data), len(columns)))
-hdulist.writeto(outfile, clobber=True)
+hdulist.writeto(outfile, **progress.kwargs_overwrite_true)
 
 import nwaylib.checkupdates
 nwaylib.checkupdates.checkupdates()

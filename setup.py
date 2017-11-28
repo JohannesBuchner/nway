@@ -23,7 +23,7 @@ setup(
 		"scipy",
 		"numpy",
 		"astropy",
-		"progressbar-latest",
+		"progressbar2",
 		"matplotlib",
 		"argparse",
 		"joblib",

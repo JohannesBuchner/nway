@@ -9,7 +9,7 @@ import itertools
 from collections import defaultdict
 import os, sys
 import astropy.io.fits as pyfits
-import progressbar
+import progress
 from numpy import sin, cos, arctan2, hypot, arccos, arcsin, pi, exp, log
 import healpy
 import joblib
@@ -83,9 +83,7 @@ def crossproduct(radectables, err):
 	
 	buckets = defaultdict(lambda : [[] for _ in range(len(radectables))])
 	
-	pbar = progressbar.ProgressBar(widgets=[
-		progressbar.Percentage(), ' | ', progressbar.Counter('%3d'),
-		progressbar.Bar(), progressbar.ETA()], maxval=sum([len(t[0]) for t in radectables])).start()
+	pbar = progress.bar(ndigits=3, maxval=sum([len(t[0]) for t in radectables])).start()
 	for ti, (ra_table, dec_table) in enumerate(radectables):
 		if use_flat_bins:
 			for ei, (ra, dec) in enumerate(zip(ra_table, dec_table)):
@@ -97,7 +95,7 @@ def crossproduct(radectables, err):
 					if k not in buckets: # prepare bucket
 						buckets[k] = [[] for _ in range(len(radectables))]
 					buckets[k][ti].append(ei)
-				pbar.update(pbar.currval + 1)
+				pbar.increment()
 		else:
 			# get healpixels
 			ra, dec = ra_table, dec_table
@@ -114,7 +112,7 @@ def crossproduct(radectables, err):
 			for ei, keys in enumerate(neighbors):
 				for kk in keys:
 					buckets[kk][ti].append(ei)
-				pbar.update(pbar.currval + 1)
+				pbar.increment()
 	pbar.finish()
 	
 	# add no-counterpart options
@@ -125,12 +123,10 @@ def crossproduct(radectables, err):
 	#	len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]]) 
 	#		for lists in buckets.values()]))
 
-	pbar = progressbar.ProgressBar(widgets=[
-		progressbar.Percentage(), '|', progressbar.Counter('%5d'), 
-		progressbar.Bar(), progressbar.ETA()], maxval=len(buckets)).start()
+	pbar = progress.bar(ndigits=5, maxval=len(buckets)).start()
 	while buckets:
 		k, lists = buckets.popitem()
-		pbar.update(pbar.currval + 1)
+		pbar.increment()
 		if k == -1: continue
 		if len(lists[0]) == 0:
 			continue
@@ -187,16 +183,13 @@ def match_multiple(tables, table_names, err, fits_formats):
 	
 	print('merging in %d columns from input catalogues ...' % sum([1 + len(table.dtype.names) for table in tables]))
 	cat_columns = []
-	pbar = progressbar.ProgressBar(widgets=[
-		progressbar.Percentage(), progressbar.Counter('%3d'), 
-		progressbar.Bar(), progressbar.ETA()], 
-		maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
+	pbar = progress.bar(ndigits=3, maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
 	for table, table_name, fits_format in zip(tables, table_names, fits_formats):
 		tbl = table[results[table_name]]
 		# set missing to nan
 		mask_missing = results[table_name] == -1
 		
-		pbar.update(pbar.currval + 1)
+		pbar.increment()
 		for n, format in zip(table.dtype.names, fits_format):
 			k = "%s_%s" % (table_name, n)
 			keys.append(k)
@@ -209,7 +202,7 @@ def match_multiple(tables, table_names, err, fits_formats):
 			
 			fitscol = pyfits.Column(name=k, format=format, array=col)
 			cat_columns.append(fitscol)
-			pbar.update(pbar.currval + 1)
+			pbar.increment()
 	pbar.finish()
 	
 	tbhdu = fits_from_columns(pyfits.ColDefs(cat_columns))
@@ -271,65 +264,4 @@ def array2fits(table, extname):
 		for n in table.dtype.names])
 	return wraptable2fits(cat_columns, extname)
 
-if __name__ == '__main__':
-	filenames = sys.argv[1:]
-	
-	numpy.random.seed(0)
 
-	def gen():
-		ra  = numpy.random.uniform(size=1000)
-		dec = numpy.random.uniform(size=1000)
-		return numpy.array(zip(ra, dec), dtype=[('ra', 'f'), ('dec', 'f')])
-
-	for fitsname in filenames:
-		if os.path.exists(fitsname):
-			continue
-		print('generating toy data for %s!' % fitsname)
-		hdulist = array2fits(gen(), fitsname.replace('.fits', ''))
-		hdulist[0].header['GENERAT'] = 'match test table, random'
-		hdulist.writeto(fitsname, overwrite=False)
-	
-	tables = [pyfits.open(fitsname)[1] for fitsname in filenames]
-	table_names = [t.name for t in tables]
-	tables = [t.data for t in tables]
-	
-	err = 0.03
-	
-	results, columns = match_multiple(tables, table_names, err)
-	tbhdu = fits_from_columns(pyfits.ColDefs(columns))
-	
-	hdulist = wraptable2fits(tbhdu, 'MATCH')
-	hdulist[0].header['ANALYSIS'] = 'match table from' + ', '.join(table_names)
-	hdulist[0].header['INPUT'] = ', '.join(filenames)
-	hdulist.writeto('match.fits', overwrite=True)
-
-	print('plotting')
-	import matplotlib.pyplot as plt
-	for table_name in table_names:
-		plt.plot(tbhdu.data['%s_RA'  % table_name], 
-			 tbhdu.data['%s_DEC' % table_name], '.')
-	
-	for r in tbhdu.data:
-		plt.plot(r['%s_RA'  % table_name],
-			 r['%s_DEC' % table_name],
-			'-', color='b', alpha=0.3)
-	
-	plt.savefig('matchtest.pdf')
-
-
-
-def test_dist():
-	
-	d = dist((53.15964508, -27.92927742), (53.15953445, -27.9313736))
-	print('distance', d)
-	assert not numpy.isnan(d)
-	
-	ra = numpy.array([ 53.14784241,  53.14784241,  53.14749908, 53.16559982,     53.19423676,  53.1336441 ])
-	dec = numpy.array([-27.79363823, -27.79363823, -27.81790352, -27.79622459,      -27.70860672, -27.76327515])
-	ra2 = numpy.array([ 53.14907837,  53.14907837,  53.1498642 , 53.16150284,     53.19681549,  53.13626862])
-	dec2 = numpy.array([-27.79297447, -27.79297447, -27.81404877, -27.79223251,  -27.71365929, -27.76314735])
-
-	d = dist((ra, dec), (ra2, dec2))
-	print('distance', d)
-	assert not numpy.isnan(d).any()
-	

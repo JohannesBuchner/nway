@@ -13,7 +13,7 @@ from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
 import astropy.io.fits as pyfits
 import argparse
-import progressbar
+from nwaylib import progress
 
 import nwaylib.fastskymatch as match
 
@@ -69,9 +69,7 @@ dec = dec_orig + args.shift_dec / 60. / 60
 # for each of them, check that there is no collision
 excluded = []
 
-pbar = progressbar.ProgressBar(widgets=[
-	progressbar.Percentage(), '|', progressbar.Counter('%6d'),
-	progressbar.Bar(), progressbar.ETA()])
+pbar = progress.bar(ndigits=6)
 for i, (ra_i, dec_i) in pbar(list(enumerate(zip(ra, dec)))):
 	d = match.dist((ra_i, dec_i), (ra_orig, dec_orig))
 	excluded.append((d * 60 * 60 < radius).any())
@@ -93,7 +91,7 @@ for k, v in inputfitsfile[1].header.items():
 		tbhdu.header[k] = v
 
 hdulist = pyfits.HDUList([header_hdu, tbhdu])
-hdulist.writeto(outfile, overwrite=True)
+hdulist.writeto(outfile, **progress.kwargs_overwrite_true)
 
 
 

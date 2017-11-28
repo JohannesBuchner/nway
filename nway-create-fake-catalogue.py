@@ -19,7 +19,7 @@ from numpy import log10, pi, exp, logical_and, cos, arccos, sin, arcsin, tan, ar
 import matplotlib.pyplot as plt
 import astropy.io.fits as pyfits
 import argparse
-import progressbar
+from nwaylib import progress
 import healpy
 import nwaylib.fastskymatch as match
 
@@ -126,9 +126,7 @@ def greatarc_interpolate((a_ra, a_dec), (b_ra, b_dec), f):
 	return c_ra, c_dec
 
 # for each of them, create a new one without collision
-pbar = progressbar.ProgressBar(widgets=[
-	progressbar.Percentage(), '|', progressbar.Counter('%6d'),
-	progressbar.Bar(), progressbar.ETA()])
+pbar = progress.bar(ndigits=6)
 for index in pbar(range(n)):
 	# select random coordinate
 	#a = numpy.random.randint(0, n)
@@ -195,7 +193,7 @@ tbhdu = inputfitsfile[1]
 print('writing "%s" (%d rows)' % (outfile, len(tbhdu.data)))
 
 hdulist = pyfits.HDUList([header_hdu, tbhdu])
-hdulist.writeto(outfile, overwrite=True)
+hdulist.writeto(outfile, **progress.kwargs_overwrite_true)
 
 
 
