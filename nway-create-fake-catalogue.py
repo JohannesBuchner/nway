@@ -105,7 +105,8 @@ for nside_next in range(30):
 		print('    accepting.')
 		break
 
-def greatarc_interpolate((a_ra, a_dec), (b_ra, b_dec), f):
+def greatarc_interpolate(posa, posb, f):
+	(a_ra, a_dec), (b_ra, b_dec) = posa, posb
 	lon1 = a_ra / 180 * pi
 	lat1 = a_dec / 180 * pi
 	lon2 = b_ra / 180 * pi
