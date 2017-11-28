@@ -9,7 +9,7 @@ import itertools
 from collections import defaultdict
 import os, sys
 import astropy.io.fits as pyfits
-import progress
+from . import progress
 from numpy import sin, cos, arctan2, hypot, arccos, arcsin, pi, exp, log
 import healpy
 import joblib
