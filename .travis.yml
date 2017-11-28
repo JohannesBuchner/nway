@@ -6,6 +6,25 @@ python:
   - "2.7"
   - "3.5"
 
+matrix:
+  include:
+    # "Legacy" environments: oldest supported versions, without and with numba
+    - python: "2.7"
+      env: DEPS="numpy=1.8.2 scipy=0.12.0 matplotlib=1.3 astropy=1.2 progressbar"
+    - python: "2.7"
+      env: DEPS="numpy=1.8.2 scipy=0.13.3 matplotlib=1.3 astropy=1.3 progressbar-latest"
+    # "Recommended" environments: More recent versions, for Py2 and Py3.
+    - python: "2.7"
+      env: DEPS="numpy=1.9 scipy=0.16 matplotlib=1.4 astropy=1.3.1 progressbar"
+    - python: "2.7"
+      env: DEPS="numpy scipy matplotlib astropy progressbar2"
+    - python: "3.4"
+      env: DEPS="numpy=1.9 scipy=0.16 matplotlib=1.4 astropy=1.3 progressbar2"
+    - python: "3.5"
+      env: DEPS="numpy scipy matplotlib astropy progressbar2"
+    - python: "3.6"
+      env: DEPS="numpy scipy matplotlib astropy progressbar2" 
+
 install:
   # Fetch and install conda
   # -----------------------
@@ -32,7 +51,7 @@ install:
 
   # Customise the testing environment
   # ---------------------------------
-  - conda install --quiet --file conda-requirements.txt
+  - conda install --quiet $DEPS
   - pip install setuptools
   - pip install codecov
 
@@ -89,13 +108,10 @@ script:
 
   # create fake catalogues
   - nway-explain.py example3.fits 422
-  - nway-explain.py example3-offset.fits 422
 
   - nway-calibrate-cutoff.py example2.fits example2-offset.fits 
   - test -e example2.fits_p_any_cutoffquality.pdf
   - test -e example2.fits_p_any_p_i.pdf
-  - nway-calibrate-cutoff.py example2-mag.fits example2-mag-offset.fits 
-  - nway-calibrate-cutoff.py example3.fits example3-offset.fits 
   - nway-calibrate-cutoff.py example3-mag.fits example3-mag-offset.fits 
   
   # we should test for created output files
