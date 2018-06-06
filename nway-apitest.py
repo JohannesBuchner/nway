@@ -116,6 +116,19 @@ extra_columns = ['Separation_XMM_OPT', 'Separation_OPT_IRAC', 'Separation_XMM_IR
 for col in min_output_columns + extra_columns:
 	assert col in result.columns, ('looking for', col, 'in', result.columns)
 
+result = nwaylib.nway_match(
+	[
+	table_from_fits('doc/COSMOS_XMM.fits', area=2.0),
+	table_from_fits('doc/COSMOS_OPTICAL.fits', poserr_value=0.1, area=2.0, magnitude_columns=[('MAG', 'OPT_MAG_fit.txt')]),
+	table_from_fits('doc/COSMOS_IRAC.fits', poserr_value=0.5, area=2.0, magnitude_columns=[('mag_ch1', 'IRAC_mag_ch1_fit.txt')]),
+	],
+	match_radius = 20,
+	prior_completeness = 0.9,
+)
+assert len(result) == 387601, (len(result), result)
+for col in min_output_columns + extra_columns:
+	assert col in result.columns, ('looking for', col, 'in', result.columns)
+
 
 """
 if not filenames[0].endswith('shifted.fits'):
