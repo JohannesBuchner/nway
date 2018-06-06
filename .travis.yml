@@ -63,7 +63,7 @@ script:
   
   - cd doc/
   - 'echo "backend: Agg" > matplotlibrc'
-  - python -c 'import pandas; import' || exit 1
+  - python -c 'import pandas, nwaylib, nwaylib.progress' || exit 1
   
   # creating offset catalogues
   - nway-create-fake-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits
