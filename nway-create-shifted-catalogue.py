@@ -13,7 +13,7 @@ from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
 import astropy.io.fits as pyfits
 import argparse
-from nwaylib import progress
+import nwaylib.progress import progress
 
 import nwaylib.fastskymatch as match
 
