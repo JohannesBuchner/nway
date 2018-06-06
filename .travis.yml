@@ -59,6 +59,7 @@ install:
 script:
   - coverage run setup.py test
   
+  - 'echo "backend: Agg" > matplotlibrc'
   - cd doc/
   - 'echo "backend: Agg" > matplotlibrc'
   - python -c 'import pandas, nwaylib, nwaylib.progress' || exit 1
