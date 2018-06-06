@@ -5,3 +5,4 @@ progressbar2
 matplotlib
 joblib
 healpy
+pandas

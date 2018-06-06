@@ -27,6 +27,7 @@ setup(
 		"matplotlib",
 		"joblib",
 		"healpy",
+                "pandas",
 	],
 	setup_requires=['pytest-runner'],
 	tests_require=['pytest'],

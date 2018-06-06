@@ -54,7 +54,7 @@ install:
   - conda list
   - conda info -a
 
-  # Install and test imagehash
+  # Install and test nway
   - python setup.py install
 
 script:
