@@ -19,7 +19,7 @@ from numpy import log10, pi, exp, logical_and, cos, arccos, sin, arcsin, tan, ar
 import matplotlib.pyplot as plt
 import astropy.io.fits as pyfits
 import argparse
-import nwaylib.progress import progress
+import nwaylib.progress as progress
 import healpy
 import nwaylib.fastskymatch as match
 
