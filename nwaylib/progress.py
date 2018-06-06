@@ -19,8 +19,6 @@ def bar(ndigits=3, **kwargs):
 		progressbar.Bar(), progressbar.ETA()], **kwargs)
 	return pbar
 
-progressbar = bar
-
 import inspect
 import astropy.io.fits as pyfits
 if 'clobber' in inspect.getargspec(pyfits.writeto).args:
