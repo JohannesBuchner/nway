@@ -40,15 +40,13 @@ install:
   - conda config --add channels auto
   - conda update --quiet conda
   - ENV_NAME="test-environment"
-  - conda create --quiet -n ${ENV_NAME} python=${TRAVIS_PYTHON_VERSION}
+  - conda create --quiet -n ${ENV_NAME} python=${TRAVIS_PYTHON_VERSION} $DEPS pandas healpy python-dateutil
   - source activate ${ENV_NAME}
 
   # Customise the testing environment
   # ---------------------------------
-  - conda install --quiet $DEPS
-  - conda install python-dateutil
-  - pip install setuptools
-  - pip install codecov
+  - conda install --quiet $DEPS pandas healpy python-dateutil 
+  - pip install setuptools codecov
 
   # Summerise environment
   # ---------------------
