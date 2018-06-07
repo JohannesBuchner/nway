@@ -66,26 +66,44 @@ def nway_match(match_tables, match_radius, prior_completeness,
 	"""
 	if mag_exclude_radius is None:
 		mag_exclude_radius = mag_include_radius
+	if mag_include_radius is not None:
+		if mag_include_radius >= match_radius:
+			warnings.warn('WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.')
+
+	ncats = len(match_tables)
+	
+	table, resultstable, separations, errors = _create_match_table(match_tables, match_radius)
+
+	if not len(table) > 0:
+		raise EmptyResultException('No matches.')
+
+	# first pass: find secure matches and secure non-matches
+
+	prior, log_bf = _compute_single_log_bf(match_tables, table, separations, errors, prior_completeness)
+	table = table.assign(
+		dist_bayesfactor_uncorrected=log_bf,
+		dist_bayesfactor=log_bf
+	)
+	
+	if consider_unrelated_associations:
+		_correct_unrelated_associations(table, separations, errors, ncats)
+		log_bf = table['dist_bayesfactor']
+
+	# add the additional columns
+	post = bayesdist.posterior(prior, log_bf)
+	table = table.assign(dist_post=post)
+
+	# find magnitude biasing functions
+	table, total = _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, store_mag_hists)
+
+	table = _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prior, total)
+	
+	table = _truncate_table(table, min_prob)
+	
+	return table
 
 
-	source_densities = []
-	source_densities_plus = []
-	for i, match_table in enumerate(match_tables):
-		n = len(match_table['ra'])
-		area = match_table['area'] * 1.0 # in square degrees
-		area_total = (4 * pi * (180 / pi)**2)
-		density = n / area * area_total
-		print('%s "%s" (%d), density gives %.2e objects on entire sky' % ('Primary catalogue' if i == 0 else 'Catalogue', match_table['name'], n, density))
-		# this takes into account that the source may be absent
-		density_plus = (n + 1) / area * area_total
-		source_densities.append(density)
-		source_densities_plus.append(density_plus)
-
-	# source can not be absent in primary catalogue
-	source_densities_plus[0] = source_densities[0]
-	source_densities_plus = numpy.array(source_densities_plus)
-
-
+def _create_match_table(match_tables, match_radius):
 	# first match input catalogues, compute possible combinations in match_radius
 	ratables = [(t['ra'], t['dec']) for t in match_tables]
 	table_names = [t['name'] for t in match_tables]
@@ -152,22 +170,38 @@ def nway_match(match_tables, match_radius, prior_completeness,
 	print('matching: %6d matches after filtering by search radius' % mask.sum())
 
 	# now we have columns, which contains the distance information.
-	primary_id = columns[0]
 	assert len(columns) == len(keys), (len(columns), len(keys),  keys)
 
 	table = pandas.DataFrame(OrderedDict(zip(keys, columns)))
 	assert len(table) == nresults, (len(table), nresults,  mask.sum())
 
-	if not len(table) > 0:
-		raise EmptyResultException('No matches.')
+	return table, resultstable, separations, errors
 
-	# first pass: find secure matches and secure non-matches
+def _compute_single_log_bf(match_tables, table, separations, errors, prior_completeness):
 	print('Computing distance-based probabilities ...')
+	ncats = len(match_tables)
+	source_densities = []
+	source_densities_plus = []
+	for i, match_table in enumerate(match_tables):
+		n = len(match_table['ra'])
+		area = match_table['area'] * 1.0 # in square degrees
+		area_total = (4 * pi * (180 / pi)**2)
+		density = n / area * area_total
+		print('%s "%s" (%d), density gives %.2e objects on entire sky' % ('Primary catalogue' if i == 0 else 'Catalogue', match_table['name'], n, density))
+		# this takes into account that the source may be absent
+		density_plus = (n + 1) / area * area_total
+		source_densities.append(density)
+		source_densities_plus.append(density_plus)
+
+	# source can not be absent in primary catalogue
+	source_densities_plus[0] = source_densities[0]
+	source_densities_plus = numpy.array(source_densities_plus)
+
 
 	log_bf = numpy.zeros(len(table)) * numpy.nan
 	prior = numpy.zeros(len(table)) * numpy.nan
 	# handle all cases (also those with missing counterparts in some catalogues)
-	for case in range(2**(len(table_names)-1)):
+	for case in range(2**(ncats-1)):
 		table_mask = numpy.array([True] + [(case // 2**(ti)) % 2 == 0 for ti in range(len(match_tables)-1)])
 		ncat = table_mask.sum()
 		# select those cases
@@ -192,62 +226,51 @@ def nway_match(match_tables, match_radius, prior_completeness,
 
 	assert numpy.isfinite(prior).all(), (prior, log_bf)
 	assert numpy.isfinite(log_bf).all(), (prior, log_bf)
-	table = table.assign(dist_bayesfactor_uncorrected=log_bf)
+	return prior, log_bf
 
+def _correct_unrelated_associations(table, separations, errors, ncats):
+	print('    correcting for unrelated associations ...')
+	# correct for unrelated associations
+	# identify those in need of correction
+	# two unconsidered catalogues are needed for an unrelated association
+	primary_id = table[table.columns[0]]
 	ncat = table['ncat']
-	ncats = len(match_tables)
+	candidates = numpy.unique(primary_id[(ncat <= ncats - 2).values])
+	pbar = progress.bar(ndigits=6)
+	for primary_id_key, group in pbar(table.groupby(primary_id, sort=False)):
+		ncat_here = group['ncat']
+		# list which ones we are missing
+		best_logpost = 0
+		# go through more complex associations
+		for j in group[ncat_here > 2].index.values:
+			missing_cats = [k for k, sep in enumerate(separations[0]) if numpy.isnan(sep[j])]
+			# check if this association has sufficient overlap with the one we are looking for
+			# it must contain at least two of the catalogues we are missing
+			augmented_cats = []
+			for k in missing_cats:
+				if not numpy.isnan(separations[0][k][j]):
+					augmented_cats.append(k)
+			n_augmented_cats = len(augmented_cats)
+			if n_augmented_cats >= 2:
+				# ok, this is helpful.
+				# identify the separations and errors
+				separations_selected = [[[separations[k][k2][j]] for k2 in augmented_cats] for k in augmented_cats]
+				errors_selected = [[errors[k][j]] for k in augmented_cats]
+				# identify the prior
+				prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
+				# compute a log_bf
+				log_bf_j = bayesdist.log_bf(numpy.array(separations_selected), numpy.array(errors_selected))
+				logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
+				if logpost_j > best_logpost:
+					#print('post:', logpost_j, log_bf_j, prior_j)
+					best_logpost = logpost_j
 
-	if consider_unrelated_associations:
-		print('    correcting for unrelated associations ...')
-		# correct for unrelated associations
-		# identify those in need of correction
-		# two unconsidered catalogues are needed for an unrelated association
-		table = table.assign(dist_bayesfactor=log_bf)
-		candidates = numpy.unique(primary_id[(ncat <= ncats - 2).values])
-		pbar = progress.bar(ndigits=6)
-		for primary_id_key, group in pbar(table.groupby(primary_id, sort=False)):
-			ncat_here = group['ncat']
-			
-			# list which ones we are missing
-			missing_cats = [k for k, sep in enumerate(separations[0]) if numpy.isnan(sep[i])]
-			best_logpost = 0
-			# go through more complex associations
-			for j in group[ncat_here > 2].index:
-				# check if this association has sufficient overlap with the one we are looking for
-				# it must contain at least two of the catalogues we are missing
-				augmented_cats = []
-				for k in missing_cats:
-					if not numpy.isnan(separations[0][k][j]):
-						augmented_cats.append(k)
-				n_augmented_cats = len(augmented_cats)
-				if n_augmented_cats >= 2:
-					# ok, this is helpful.
-					# identify the separations and errors
-					separations_selected = [[[separations[k][k2][j]] for k2 in augmented_cats] for k in augmented_cats]
-					errors_selected = [[errors[k][j]] for k in augmented_cats]
-					# identify the prior
-					prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
-					# compute a log_bf
-					log_bf_j = bayesdist.log_bf(numpy.array(separations_selected), numpy.array(errors_selected))
-					logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
-					if logpost_j > best_logpost:
-						#print('post:', logpost_j, log_bf_j, prior_j)
-						best_logpost = logpost_j
+		# ok, we have our correction factor, best_logpost
+		# lets multiply it onto log_bf
+		if best_logpost > 0:
+			group['dist_bayesfactor'] += best_logpost
 
-			# ok, we have our correction factor, best_logpost
-			# lets multiply it onto log_bf
-			if best_logpost > 0:
-				group['dist_bayesfactor'] += best_logpost
-
-
-		log_bf = table['dist_bayesfactor']
-
-	# add the additional columns
-	post = bayesdist.posterior(prior, log_bf)
-	table = table.assign(dist_post=post)
-
-
-	# find magnitude biasing functions
+def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, store_mag_hists):
 
 	biases = {}
 	for i, t in enumerate(match_tables):
@@ -258,7 +281,7 @@ def nway_match(match_tables, match_radius, prior_completeness,
 			mag = "%s:%s" % (t['name'], col_name)
 			print('Incorporating bias "%s" ...' % mag)
 			
-			res = resultstable[:,i]
+			res = table[table.columns[i]].values
 			res_defined = res != -1
 			# get magnitudes of all
 			# mark -99 as undefined
@@ -271,13 +294,11 @@ def nway_match(match_tables, match_radius, prior_completeness,
 		
 			if maghist is None:
 				if mag_include_radius is not None:
-					if mag_include_radius >= match_radius:
-						warnings.warn('WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.')
 					selection = table['Separation_max'].values < mag_include_radius
 					selection_possible = table['Separation_max'].values < mag_exclude_radius
 				else:
-					selection = (post > 0.9).values
-					selection_possible = (post > 0.01).values
+					selection = (table['dist_post'] > 0.9).values
+					selection_possible = (table['dist_post'] > 0.01).values
 				
 				# ignore cases where counterpart is missing
 				assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
@@ -335,26 +356,31 @@ def nway_match(match_tables, match_radius, prior_completeness,
 
 	# add the bias columns
 	table = table.assign(**{'bias_%s' % col:10**weights for col, weights in biases.items()})
+	log_bf = table['dist_bayesfactor'].values
+	total = log_bf + sum(biases.values())
+	
+	return table, total
 
+def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prior, total):
 	print()
 	print('Computing final probabilities ...')
 
 	# add the posterior column
-	total = log_bf + sum(biases.values())
 	post = bayesdist.posterior(prior, total)
 	table = table.assign(p_single=post)
 
 	# compute weights for group posteriors
 	# 4pi comes from Eq. 
+	ncat = table['ncat'].values
 	log_post_weight = bayesdist.unnormalised_log_posterior(prior, total, ncat)
 	table = table.assign(log_post_weight=log_post_weight)
 
 	# flagging of solutions. Go through groups by primary id (IDs in first catalogue)
 
 	table = table.assign(
-		match_flag = numpy.zeros_like(post, dtype=int),
-		prob_has_match = numpy.zeros_like(post), 
-		prob_this_match = numpy.zeros_like(post)
+		match_flag = numpy.zeros(len(table), dtype=int),
+		prob_has_match = numpy.zeros(len(table)),
+		prob_this_match = numpy.zeros(len(table)),
 	)
 
 	print('    grouping by primary catalogue ID and flagging ...')
@@ -395,17 +421,18 @@ def nway_match(match_tables, match_radius, prior_completeness,
 		group['prob_this_match'] = p_i
 		group['match_flag'] = match_flag
 		return group
-		#return pandas.Series({'prob_has_match':p_any,'prob_this_match':p_i,'match_flag': match_flag})
-		#return p_any, p_i, match_flag
 
-	table = table.groupby(keys[0], sort=False).apply(compute_group_statistics)
+	table = table.groupby(table.columns[0], sort=False).apply(compute_group_statistics)
 	del table['log_post_weight']
+	return table
+
+def _truncate_table(table, min_prob):
 	# cut away poor posteriors if requested
 	if min_prob > 0:
 		mask = ~(table['prob_this_match'] < min_prob)
 		print('    cutting away %d (below p_i minimum)' % (len(mask) - mask.sum()))
-
 		table = table[mask]
 
 	return table
+
 
