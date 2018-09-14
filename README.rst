@@ -36,6 +36,7 @@ nway uses the following python packages:
 * progressbar2 or progressbar or progressbar-latest
 * joblib
 * healpy
+* pandas
 
 nway works with both Python 3 and Python 2 and various astropy versions.
 

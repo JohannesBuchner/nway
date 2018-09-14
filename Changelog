@@ -1,5 +1,6 @@
 Version 4.0:
 
+	Added pandas-based API
 	Improved hashing procedure: faster and less memory use.
 
 Version 3.0:
