@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import astropy.io.fits as pyfits
 import sys
 import inspect
@@ -13,10 +14,10 @@ Author: Johannes Buchner (C) 2014-2017
 	sys.exit(1)
 
 f = pyfits.open(sys.argv[1])
-print 'current', f[1].name, 'SKYAREA:', f[1].header.get('SKYAREA', None)
+print('current', f[1].name, 'SKYAREA:', f[1].header.get('SKYAREA', None))
 f[1].name = sys.argv[2]
 f[1].header['SKYAREA'] = float(sys.argv[3])
-print 'new    ', f[1].name, 'SKYAREA:', f[1].header.get('SKYAREA', None)
+print('new    ', f[1].name, 'SKYAREA:', f[1].header.get('SKYAREA', None))
 
 if 'overwrite' in inspect.getargspec(pyfits.writeto).args:
 	arg_overwrite = 'overwrite'

@@ -478,8 +478,8 @@ print()
 print('creating output FITS file ...')
 tbhdu = match.fits_from_columns(pyfits.ColDefs(columns))
 
-hdulist = match.wraptable2fits(tbhdu, 'MULTIMATCH')
-hdulist[0].header['METHOD'] = 'multi-way matching'
+hdulist = match.wraptable2fits(tbhdu, 'NWAYMATCH')
+hdulist[0].header['METHOD'] = 'NWAY multi-way matching'
 hdulist[0].header['INPUT'] = ', '.join(filenames)
 hdulist[0].header['TABLES'] = ', '.join(table_names)
 hdulist[0].header['BIASING'] =  ', '.join(biases.keys())

@@ -1,3 +1,7 @@
+Version 4.0:
+
+	Improved hashing procedure: faster and less memory use.
+
 Version 3.0:
 
 	Healpix-based hashing instead of a ra/dec grid. Works now accurately

@@ -82,6 +82,7 @@ def crossproduct(radectables, err):
 		print('matching: healpix hashing on pixel resolution ~ %f arcsec (nside=%d)' % (resol, nside))
 	
 	buckets = defaultdict(lambda : [[] for _ in range(len(radectables))])
+	primary_cat_keys = None
 	
 	pbar = progress.bar(ndigits=3, maxval=sum([len(t[0]) for t in radectables])).start()
 	for ti, (ra_table, dec_table) in enumerate(radectables):
@@ -92,9 +93,9 @@ def crossproduct(radectables, err):
 				# put in bucket, and neighbors
 				for jj, ii in (j,i), (j,i+1), (j+1,i), (j+1, i+1):
 					k = (ii, jj)
-					if k not in buckets: # prepare bucket
-						buckets[k] = [[] for _ in range(len(radectables))]
-					buckets[k][ti].append(ei)
+					# only primary catalogue is allowed to define new buckets
+					if ti == 0 or k in buckets:
+						buckets[k][ti].append(ei)
 				pbar.increment()
 		else:
 			# get healpixels
@@ -105,14 +106,25 @@ def crossproduct(radectables, err):
 			j = healpy.pixelfunc.get_all_neighbours(nside, phi=phi, theta=theta, nest=True)
 			# only consider four neighbours in one direction (N)
 			# does not work, sometimes A is south of B, but B is east of A
-			# so need to consider all neighbors, and deduplicate
+			# so need to consider all neighbors, and deduplicate later
 			neighbors = numpy.hstack((i.reshape((-1,1)), j.transpose()))
-		
+			
 			# put in bucket, and neighbors
-			for ei, keys in enumerate(neighbors):
-				for kk in keys:
-					buckets[kk][ti].append(ei)
-				pbar.increment()
+			if ti == 0:
+				# only primary catalogue is allowed to define new buckets
+				for ei, keys in enumerate(neighbors):
+					for k in keys:
+						buckets[k][ti].append(ei)
+					pbar.increment()
+			else:
+				for ei, keys in enumerate(neighbors):
+					for k in keys:
+						if k in primary_cat_keys:
+							buckets[k][ti].append(ei)
+					pbar.increment()
+			if ti == 0:
+				primary_cat_keys = set(buckets.keys())
+				
 	pbar.finish()
 	
 	# add no-counterpart options
@@ -127,11 +139,10 @@ def crossproduct(radectables, err):
 	while buckets:
 		k, lists = buckets.popitem()
 		pbar.increment()
-		if k == -1: continue
-		if len(lists[0]) == 0:
-			continue
+		# add for secondary catalogues the option of missing source
 		for l in lists[1:]:
 			l.insert(0, -1)
+		# create the cartesian product
 		results.update(itertools.product(*[sorted(l) for l in lists]))
 	pbar.finish()
 
