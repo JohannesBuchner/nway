@@ -1,7 +1,9 @@
-#LyX 2.1 created this file. For more info see http://www.lyx.org/
-\lyxformat 474
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
 \begin_document
 \begin_header
+\save_transient_properties true
+\origin unavailable
 \textclass scrreprt
 \begin_preamble
 \usepackage[dvipsnames]{xcolor}
@@ -55,16 +57,16 @@
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman default
-\font_sans default
-\font_typewriter default
-\font_math auto
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
-\font_sf_scale 100
-\font_tt_scale 100
+\font_sf_scale 100 100
+\font_tt_scale 100 100
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -260,19 +262,19 @@ Contributors
 \end_layout
 
 \begin_layout Itemize
-Mara Salvato -- idea and leading the science case.
+Mara Salvato – idea and leading the science case.
 \end_layout
 
 \begin_layout Itemize
-Tamás Budavári -- shared basic implementation of his formulae.
+Tamás Budavári – shared basic implementation of his formulae.
 \end_layout
 
 \begin_layout Itemize
-Sotiria Fotopoulou -- initial implementation for matching three catalogues.
+Sotiria Fotopoulou – initial implementation for matching three catalogues.
 \end_layout
 
 \begin_layout Itemize
-Johannes Buchner -- complete code rewrite for the general case, documentation,
+Johannes Buchner – complete code rewrite for the general case, documentation,
  manual and adding features.
 \end_layout
 
@@ -335,6 +337,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
@@ -683,6 +690,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
@@ -834,7 +846,7 @@ nway~
 \end_layout
 
 \begin_layout Standard
-Please cite Salvato et al., MNRAS, 2017 (ArXiV: 
+Please cite Salvato et al., MNRAS, 2018 (ArXiV: 
 \begin_inset Flex URL
 status open
 
@@ -851,7 +863,7 @@ status open
 
 \begin_layout Plain Layout
 
-http://adsabs.harvard.edu/abs/2017arXiv170510711S
+http://adsabs.harvard.edu/abs/2018MNRAS.473.4937S
 \end_layout
 
 \end_inset
@@ -912,6 +924,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
@@ -1272,7 +1289,7 @@ Input:
 \begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="5" columns="5">
-<features rotate="0" tabularvalignment="middle">
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
 <column alignment="center" valignment="top">
@@ -1550,7 +1567,7 @@ Output:
 \begin_layout Plain Layout
 \begin_inset Tabular
 <lyxtabular version="3" rows="11" columns="5">
-<features rotate="0" tabularvalignment="middle">
+<features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="2cm">
 <column alignment="center" valignment="top" width="2cm">
 <column alignment="center" valignment="top" width="2cm">
@@ -2168,6 +2185,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Subsection
@@ -2216,8 +2238,14 @@ code{doc/}
 COSMOS_IRAC.fits, COSMOS_OPTICAL.fits and COSMOS_XMM.fits
 \series default
 .
- These are the same files as in Appendix B of Salvato et al (in prep), extracted
- from 
+ These are the same files as in Appendix B of 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "2018MNRAS.473.4937S"
+
+\end_inset
+
+, extracted from 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Sanders2007"
@@ -2484,6 +2512,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Subsection
@@ -2709,6 +2742,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
@@ -3376,7 +3414,7 @@ status open
 
 .
  Secondary solutions down to 0.1 may be interesting.
- These thresholds may depend on the application -- please report what your
+ These thresholds may depend on the application – please report what your
  testing gives.
 \end_layout
 
@@ -3576,6 +3614,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Subsection
@@ -3895,6 +3938,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Subsection
@@ -4323,6 +4371,11 @@ width "100col%"
 special "none"
 height "1in"
 height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
 status open
 
 \begin_layout Plain Layout
@@ -4648,7 +4701,13 @@ mycaution{
 
 Keep in mind that a prior created from a different data set can only be
  used if it is applicable to the present data set.
- For example, in the introduction of the paper (Salvato et al., in prep)
+ For example, in the introduction of the paper 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "2018MNRAS.473.4937S"
+
+\end_inset
+
  we stress that a prior from a comparable X-ray exposure depth must be used
  when deriving color distributions.
 \begin_inset ERT
@@ -4686,8 +4745,14 @@ nway~
 \end_inset
 
  just looks at the corresponding bin and reweighs the probabilities.
- For example, in Salvato et al.
- (in prep), the counterparts to ROSAT sources where found using WISE.
+ For example, in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "2018MNRAS.473.4937S"
+
+\end_inset
+
+, the counterparts to ROSAT sources where found using WISE.
  The prior was build by using the color-magnitude (W1-W2 vs W2) properties
  of ~3000 secure counterparts to the 3XMM-Bright survey cut at the depth
  reached by ROSAT.
@@ -5395,12 +5460,33 @@ s developed in their Appendix B, we can write down likelihoods.
 \begin_layout Standard
 \begin_inset Formula 
 \begin{equation}
-P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-2}}{\sum\sigma_{i}^{-2}}\exp\left\{ -\frac{\sum_{i<j}\phi_{ij}\sigma_{j}^{-2}\sigma_{i}^{-2}}{2\sum\sigma_{i}^{-2}}\right\} \label{eq:nwaylikelihood}
+P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-2}}{\sum\sigma_{i}^{-2}}\exp\left\{ -\frac{\sum_{i<j}\psi_{ij}^{2}\sigma_{j}^{-2}\sigma_{i}^{-2}}{2\sum\sigma_{i}^{-2}}\right\} \label{eq:nwaylikelihood}
 \end{equation}
 
 \end_inset
 
-The likelihood for the hypothesis where some catalogues do not participate
+For a given association with participating members from 
+\begin_inset Formula $k$
+\end_inset
+
+ catalogues, the pairwise angular separation, 
+\begin_inset Formula $\psi_{ij}$
+\end_inset
+
+, between catalogue 
+\begin_inset Formula $i$
+\end_inset
+
+ and 
+\begin_inset Formula $j$
+\end_inset
+
+ is judged with the relevant position uncertainties 
+\begin_inset Formula $\sigma$
+\end_inset
+
+.
+ The likelihood for the hypothesis where some catalogues do not participate
  in the association has the appropriate terms in the products and sums removed.
  Therefore, the likelihood is unity for the hypothesis that there is no
  counterpart in any of the catalogues.
@@ -5579,7 +5665,7 @@ key "Pineau2016"
 \begin_layout Standard
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Grouping-by-primary"
+name "subsec:Grouping-by-primary"
 
 \end_inset
 
@@ -6009,7 +6095,7 @@ nway
 Auto-calibration
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Auto-calibration"
+name "subsec:Auto-calibration"
 
 \end_inset
 
@@ -6073,7 +6159,7 @@ n for
 Implementation
 \begin_inset CommandInset label
 LatexCommand label
-name "sub:Implementation"
+name "subsec:Implementation"
 
 \end_inset
 
@@ -6172,8 +6258,14 @@ correcting for unrelated associations
 \end_inset
 
 ), to consider associations unrelated to primary catalogue sources (described
- in the paper, Salvato et al.
- in prep, in the appendix section 
+ in the paper, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "2018MNRAS.473.4937S"
+
+\end_inset
+
+, in the appendix section 
 \begin_inset Quotes eld
 \end_inset
 
@@ -6193,7 +6285,7 @@ In the third step the magnitudes are considered, and the posteriors modified.
  from the data itself (see Section 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Auto-calibration"
+reference "subsec:Auto-calibration"
 
 \end_inset
 
