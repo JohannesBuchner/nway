@@ -1,16 +1,15 @@
 """
-Computes adaptively binned histograms of two magnitude distributions.
+Computes adaptively binned histograms of two distributions.
 
 Provides smooth biasing functions and plots them.
+
+This is not specific for magnitudes, it can be any provided property.
 """
 
 import scipy, scipy.interpolate, scipy.signal, scipy.integrate
 import numpy
 from numpy import log10, pi, exp, logical_and
 import matplotlib.pyplot as plt
-
-# compute magnitude distributions
-# use adaptive binning for that
 
 """
 ratio between the two histograms. Minor offsets to avoid zero and inf.
@@ -90,10 +89,11 @@ def adaptive_histograms(mag_all, mag_sel):
 		sorted(mag_sel))
 	# choose bin borders based on cumulative distribution, using 20 points
 	x = func_sel(numpy.linspace(0, 1, 15))
-	if x[-1] < mag_all.max():
-		x = numpy.asarray(list(x) + [mag_all.max()+1])
-	if x[0] > mag_all.min():
-		x = numpy.asarray(list(x) + [mag_all.min()-1])
+	lo, hi = numpy.nanmin(mag_all), numpy.nanmax(mag_all)
+	if x[-1] < lo:
+		x = numpy.asarray(list(x) + [hi+1])
+	if x[0] > hi:
+		x = numpy.asarray([lo-1] + list(x))
 	# linear histogram (for no adaptiveness):
 	##x = numpy.linspace(mag_all.min(), mag_all.max(), 20)
 	hist_sel, bins = numpy.histogram(mag_sel, bins=x,    density=True)
