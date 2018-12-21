@@ -1,5 +1,5 @@
-#LyX 2.2 created this file. For more info see http://www.lyx.org/
-\lyxformat 508
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
 \begin_document
 \begin_header
 \save_transient_properties true
@@ -67,6 +67,8 @@
 \font_osf false
 \font_sf_scale 100 100
 \font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -106,6 +108,7 @@
 \suppress_date false
 \justification true
 \use_refstyle 1
+\use_minted 0
 \index Index
 \shortcut idx
 \color #008000
@@ -116,7 +119,10 @@
 \tocdepth 3
 \paragraph_separation indent
 \paragraph_indentation default
-\quotes_language english
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
 \papercolumns 1
 \papersides 1
 \paperpagestyle default
@@ -2242,6 +2248,7 @@ COSMOS_IRAC.fits, COSMOS_OPTICAL.fits and COSMOS_XMM.fits
 \begin_inset CommandInset citation
 LatexCommand cite
 key "2018MNRAS.473.4937S"
+literal "true"
 
 \end_inset
 
@@ -2249,6 +2256,7 @@ key "2018MNRAS.473.4937S"
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Sanders2007"
+literal "true"
 
 \end_inset
 
@@ -2256,6 +2264,7 @@ key "Sanders2007"
 \begin_inset CommandInset citation
 LatexCommand cite
 key "McCracken2007"
+literal "true"
 
 \end_inset
 
@@ -2263,6 +2272,7 @@ key "McCracken2007"
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Ilbert2010"
+literal "true"
 
 \end_inset
 
@@ -2270,6 +2280,7 @@ key "Ilbert2010"
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Brusa2010"
+literal "true"
 
 \end_inset
 
@@ -3180,6 +3191,7 @@ status open
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Budavari2008"
+literal "true"
 
 \end_inset
 
@@ -3278,7 +3290,7 @@ status open
 
 \series default
 : For each entry in the primary catalogue (e.g.
- A) the probability that no association is the correct one is computed.
+ A) the probability that one of the association is the correct one is computed.
  Because every catalogue is limited by its depth, it is possible that the
  true counterpart has not been found yet.
  Our testing suggest that the 
@@ -3298,61 +3310,6 @@ reference "sec:Best-practice-matching"
 \end_inset
 
  explains how to calibrate a threshold.
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-mycaution{
-\end_layout
-
-\end_inset
-
-High 
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-code{
-\end_layout
-
-\end_inset
-
-p_any
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
- values by themselves do not necessarily mean that the counterpart is ruled
- out.
- It can also mean that there is not enough evidence/information to declare
- it a counterpart.
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Enumerate
@@ -3416,6 +3373,87 @@ status open
  Secondary solutions down to 0.1 may be interesting.
  These thresholds may depend on the application – please report what your
  testing gives.
+\series default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+mycaution{
+\end_layout
+
+\end_inset
+
+Low 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_any
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+code{
+\end_layout
+
+\end_inset
+
+p_i
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ values by themselves do not necessarily mean that the counterpart is ruled
+ out.
+ It can also mean that there is not enough evidence/information to declare
+ it a counterpart.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Enumerate
@@ -4705,6 +4743,7 @@ Keep in mind that a prior created from a different data set can only be
 \begin_inset CommandInset citation
 LatexCommand cite
 key "2018MNRAS.473.4937S"
+literal "true"
 
 \end_inset
 
@@ -4749,6 +4788,7 @@ nway~
 \begin_inset CommandInset citation
 LatexCommand cite
 key "2018MNRAS.473.4937S"
+literal "true"
 
 \end_inset
 
@@ -5353,6 +5393,7 @@ If each catalogue covers the same area with some respective, homogeneous
 LatexCommand citep
 after "eq. 25"
 key "Budavari2008"
+literal "true"
 
 \end_inset
 
@@ -5437,6 +5478,7 @@ We now extend the approach of
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Budavari2008"
+literal "true"
 
 \end_inset
 
@@ -5445,6 +5487,7 @@ key "Budavari2008"
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Budavari2008"
+literal "true"
 
 \end_inset
 
@@ -5497,6 +5540,7 @@ In comparison to our method, the method of
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Budavari2008"
+literal "true"
 
 \end_inset
 
@@ -5646,6 +5690,7 @@ reference "sec:mag-priors"
 \begin_inset CommandInset citation
 LatexCommand citet
 key "Budavari2008"
+literal "true"
 
 \end_inset
 
@@ -5655,6 +5700,7 @@ key "Budavari2008"
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "Pineau2016"
+literal "true"
 
 \end_inset
 
@@ -5873,6 +5919,7 @@ Astronomical objects of various classes often show distinct color and magnitude
 LatexCommand citep
 before "e.g."
 key "Brusa2005,Brusa2007"
+literal "true"
 
 \end_inset
 
@@ -5884,6 +5931,7 @@ key "Brusa2005,Brusa2007"
 \begin_inset CommandInset citation
 LatexCommand citealp
 key "SutherlandSaunders1992"
+literal "true"
 
 \end_inset
 
@@ -6203,6 +6251,7 @@ First, possible associations are found.
 \begin_inset CommandInset citation
 LatexCommand citep
 key "Gorski2005"
+literal "true"
 
 \end_inset
 
@@ -6262,6 +6311,7 @@ correcting for unrelated associations
 \begin_inset CommandInset citation
 LatexCommand cite
 key "2018MNRAS.473.4937S"
+literal "true"
 
 \end_inset
 

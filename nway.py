@@ -429,7 +429,7 @@ columns.append(pyfits.Column(name='match_flag', format='I', array=index))
 
 # cut away poor posteriors if requested
 if min_prob > 0:
-	mask = -(prob_this_match < min_prob)
+	mask = ~(prob_this_match < min_prob)
 	print('    cutting away %d (below p_i minimum)' % (len(mask) - mask.sum()))
 
 	for c in columns:

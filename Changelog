@@ -2,6 +2,8 @@ Version 4.0:
 
 	Added pandas-based API
 	Improved hashing procedure: faster and less memory use.
+	
+	Fixed numpy deprecation issue (logical not is ~) (4.1).
 
 Version 3.0:
 
