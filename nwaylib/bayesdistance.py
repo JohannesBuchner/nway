@@ -62,6 +62,7 @@ def log_bf(p, s):
 	p: separations matrix (NxN matrix of arrays)
 	s: errors (list of N arrays)
 	"""
+	
 	n = len(s)
 	# precision parameter w = 1/sigma^2
 	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
@@ -74,6 +75,96 @@ def log_bf(p, s):
 		for j, wj in enumerate(w):
 			if i < j:
 				q += wi * wj * p[i][j]**2
+	exponent = - q / 2 / wsum
+	return (norm + s + exponent) * log10(e)
+
+# vectorized in the following means that many 2D matrices/vectors are going to be handled.
+# i.e., each entry in the matrix or vector, is a vector of numbers.
+
+def matrix_multiply(A, B):
+	""" 2D matrix multiplication, vectorized """
+	(a11, a12), (a21, a22) = A
+	(b11, b12), (b21, b22) = B
+	return (a11*b11+a12*b21, a11*b12+a12*b22), (a21*b11+a22*b21, a21*b12+a22*b22)
+
+def matrix_det(A):
+	""" 2D matrix determinant, vectorized """
+	(a, b), (c, d) = A
+	return a * d - b * c
+
+def apply_vector_right(A, b):
+	""" multiply 2D vector with 2D matrix, vectorized """
+	(a11, a12), (a21, a22) = A
+	(b1, b2) = b
+	return a11*b1+a12*b2, a21*b1+a22*b2
+	
+def apply_vector_left(a, B):
+	""" multiply 2D matrix with 2D vector, vectorized """
+	a1, a2 = a
+	(b11, b12), (b21, b22) = B
+	return a1*b11+a2*b21, a1*b12+a2*b22
+
+def vector_multiply(a, b):
+	""" multiply two vectors, vectorized """
+	a1, a2 = a
+	b1, b2 = b
+	return a1*b1+a2*b2
+
+def apply_vABv(v, A, B):
+	""" compute v^T A B v, vectorized """
+	return vector_multiply(v, apply_vector_right(matrix_multiply(A, B), v))
+
+def make_covmatrix(sigma_x, sigma_y, rho=0):
+	""" create covariance matrix from given standard deviations and normalised correlation rho, vectorized """
+	return (sigma_x**2, rho * sigma_x * sigma_y), (rho * sigma_x * sigma_y, sigma_y**2)
+
+def make_invcovmatrix(sigma_x, sigma_y, rho=0):
+	""" create inverse covariance matrix from given standard deviations and normalised correlation rho, vectorized """
+	F = 1.0 / (sigma_x**2 * sigma_y**2 * (1 - rho**2))
+	return (F * sigma_y**2, F * -rho * sigma_x * sigma_y), \
+		(F * -rho * sigma_x * sigma_y, F * sigma_x**2)
+
+def convert_from_ellipse(a, b, phi):
+	""" create covariance parameters from ellipse major axis a, minor axis b and angle phi; vectorized """
+	a2 = a**2
+	b2 = b**2
+	s = numpy.sin(phi)
+	c = numpy.cos(phi)
+	s2 = s**2
+	c2 = c**2
+	sigma_x = (a2 * s2 + b2 * c2)**0.5
+	sigma_y = (a2 * c2 + b2 * s2)**0.5
+	rho = c * s * (a2 - b2) / (sigma_x * sigma_y)
+	return sigma_x, sigma_y, rho
+
+def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
+	"""
+	log10 of the multi-way Bayes factor, see eq.(18)
+
+	separations: separations matrix (NxN matrix of arrays)
+	separations_ra: RA separations matrix (NxN matrix of arrays)
+	separations_dec: DEC separations matrix (NxN matrix of arrays)
+	pos_errors: errors (list of (N,3) arrays) giving sigma_RA, sigma_DEC, rho
+	"""
+	
+	# p ~ separations, s ~ pos_errors
+	n = len(pos_errors)
+	
+	error_matrices = [make_invcovmatrix(si, sj, rho) 
+		for si, sj, rho in pos_errors]
+	
+	# precision parameter w = 1/sigma^2
+	w = [matrix_det(mi)**-2 for mi in error_matrices]
+	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
+	
+	wsum = numpy.sum(w, axis=0)
+	s = numpy.sum(log(w), axis=0) - log(wsum)
+	q = 0
+	for i, Mi in enumerate(error_matrices):
+		for j, Mj in enumerate(error_matrices):
+			if i < j:
+				v = (separations_ra[i][j], separations_dec[i][j])
+				q += apply_vABv(v, Mi, Mj)
 	exponent = - q / 2 / wsum
 	return (norm + s + exponent) * log10(e)
 

@@ -9,6 +9,8 @@ import itertools
 from collections import defaultdict
 import os, sys
 import astropy.io.fits as pyfits
+from astropy.coordinates import SkyCoord, SkyOffsetFrame
+import astropy.units as u
 from . import progress
 from numpy import sin, cos, arctan2, hypot, arccos, arcsin, pi, exp, log
 import healpy
@@ -40,6 +42,32 @@ def dist(apos, bpos):
 	denominator = slat1 * slat2 + clat1 * clat2 * cdlon
 
 	return arctan2(hypot(num1, num2), denominator) * 180 / pi
+
+def dist3d(apos, bpos):
+	"""
+	Angular separation in ra & dec between two points on a sphere.
+	"""
+	(a_ra, a_dec), (b_ra, b_dec) = apos, bpos
+	a_ra  = numpy.where(a_ra  == -99, numpy.nan, a_ra)
+	a_dec = numpy.where(a_dec == -99, numpy.nan, a_dec)
+	b_ra  = numpy.where(b_ra  == -99, numpy.nan, b_ra)
+	b_dec = numpy.where(b_dec == -99, numpy.nan, b_dec)
+	with numpy.errstate(divide='ignore', invalid='ignore'):
+		a = SkyCoord(a_ra, a_dec, frame="icrs", unit="deg")
+		b = SkyCoord(b_ra, b_dec, frame="icrs", unit="deg")
+	
+		localframe = SkyOffsetFrame(origin=a)
+		na = a.transform_to(localframe)
+		nb = b.transform_to(localframe)
+		dra  = na.lon - nb.lon
+		ddec = na.lat - nb.lat
+
+		separation = a.separation(b).to(u.degree).value
+	
+		dra  = dra.to(u.degree).value
+		ddec = ddec.to(u.degree).value
+	
+		return separation, dra, ddec
 
 def get_tablekeys(table, name):
 	keys = sorted(table.dtype.names, key=lambda k: 0 if k.upper() == name else 1 if k.upper().startswith(name) else 2)
@@ -158,7 +186,7 @@ if hasattr(pyfits.BinTableHDU, 'from_columns'):
 else:
 	fits_from_columns = pyfits.new_table
 
-def match_multiple(tables, table_names, err, fits_formats):
+def match_multiple(tables, table_names, err, fits_formats, circular=True):
 	"""
 	computes the cartesian product of all possible matches,
 	limited to a maximum distance of err (in degrees).
@@ -230,21 +258,39 @@ def match_multiple(tables, table_names, err, fits_formats):
 		a_dec = tbhdu.data["%s_%s" % (table_names[i], dec_keys[i])]
 		for j in range(i):
 			k = "Separation_%s_%s" % (table_names[i], table_names[j])
-			keys.append(k)
+			k1 = k + "_ra"
+			k2 = k + "_dec"
+			if circular:
+				keys += [k, k1, k2]
+			else:
+				keys += [k]
 			
 			b_ra  = tbhdu.data["%s_%s" % (table_names[j], ra_keys[j])]
 			b_dec = tbhdu.data["%s_%s" % (table_names[j], dec_keys[j])]
 			
-			col = dist((a_ra, a_dec), (b_ra, b_dec))
-			assert not numpy.isnan(col).any(), ['%d distances are nan' % numpy.isnan(col).sum(), 
+			if circular:
+				col = dist((a_ra, a_dec), (b_ra, b_dec))
+			else:
+				col, col_ra, col_dec = dist3d((a_ra, a_dec), (b_ra, b_dec))
+			
+			valid_input = numpy.logical_and(a_ra != -99, b_ra != -99)
+			assert not numpy.isnan(col[valid_input]).any(), ['%d distances are nan' % numpy.isnan(col[valid_input]).sum(), 
 				a_ra[numpy.isnan(col)], a_dec[numpy.isnan(col)], 
 				b_ra[numpy.isnan(col)], b_dec[numpy.isnan(col)]]
 			
 			col[a_ra == -99] = numpy.nan
 			col[b_ra == -99] = numpy.nan
+			if not circular:
+				col_ra[a_ra == -99] = numpy.nan
+				col_ra[b_ra == -99] = numpy.nan
+				col_dec[a_ra == -99] = numpy.nan
+				col_dec[b_ra == -99] = numpy.nan
 			max_separation = numpy.nanmax([col * 60 * 60, max_separation], axis=0)
 			# store distance in arcsec 
 			cat_columns.append(pyfits.Column(name=k, format='E', array=col * 60 * 60))
+			if not circular:
+				cat_columns.append(pyfits.Column(name=k1, format='E', array=col_ra * 60 * 60))
+				cat_columns.append(pyfits.Column(name=k2, format='E', array=col_dec * 60 * 60))
 	
 	cat_columns.append(pyfits.Column(name="Separation_max", format='E', array=max_separation))
 	cat_columns.append(pyfits.Column(name="ncat", format='I', array=(resultstable > -1).sum(axis=1)))

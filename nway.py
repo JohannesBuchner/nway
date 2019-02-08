@@ -129,9 +129,31 @@ for mag, magfile in magnitude_columns:
 	col_names = tables[ti].dtype.names
 	assert col_name in col_names, 'column name specified for magnitude ("%s") unknown. Known columns in table "%s": %s' % (mag, table_name, ', '.join(col_names))
 
+simple_errors = True
+for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
+	colnames = tables[ti].dtype.names
+	if pos_error[0] != ':':
+		continue
+	
+	keys = pos_error[1:].split(':')
+	if len(keys) > 3:
+		assert False, 'Invalid column specifier: %s' % nsep
+	if len(keys) > 1:
+		simple_errors = False
+	
+	meanings = [
+		[],
+		['symmerror'],
+		['ra_error', 'dec_error'],
+		['majaxis', 'minaxis', 'ell_angle'],
+	][len(keys)]
+	for k, meaning in zip(keys, meanings):
+		# get column
+		assert k in colnames, 'ERROR: Position error column "%s" not in table "%s". Have these columns: %s' % (k, table_name, ', '.join(colnames))
+
 
 # first match input catalogues, compute possible combinations in match_radius
-results, columns, match_header = match.match_multiple(tables, table_names, match_radius, fits_formats)
+results, columns, match_header = match.match_multiple(tables, table_names, match_radius, fits_formats, circular=simple_errors)
 table = match.fits_from_columns(pyfits.ColDefs(columns)).data
 
 assert len(table) > 0, 'No matches.'
@@ -141,38 +163,107 @@ print('Computing distance-based probabilities ...')
 
 print('  finding position error columns ...')
 # get the separation and error columns for the bayesian weighting
-errors    = []
-for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
-	if pos_error[0] == ':':
-		# get column
-		k = "%s_%s" % (table_name, pos_error[1:])
-		assert k in table.dtype.names, 'ERROR: Position error column for "%s" not in table "%s". Have these columns: %s' % (k, table_name, ', '.join(table.dtype.names))
-		table_errors = tables[ti][pos_error[1:]]
-		print('    Position error for "%s": found column %s: Values are [%f..%f]' % (table_name, k, table_errors.min(), table_errors.max()))
-		if table_errors.min() <= 0:
-			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (k, (table_errors <= 0).sum()))
-		if table_errors.max() > match_radius * 60 * 60:
-			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (k, table_errors.max()))
-		errors.append(table[k])
-	else:
-		print('    Position error for "%s": using fixed value %f' % (table_name, float(pos_error)))
-		if float(pos_error) > match_radius * 60 * 60:
-			print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (k, float(pos_error)))
-		errors.append(float(pos_error) * numpy.ones(len(table)))
+def make_errors_table_matrix():
+	symmetric = True
+	rotated = False
+	errors    = []
+	for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
+		colnames = tables[ti].dtype.names
+		if pos_error[0] != ':':
+			print('    Position error for "%s": using fixed value %f' % (table_name, float(pos_error)))
+			pos_error = float(pos_error)
+			if pos_error > match_radius * 60 * 60:
+				print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (k, pos_error))
+			pos_error = float(pos_error) * numpy.ones(len(table))
+			errors.append((pos_error, pos_error, numpy.zeros_like(pos_error)))
+			continue
+		
+		keys = pos_error[1:].split(':')
+		if len(keys) > 3:
+			assert False, 'Invalid column specifier: %s' % nsep
+		
+		meanings = ['ra_error', 'dec_error', 'ell_angle']
+		for k, meaning in zip(keys, meanings):
+			k2 = "%s_%s" % (table_name, k)
+			# get column
+			assert k2 in table.dtype.names, 'ERROR: Position error column "%s" not in table "%s". Have these columns: %s' % (k2, table_name, ', '.join(colnames))
+			print('    Position error for "%s": found column %s (for %s): Values are [%f..%f]' % (
+				table_name, k, meaning, tables[ti][k].min(), tables[ti][k].max()))
+		
+		this_rotated = False
+		if len(keys) == 3:
+			keys = keys[0], keys[1], keys[2]
+			this_rotated = True
+			rotated = True
+			
+			intable_errors_ra  = tables[ti][keys[0]]
+			intable_errors_dec = tables[ti][keys[1]]
+			intable_errors_rho = tables[ti][keys[2]] / 180 * pi
+			
+			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
+			table_errors_rho = pi/2 - table["%s_%s" % (table_name, keys[2])] / 180 * pi
+
+			intable_errors_ra, intable_errors_dec, intable_errors_rho = bayesdist.convert_from_ellipse(intable_errors_ra, intable_errors_dec, intable_errors_rho)
+			table_errors_ra, table_errors_dec, table_errors_rho = bayesdist.convert_from_ellipse(table_errors_ra, table_errors_dec, table_errors_rho)
+			
+		elif len(keys) == 2:
+			keys = keys[0], keys[1]
+			symmetric = False
+			
+			intable_errors_ra  = tables[ti][keys[0]]
+			intable_errors_dec = tables[ti][keys[1]]
+			intable_errors_rho = numpy.zeros_like(intable_errors_ra)
+			
+			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
+			table_errors_rho = numpy.zeros_like(table_errors_ra)
+			
+		elif len(keys) == 1:
+			keys = keys[0], keys[0]
+
+			intable_errors_ra  = tables[ti][keys[0]]
+			intable_errors_dec = intable_errors_ra
+			intable_errors_rho = numpy.zeros_like(intable_errors_ra)
+			
+			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+			table_errors_dec = table_errors_ra
+			table_errors_rho = numpy.zeros_like(table_errors_ra)
+			
+		
+		if intable_errors_ra.min() <= 0 or intable_errors_dec.min() <= 0:
+			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (
+				keys[0], numpy.logical_and(intable_errors_ra <= 0, intable_errors_dec <= 0).sum()))
+		if intable_errors_ra.max() > match_radius * 60 * 60 or intable_errors_dec.max() > match_radius * 60 * 60:
+			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (keys[0], max(intable_errors_ra.max(), intable_errors_dec.max())))
+		
+		errors.append((table_errors_ra, table_errors_dec, table_errors_rho))
+	return errors, (not rotated) and symmetric
+
+errors, simple_errors = make_errors_table_matrix()
+if simple_errors:
+	errors = [e_ra for e_ra, e_dec, e_rho in errors]
 
 print('  finding position columns ...')
 # table is in arcsec, and therefore separations is in arcsec
-separations = []
-for ti, a in enumerate(table_names):
-	row = []
-	for tj, b in enumerate(table_names):
-		if ti < tj:
-			k = 'Separation_%s_%s' % (b, a)
-			assert k in table.dtype.names, 'ERROR: Separation column for "%s" not in merged table. Have columns: %s' % (k, ', '.join(table.dtype.names))
-			row.append(table[k])
-		else:
-			row.append(numpy.ones(len(table)) * numpy.nan)
-	separations.append(row)
+def make_separation_table_matrix(kstr, table, table_names):
+	separations = []
+	for ti, a in enumerate(table_names):
+		row = []
+		for tj, b in enumerate(table_names):
+			if ti < tj:
+				k = kstr % (b, a)
+				assert k in table.dtype.names, 'ERROR: Separation column for "%s" not in merged table. Have columns: %s' % (k, ', '.join(table.dtype.names))
+				row.append(table[k])
+			else:
+				row.append(numpy.ones(len(table)) * numpy.nan)
+		separations.append(row)
+	return separations
+
+separations = make_separation_table_matrix('Separation_%s_%s', table, table_names)
+if not simple_errors:
+	separations_ra = make_separation_table_matrix('Separation_%s_%s_ra', table, table_names)
+	separations_dec = make_separation_table_matrix('Separation_%s_%s_dec', table, table_names)
 
 print('  building primary_id index ...')
 primary_id_key = match.get_tablekeys(tables[0], 'ID')
@@ -207,10 +298,20 @@ for case in range(2**(len(table_names)-1)):
 		else:
 			mask = numpy.logical_and(mask, numpy.isnan(separations[0][i]))
 	# select errors
-	errors_selected = [e[mask] for e, m in zip(errors, table_mask) if m]
-	separations_selected = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
-		for row, m in zip(separations, table_mask) if m]
-	log_bf[mask] = bayesdist.log_bf(separations_selected, errors_selected)
+	if simple_errors:
+		errors_selected = [e[mask] for e, m in zip(errors, table_mask) if m]
+		separations_selected = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
+			for row, m in zip(separations, table_mask) if m]
+		log_bf[mask] = bayesdist.log_bf(separations_selected, errors_selected)
+	else:
+		errors_selected = [(era[mask], edec[mask], ephi[mask])
+			for (era, edec, ephi), m in zip(errors, table_mask) if m]
+		separations_selected_ra = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
+			for row, m in zip(separations_ra, table_mask) if m]
+		separations_selected_dec = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
+			for row, m in zip(separations_dec, table_mask) if m]
+		log_bf[mask] = bayesdist.log_bf_elliptical(separations_selected_ra, 
+			separations_selected_dec, errors_selected)
 
 	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(source_densities_plus[table_mask])
 	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(source_densities_plus[table_mask]))
@@ -249,12 +350,23 @@ if args.consider_unrelated_associations:
 				if n_augmented_cats >= 2:
 					# ok, this is helpful.
 					# identify the separations and errors
-					separations_selected = [[[separations[k][k2][j]] for k2 in augmented_cats] for k in augmented_cats]
-					errors_selected = [[errors[k][j]] for k in augmented_cats]
 					# identify the prior
 					prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
 					# compute a log_bf
-					log_bf_j = bayesdist.log_bf(numpy.array(separations_selected), numpy.array(errors_selected))
+					errors_selected = [[errors[k][j]] for k in augmented_cats]
+					if simple_errors:
+						separations_selected = [[[separations[k][k2][j]] 
+							for k2 in augmented_cats] for k in augmented_cats]
+						log_bf_j = bayesdist.log_bf(numpy.array(separations_selected),
+							numpy.array(errors_selected))
+					else:
+						separations_selected_ra = [[[separations_ra[k][k2][j]] 
+							for k2 in augmented_cats] for k in augmented_cats]
+						separations_selected_dec = [[[separations_dec[k][k2][j]] 
+							for k2 in augmented_cats] for k in augmented_cats]
+						log_bf_j = bayesdist.log_bf_elliptical(numpy.array(separations_selected_ra),
+							 numpy.array(separations_selected_dec), 
+							 numpy.array(errors_selected))
 					logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
 					if logpost_j > best_logpost:
 						#print('post:', logpost_j, log_bf_j, prior_j)
