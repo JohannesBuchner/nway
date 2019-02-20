@@ -4,6 +4,8 @@ Version 4.0:
 	Improved hashing procedure: faster and less memory use.
 	
 	Fixed numpy deprecation issue (logical not is ~) (4.1).
+	
+	Elliptical errors (4.2)
 
 Version 3.0:
 

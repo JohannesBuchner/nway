@@ -5,6 +5,8 @@ Very fast method based on hashing.
 """
 from __future__ import print_function, division
 from nwaylib.fastskymatch import *
+import nwaylib.progress as progress
+import nwaylib.logger as logger
 
 def test_dist():
 	
@@ -46,7 +48,7 @@ def run_match(nfiles, ngen=40):
 	for table in tables:
 		fits_formats.append([c.format for c in table.columns])
 
-	results, columns, header = match_multiple(tables, table_names, err, fits_formats)
+	results, columns, header = match_multiple(tables, table_names, err, fits_formats, logger=logger.NormalLogger())
 	tbhdu = fits_from_columns(pyfits.ColDefs(columns))
 
 	hdulist = wraptable2fits(tbhdu, 'MATCH')

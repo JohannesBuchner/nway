@@ -221,7 +221,7 @@ def match_multiple(tables, table_names, err, fits_formats, logger, circular=True
 	
 	logger.log('merging in %d columns from input catalogues ...' % sum([1 + len(table.dtype.names) for table in tables]))
 	cat_columns = []
-	pbar = progress.bar(ndigits=3, maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
+	pbar = logger.progress(ndigits=3, maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
 	for table, table_name, fits_format in zip(tables, table_names, fits_formats):
 		tbl = table[results[table_name]]
 		# set missing to nan
@@ -299,7 +299,7 @@ def match_multiple(tables, table_names, err, fits_formats, logger, circular=True
 		c.array = c.array[mask]
 	
 	logger.log('matching: %6d matches after filtering by search radius' % mask.sum())
-	logger.log()
+	logger.log('')
 	return results[mask], cat_columns, header
 
 def wraptable2fits(cat_columns, extname):

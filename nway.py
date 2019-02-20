@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import astropy.io.fits as pyfits
 import argparse
 import nwaylib.progress as progress
+import nwaylib.logger as logger
 import nwaylib.fastskymatch as match
 import nwaylib.bayesdistance as bayesdist
 import nwaylib.magnitudeweights as magnitudeweights
@@ -153,7 +154,8 @@ for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 
 
 # first match input catalogues, compute possible combinations in match_radius
-results, columns, match_header = match.match_multiple(tables, table_names, match_radius, fits_formats, circular=simple_errors)
+results, columns, match_header = match.match_multiple(tables, table_names, match_radius, fits_formats, circular=simple_errors,
+	logger=logger.NormalLogger())
 table = match.fits_from_columns(pyfits.ColDefs(columns)).data
 
 assert len(table) > 0, 'No matches.'
