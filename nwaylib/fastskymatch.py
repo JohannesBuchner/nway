@@ -11,7 +11,6 @@ import os, sys
 import astropy.io.fits as pyfits
 from astropy.coordinates import SkyCoord, SkyOffsetFrame
 import astropy.units as u
-from . import progress
 from numpy import sin, cos, arctan2, hypot, arccos, arcsin, pi, exp, log
 import healpy
 import joblib
@@ -82,8 +81,8 @@ def get_healpix_resolution_degrees(nside):
 	resfactor = 0.7
 	return resfactor * resol
 
-@mem.cache
-def crossproduct(radectables, err):
+@mem.cache(ignore=['logger'])
+def crossproduct(radectables, err, logger):
 	# check if away from the poles and RA=0
 	use_flat_bins = True
 	for ra, dec in radectables:
@@ -92,7 +91,7 @@ def crossproduct(radectables, err):
 			break
 	
 	if use_flat_bins:
-		print('matching: using fast flat-sky approximation for this match')
+		logger.log('matching: using fast flat-sky approximation for this match')
 	else:
 		# choose appropriate nside for err (in deg)
 		nside = 1
@@ -107,12 +106,12 @@ def crossproduct(radectables, err):
 				break
 			nside = 2**nside_next
 		resol = get_healpix_resolution_degrees(nside) * 60 * 60
-		print('matching: healpix hashing on pixel resolution ~ %f arcsec (nside=%d)' % (resol, nside))
+		logger.log('matching: healpix hashing on pixel resolution ~ %f arcsec (nside=%d)' % (resol, nside))
 	
 	buckets = defaultdict(lambda : [[] for _ in range(len(radectables))])
 	primary_cat_keys = None
 	
-	pbar = progress.bar(ndigits=3, maxval=sum([len(t[0]) for t in radectables])).start()
+	pbar = logger.progress(ndigits=3, maxval=sum([len(t[0]) for t in radectables])).start()
 	for ti, (ra_table, dec_table) in enumerate(radectables):
 		if use_flat_bins:
 			for ei, (ra, dec) in enumerate(zip(ra_table, dec_table)):
@@ -158,12 +157,12 @@ def crossproduct(radectables, err):
 	# add no-counterpart options
 	results = set()
 	# now combine within buckets
-	print('matching: collecting from %d buckets, creating cartesian products ...' % len(buckets))
+	logger.log('matching: collecting from %d buckets, creating cartesian products ...' % len(buckets))
 	#print('matching: %6d matches expected after hashing' % numpy.sum([
 	#	len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]]) 
 	#		for lists in buckets.values()]))
 
-	pbar = progress.bar(ndigits=5, maxval=len(buckets)).start()
+	pbar = logger.progress(ndigits=5, maxval=len(buckets)).start()
 	while buckets:
 		k, lists = buckets.popitem()
 		pbar.increment()
@@ -175,7 +174,7 @@ def crossproduct(radectables, err):
 	pbar.finish()
 
 	n = len(results)
-	print('matching: %6d unique matches from cartesian product. sorting ...' % n)
+	logger.log('matching: %6d unique matches from cartesian product. sorting ...' % n)
 	# now make results unique by sorting
 	results = numpy.array(sorted(results))
 	return results
@@ -186,7 +185,7 @@ if hasattr(pyfits.BinTableHDU, 'from_columns'):
 else:
 	fits_from_columns = pyfits.new_table
 
-def match_multiple(tables, table_names, err, fits_formats, circular=True):
+def match_multiple(tables, table_names, err, fits_formats, logger, circular=True):
 	"""
 	computes the cartesian product of all possible matches,
 	limited to a maximum distance of err (in degrees).
@@ -201,26 +200,26 @@ def match_multiple(tables, table_names, err, fits_formats, circular=True):
 	header: which columns were used in each table for RA/DEC
 	
 	"""
-	print()
-	print('matching with %f arcsec radius' % (err * 60 * 60))
-	print('matching: %6d naive possibilities' % numpy.product([len(t) for t in tables]))
+	logger.log('')
+	logger.log('matching with %f arcsec radius' % (err * 60 * 60))
+	logger.log('matching: %6d naive possibilities' % numpy.product([len(t) for t in tables]))
 
-	print('matching: hashing')
+	logger.log('matching: hashing')
 
 	ra_keys = [get_tablekeys(table, 'RA') for table in tables]
-	print('    using RA  columns: %s' % ', '.join(ra_keys))
+	logger.log('    using RA  columns: %s' % ', '.join(ra_keys))
 	dec_keys = [get_tablekeys(table, 'DEC') for table in tables]
-	print('    using DEC columns: %s' % ', '.join(dec_keys))
+	logger.log('    using DEC columns: %s' % ', '.join(dec_keys))
 
 	ratables = [(t[ra_key], t[dec_key]) for t, ra_key, dec_key in zip(tables, ra_keys, dec_keys)]
-	resultstable = crossproduct(ratables, err)
+	resultstable = crossproduct(ratables, err, logger=logger)
 	results = resultstable.view(dtype=[(table_name, resultstable.dtype) for table_name in table_names]).reshape((-1,))
 
 	keys = []
 	for table_name, table in zip(table_names, tables):
 		keys += ["%s_%s" % (table_name, n) for n in table.dtype.names]
 	
-	print('merging in %d columns from input catalogues ...' % sum([1 + len(table.dtype.names) for table in tables]))
+	logger.log('merging in %d columns from input catalogues ...' % sum([1 + len(table.dtype.names) for table in tables]))
 	cat_columns = []
 	pbar = progress.bar(ndigits=3, maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
 	for table, table_name, fits_format in zip(tables, table_names, fits_formats):
@@ -237,7 +236,7 @@ def match_multiple(tables, table_names, err, fits_formats, circular=True):
 			try:
 				col[mask_missing] = -99
 			except Exception as e:
-				print('   setting "%s" to -99 failed (%d affected; column format "%s"): %s' % (k, mask_missing.sum(), format, e))
+				logger.log('   setting "%s" to -99 failed (%d affected; column format "%s"): %s' % (k, mask_missing.sum(), format, e))
 			
 			fitscol = pyfits.Column(name=k, format=format, array=col)
 			cat_columns.append(fitscol)
@@ -250,7 +249,7 @@ def match_multiple(tables, table_names, err, fits_formats, circular=True):
 		COLS_DEC = ' '.join(["%s_%s" % (ti, dec_key) for ti, dec_key in zip(table_names, dec_keys)])
 	)
 	
-	print('    adding angular separation columns')
+	logger.log('    adding angular separation columns')
 	cols = []
 	max_separation = numpy.zeros(len(results))
 	for i in range(len(tables)):
@@ -299,8 +298,8 @@ def match_multiple(tables, table_names, err, fits_formats, circular=True):
 	for c in cat_columns:
 		c.array = c.array[mask]
 	
-	print('matching: %6d matches after filtering by search radius' % mask.sum())
-	print()
+	logger.log('matching: %6d matches after filtering by search radius' % mask.sum())
+	logger.log()
 	return results[mask], cat_columns, header
 
 def wraptable2fits(cat_columns, extname):

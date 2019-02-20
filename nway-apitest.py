@@ -12,7 +12,7 @@ import numpy
 from numpy import log10, pi, exp, logical_and
 import astropy.io.fits as pyfits
 import argparse
-import nwaylib.progress as progress
+import nwaylib.logger as logger
 import nwaylib.fastskymatch as match
 import nwaylib.bayesdistance as bayesdist
 import nwaylib.magnitudeweights as magnitudeweights
@@ -124,6 +124,7 @@ result = nwaylib.nway_match(
 	],
 	match_radius = 20,
 	prior_completeness = 0.9,
+	logger=logger.NullOutputLogger(),
 )
 assert len(result) == 387601, (len(result), result)
 for col in min_output_columns + extra_columns:
