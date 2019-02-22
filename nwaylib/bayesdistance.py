@@ -141,7 +141,6 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 	"""
 	log10 of the multi-way Bayes factor, see eq.(18)
 
-	separations: separations matrix (NxN matrix of arrays)
 	separations_ra: RA separations matrix (NxN matrix of arrays)
 	separations_dec: DEC separations matrix (NxN matrix of arrays)
 	pos_errors: errors (list of (N,3) arrays) giving sigma_RA, sigma_DEC, rho
@@ -154,7 +153,7 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 		for si, sj, rho in pos_errors]
 	
 	# precision parameter w = 1/sigma^2
-	w = [matrix_det(mi)**-2 for mi in error_matrices]
+	w = [matrix_det(mi)**0.5 for mi in error_matrices]
 	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
 	
 	wsum = numpy.sum(w, axis=0)
@@ -175,8 +174,15 @@ def test_log_bf():
 	for psi in sep:
 		print(psi)
 		print('  ', log_bf2(psi, 0.1, 0.2), )
-		print('  ', log_bf([[None, psi]], [0.1, 0.2]), )
-		test.assert_almost_equal(log_bf2(psi, 0.1, 0.2), log_bf([[None, psi]], [0.1, 0.2]))
+		poserrs = [0.1, 0.2]
+		psi2 = [[None, psi]]
+		print('  ', log_bf(psi2, poserrs))
+		test.assert_almost_equal(log_bf2(psi, 0.1, 0.2), log_bf(psi2, poserrs))
+		test.assert_almost_equal(log_bf(psi2, poserrs),
+			log_bf_elliptical([[None, 0]], psi2, [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)]))
+		test.assert_almost_equal(log_bf(psi2, poserrs),
+			log_bf_elliptical(psi2, [[None, 0]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)]))
+		
 	for psi in sep:
 		print(psi)
 		bf3 = log_bf3(psi, psi, psi, 0.1, 0.2, 0.3)
@@ -188,5 +194,12 @@ def test_log_bf():
 	print(log_bf(numpy.array([[numpy.nan + sep, sep, sep], [sep, numpy.nan + sep, sep], [sep, sep, numpy.nan + sep]]), 
 		[0.1 + q, 0.2 + q, 0.3 + q]))
 
+	print("Elliptical:")
+	print("-----------")
+	print(log_bf_elliptical([[None, 0]], [[None, 0]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)]))
+	print()
+	print("Circular:")
+	print("-----------")
+	print(log_bf([[None, 0]], [0.1,0.2]))
 
 
