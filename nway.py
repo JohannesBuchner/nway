@@ -268,7 +268,7 @@ if not simple_errors:
 	separations_dec = make_separation_table_matrix('Separation_%s_%s_dec', table, table_names)
 
 print('  building primary_id index ...')
-primary_id_key = match.get_tablekeys(tables[0], 'ID')
+primary_id_key = match.get_tablekeys(tables[0], 'ID', tablename=table_names[0])
 primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
 
 primary_ids = []
@@ -314,7 +314,8 @@ for case in range(2**(len(table_names)-1)):
 			for row, m in zip(separations_dec, table_mask) if m]
 		log_bf[mask] = bayesdist.log_bf_elliptical(separations_selected_ra, 
 			separations_selected_dec, errors_selected)
-
+	
+	print(log_bf[mask])
 	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(source_densities_plus[table_mask])
 	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(source_densities_plus[table_mask]))
 

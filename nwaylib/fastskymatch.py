@@ -68,9 +68,9 @@ def dist3d(apos, bpos):
 	
 		return separation, dra, ddec
 
-def get_tablekeys(table, name):
+def get_tablekeys(table, name, tablename=''):
 	keys = sorted(table.dtype.names, key=lambda k: 0 if k.upper() == name else 1 if k.upper().startswith(name) else 2)
-	assert len(keys) > 0 and name in keys[0].upper(), 'ERROR: No "%s"  column found in input catalogue. Only have: %s' % (name, ', '.join(table.dtype.names))
+	assert len(keys) > 0 and name in keys[0].upper(), 'ERROR: No "%s" column found in input catalogue "%s". Only have: %s' % (name, tablename, ', '.join(table.dtype.names))
 	return keys[0]
 
 
@@ -206,9 +206,9 @@ def match_multiple(tables, table_names, err, fits_formats, logger, circular=True
 
 	logger.log('matching: hashing')
 
-	ra_keys = [get_tablekeys(table, 'RA') for table in tables]
+	ra_keys = [get_tablekeys(table, 'RA', tablename=tablename) for table, tablename in zip(tables, table_names)]
 	logger.log('    using RA  columns: %s' % ', '.join(ra_keys))
-	dec_keys = [get_tablekeys(table, 'DEC') for table in tables]
+	dec_keys = [get_tablekeys(table, 'DEC', tablename=tablename) for table, tablename in zip(tables, table_names)]
 	logger.log('    using DEC columns: %s' % ', '.join(dec_keys))
 
 	ratables = [(t[ra_key], t[dec_key]) for t, ra_key, dec_key in zip(tables, ra_keys, dec_keys)]

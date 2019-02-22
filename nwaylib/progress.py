@@ -21,10 +21,10 @@ def bar(ndigits=3, **kwargs):
 
 import inspect
 import astropy.io.fits as pyfits
-if 'clobber' in inspect.getargspec(pyfits.writeto).args:
-	arg_overwrite = 'clobber'
-else:
+if 'overwrite' in inspect.signature(pyfits.writeto).parameters:
 	arg_overwrite = 'overwrite'
+else:
+	arg_overwrite = 'clobber'
 kwargs_overwrite_true = {arg_overwrite:True}
 kwargs_overwrite_false = {arg_overwrite:False}
 

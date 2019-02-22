@@ -19,7 +19,7 @@ f[1].name = sys.argv[2]
 f[1].header['SKYAREA'] = float(sys.argv[3])
 print('new    ', f[1].name, 'SKYAREA:', f[1].header.get('SKYAREA', None))
 
-if 'overwrite' in inspect.getargspec(pyfits.writeto).args:
+if 'overwrite' in inspect.signature(pyfits.writeto).parameters:
 	arg_overwrite = 'overwrite'
 else:
 	arg_overwrite = 'clobber'
