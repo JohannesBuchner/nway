@@ -199,7 +199,8 @@ def _compute_source_densities(match_tables, logger):
 	# source can not be absent in primary catalogue
 	source_densities_plus[0] = source_densities[0]
 	source_densities_plus = numpy.array(source_densities_plus)
-	return source_densities_plus, source_densities
+	source_densities = numpy.array(source_densities)
+	return source_densities, source_densities_plus
 
 def _compute_single_log_bf(match_tables, source_densities, source_densities_plus, table, separations, errors, prior_completeness, logger):
 	logger.log('Computing distance-based probabilities ...')
