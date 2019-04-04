@@ -4,7 +4,6 @@ from __future__ import print_function, division
 
 __doc__ = """Multiway association between astrometric catalogues"""
 
-import sys
 import numpy
 from numpy import log10, pi, exp, logical_and
 import pandas
@@ -79,17 +78,19 @@ def nway_match(match_tables, match_radius, prior_completeness,
 
 	if not len(table) > 0:
 		raise EmptyResultException('No matches.')
+	
+	source_densities, source_densities_plus = _compute_source_densities(match_tables, logger=logger)
 
 	# first pass: find secure matches and secure non-matches
 
-	prior, log_bf = _compute_single_log_bf(match_tables, table, separations, errors, prior_completeness, logger=logger)
+	prior, log_bf = _compute_single_log_bf(match_tables, source_densities, source_densities_plus, table, separations, errors, prior_completeness, logger=logger)
 	table = table.assign(
 		dist_bayesfactor_uncorrected=log_bf,
 		dist_bayesfactor=log_bf
 	)
 	
 	if consider_unrelated_associations:
-		_correct_unrelated_associations(table, separations, errors, ncats, logger=logger)
+		_correct_unrelated_associations(table, separations, errors, ncats, source_densities, source_densities_plus, logger=logger)
 		log_bf = table['dist_bayesfactor']
 
 	# add the additional columns
@@ -155,6 +156,7 @@ def _create_match_table(match_tables, match_radius, logger):
 				# mark the upper right triangle of the matrix as invalid data
 				row.append(invalid_separations)
 		separations.append(row)
+		del row
 
 	keys.append('Separation_max')
 	columns.append(max_separation)
@@ -180,9 +182,7 @@ def _create_match_table(match_tables, match_radius, logger):
 
 	return table, resultstable, separations, errors
 
-def _compute_single_log_bf(match_tables, table, separations, errors, prior_completeness, logger):
-	logger.log('Computing distance-based probabilities ...')
-	ncats = len(match_tables)
+def _compute_source_densities(match_tables, logger):
 	source_densities = []
 	source_densities_plus = []
 	for i, match_table in enumerate(match_tables):
@@ -199,14 +199,17 @@ def _compute_single_log_bf(match_tables, table, separations, errors, prior_compl
 	# source can not be absent in primary catalogue
 	source_densities_plus[0] = source_densities[0]
 	source_densities_plus = numpy.array(source_densities_plus)
+	return source_densities_plus, source_densities
 
+def _compute_single_log_bf(match_tables, source_densities, source_densities_plus, table, separations, errors, prior_completeness, logger):
+	logger.log('Computing distance-based probabilities ...')
+	ncats = len(match_tables)
 
 	log_bf = numpy.zeros(len(table)) * numpy.nan
 	prior = numpy.zeros(len(table)) * numpy.nan
 	# handle all cases (also those with missing counterparts in some catalogues)
 	for case in range(2**(ncats-1)):
 		table_mask = numpy.array([True] + [(case // 2**(ti)) % 2 == 0 for ti in range(len(match_tables)-1)])
-		ncat = table_mask.sum()
 		# select those cases
 		mask = True
 		for i in range(1, len(match_tables)):
@@ -231,14 +234,13 @@ def _compute_single_log_bf(match_tables, table, separations, errors, prior_compl
 	assert numpy.isfinite(log_bf).all(), (prior, log_bf)
 	return prior, log_bf
 
-def _correct_unrelated_associations(table, separations, errors, ncats, logger):
+def _correct_unrelated_associations(table, separations, errors, ncats, source_densities, source_densities_plus, logger):
 	logger.log('    correcting for unrelated associations ...')
 	# correct for unrelated associations
 	# identify those in need of correction
 	# two unconsidered catalogues are needed for an unrelated association
 	primary_id = table[table.columns[0]]
-	ncat = table['ncat']
-	candidates = numpy.unique(primary_id[(ncat <= ncats - 2).values])
+	#candidates = numpy.unique(primary_id[(ncat <= ncats - 2).values])
 	pbar = logger.progress()
 	for primary_id_key, group in pbar(table.groupby(primary_id, sort=False)):
 		ncat_here = group['ncat']
@@ -280,8 +282,8 @@ def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclud
 		table_name = t['name']
 		for magvals, maghist, magname in zip(t['mags'], t['maghists'], t['magnames']):
 			col_name = magname
-			col = "%s_%s" % (t['name'], col_name)
-			mag = "%s:%s" % (t['name'], col_name)
+			col = "%s_%s" % (table_name, col_name)
+			mag = "%s:%s" % (table_name, col_name)
 			logger.log('Incorporating bias "%s" ...' % mag)
 			
 			res = table[table.columns[i]].values
@@ -387,8 +389,6 @@ def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prio
 	)
 
 	logger.log('    grouping by primary catalogue ID and flagging ...')
-
-	pbar = logger.progress()
 
 	def compute_group_statistics(group):
 		# group

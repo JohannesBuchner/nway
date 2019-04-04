@@ -9,8 +9,7 @@ Example: nway.py --radius 10 --prior-completeness 0.95 --mag GOODS:mag_H auto --
 
 import sys
 import numpy
-from numpy import log10, pi, exp, logical_and
-import matplotlib.pyplot as plt
+from numpy import log10, pi, exp
 import astropy.io.fits as pyfits
 import argparse
 import nwaylib.progress as progress
@@ -144,7 +143,7 @@ for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 	
 	keys = pos_error[1:].split(':')
 	if len(keys) > 3:
-		assert False, 'Invalid column specifier: %s' % nsep
+		assert False, 'Invalid column specifier: %s' % pos_error
 	if len(keys) > 1:
 		simple_errors = False
 	
@@ -181,14 +180,14 @@ def make_errors_table_matrix():
 			print('    Position error for "%s": using fixed value %f' % (table_name, float(pos_error)))
 			pos_error = float(pos_error)
 			if pos_error > match_radius * 60 * 60:
-				print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (k, pos_error))
+				print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (table_name, pos_error))
 			pos_error = float(pos_error) * numpy.ones(len(table))
 			errors.append((pos_error, pos_error, numpy.zeros_like(pos_error)))
 			continue
 		
 		keys = pos_error[1:].split(':')
 		if len(keys) > 3:
-			assert False, 'Invalid column specifier: %s' % nsep
+			assert False, 'Invalid column specifier: %s' % pos_error
 		
 		meanings = ['ra_error', 'dec_error', 'ell_angle']
 		for k, meaning in zip(keys, meanings):
@@ -198,10 +197,8 @@ def make_errors_table_matrix():
 			print('    Position error for "%s": found column %s (for %s): Values are [%f..%f]' % (
 				table_name, k, meaning, tables[ti][k].min(), tables[ti][k].max()))
 		
-		this_rotated = False
 		if len(keys) == 3:
 			keys = keys[0], keys[1], keys[2]
-			this_rotated = True
 			rotated = True
 			
 			intable_errors_ra  = tables[ti][keys[0]]
@@ -426,25 +423,30 @@ for mag, magfile in magnitude_columns:
 				print('WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.')
 			selection = table['Separation_max'] < mag_include_radius
 			selection_possible = table['Separation_max'] < mag_exclude_radius
+			selection_weights = numpy.ones(len(selection))
 		else:
 			selection = post > magauto_post_single_minvalue
+			selection_weights = post
 			selection_possible = post > 0.01
 		
 		# ignore cases where counterpart is missing
 		assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
 		selection = numpy.logical_and(selection, res_defined)
+		selection_weights = selection_weights[res_defined]
 		selection_possible = numpy.logical_and(selection_possible, res_defined)
 		
 		#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
 		
 		#rows = results[table_name][selection].tolist()
-		rows = list(set(results[table_name][selection]))
+		rows, unique_indices = numpy.unique(results[table_name][selection], return_index=True)
+		rows_weights = selection_weights[unique_indices]
 		
 		assert len(rows) > 1, 'No magnitude values within radius for "%s".' % mag
 		mag_sel = mag_all[rows]
+		mag_sel_weights = selection_weights
 		
 		# remove vaguely possible options from alternative histogram
-		rows_possible = list(set(results[table_name][selection_possible]))
+		rows_possible = numpy.unique(results[table_name][selection_possible])
 		mask_others = mask_all.copy()
 		mask_others[rows_possible] = False
 		
@@ -456,7 +458,7 @@ for mag, magfile in magnitude_columns:
 		print('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
 		
 		# make function fitting to ratio shape
-		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel])
+		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=rows_weights)
 		print('magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
 		with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
 			f.write(b'# lo hi selected others\n')

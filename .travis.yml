@@ -45,7 +45,7 @@ install:
 
   # Customise the testing environment
   # ---------------------------------
-  - pip install setuptools codecov
+  - pip install setuptools codecov pyflakes
 
   # Summerise environment
   # ---------------------
@@ -62,6 +62,8 @@ script:
   - cd doc/
   - 'echo "backend: Agg" > matplotlibrc'
   - python -c 'import pandas, nwaylib, nwaylib.progress' || exit 1
+  - pyflakes *.py nwaylib/*.py | grep -vE '(may be undefined|imported but unused|unable to detect undefined names|local variable ._|list comprehension redefines)' | tee static_errors
+  - test -s static_errors && exit 2
   
   - nway-write-header.py COSMOS_OPTICAL.fits OPT  2
   - nway-write-header.py COSMOS_IRAC.fits    IRAC 2
