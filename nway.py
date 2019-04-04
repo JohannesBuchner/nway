@@ -40,7 +40,7 @@ parser.add_argument('--mag-radius', default=None, type=float,
 parser.add_argument('--mag-exclude-radius', default=None, type=float,
 	help='exclusion radius for building the magnitude histogram of field sources. If not set, --mag-radius is used.')
 
-parser.add_argument('--prior-completeness', metavar='COMPLETENESS', default=1, type=float,
+parser.add_argument('--prior-completeness', metavar='COMPLETENESS', default="1", type=str,
 	help='expected matching completeness of sources (prior)')
 
 parser.add_argument('--ignore-unrelated-associations', dest='consider_unrelated_associations', action='store_false',
@@ -109,6 +109,15 @@ for fitsname in filenames:
 # source can not be absent in primary catalogue
 source_densities_plus[0] = source_densities[0]
 source_densities_plus = numpy.array(source_densities_plus)
+
+if ':' in args.prior_completeness:
+	prior_completeness = numpy.array([1.0] + [float(pc) for pc in args.prior_completeness.split(':')])
+	if len(prior_completeness) != len(filenames):
+		raise Exception('Prior completeness needs one value per catalog, like "%s". Received "%s".' % (':'.join(["0.9"] * (len(filenames) - 1)), args.prior_completeness))
+else:
+	prior_completeness = numpy.array([1.0] + [float(args.prior_completeness)**(1./(len(filenames)-1)) for i in range(1, len(filenames))])
+
+
 min_prob = args.min_prob
 
 match_radius = args.radius / 60. / 60 # in degrees
@@ -316,8 +325,8 @@ for case in range(2**(len(table_names)-1)):
 			separations_selected_dec, errors_selected)
 	
 	print(log_bf[mask])
-	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(source_densities_plus[table_mask])
-	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(source_densities_plus[table_mask]))
+	prior[mask] = source_densities[0] * numpy.product(prior_completeness[table_mask]) / numpy.product(source_densities_plus[table_mask])
+	assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.product(source_densities_plus[table_mask]))
 
 assert numpy.isfinite(prior).all(), (prior, log_bf)
 assert numpy.isfinite(log_bf).all(), (prior, log_bf)
