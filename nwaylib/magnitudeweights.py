@@ -94,7 +94,7 @@ def adaptive_histograms(mag_all, mag_sel, weights=None):
 	
 	func_sel = scipy.interpolate.interp1d(weight_axis, mag_sel_sorted)
 	# choose bin borders based on cumulative distribution, using 15 points
-	x = func_sel(numpy.linspace(0, 1, 15))
+	x = numpy.unique(func_sel(numpy.linspace(0, 1, 15)))
 	lo, hi = numpy.nanmin(mag_all), numpy.nanmax(mag_all)
 	if x[-1] < lo:
 		x = numpy.asarray(list(x) + [hi+1])

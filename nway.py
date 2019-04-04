@@ -465,7 +465,7 @@ for mag, magfile in magnitude_columns:
 				numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
 				fmt = ["%10.5f"]*4)
 		if mask_sel.sum() < 100:
-			print('ERROR: too few secure matches to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename.')
+			print('ERROR: too few secure matches to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename. You can also decrease the mag-auto-minprob parameter.')
 			sys.exit(1)
 	else:
 		print('    magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col))
