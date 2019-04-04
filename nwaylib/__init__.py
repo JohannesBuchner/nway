@@ -211,7 +211,7 @@ def _compute_single_log_bf(match_tables, source_densities, source_densities_plus
 	ncats = len(match_tables)
 
 	if numpy.shape(prior_completeness) == ():
-		prior_completeness = numpy.array([1.0] + [float(prior_completeness)**(1./(ncats-1)) for i in range(1, len(filenames))])
+		prior_completeness = numpy.array([1.0] + [float(prior_completeness)**(1./(ncats-1)) for i in range(1, ncats)])
 	
 	if len(prior_completeness) != ncats:
 		raise Exception('Prior completeness needs one value per catalog. Received "%s".' % prior_completeness)
