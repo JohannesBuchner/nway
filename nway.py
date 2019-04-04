@@ -37,6 +37,9 @@ parser.add_argument('--radius', type=float, required=True,
 parser.add_argument('--mag-radius', default=None, type=float,
 	help='search radius for building the magnitude histogram of target sources. If not set, the Bayesian posterior is used.')
 
+parser.add_argument('--mag-auto-minprob', default=0.9, type=float,
+	help='minimum posterior probability (default: 0.9) for the magnitude histogram of secure target sources. Used in the Bayesian procedure.''')
+
 parser.add_argument('--mag-exclude-radius', default=None, type=float,
 	help='exclusion radius for building the magnitude histogram of field sources. If not set, --mag-radius is used.')
 
@@ -57,7 +60,7 @@ parser.add_argument('--acceptable-prob', metavar='PROB', type=float, default=0.5
 	help='ratio limit up to which secondary solutions are flagged')
 
 parser.add_argument('--min-prob', type=float, default=0,
-	help='lowest probability allowed in final catalogue. If 0, no trimming is performed.')
+	help='lowest probability allowed in final catalogue. If 0, no trimming is performed (default).')
 
 parser.add_argument('--out', metavar='OUTFILE', help='output file name', required=True)
 
@@ -119,6 +122,9 @@ mag_include_radius = args.mag_radius # in arc sec
 mag_exclude_radius = args.mag_exclude_radius # in arc sec
 if mag_exclude_radius is None:
 	mag_exclude_radius = mag_include_radius
+
+magauto_post_single_minvalue = args.mag_auto_minprob
+assert 0 < magauto_post_single_minvalue <= 1, 'probability should be between 0 and 1'
 
 magnitude_columns = args.mag
 print('    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns]))
@@ -421,7 +427,7 @@ for mag, magfile in magnitude_columns:
 			selection = table['Separation_max'] < mag_include_radius
 			selection_possible = table['Separation_max'] < mag_exclude_radius
 		else:
-			selection = post > 0.9
+			selection = post > magauto_post_single_minvalue
 			selection_possible = post > 0.01
 		
 		# ignore cases where counterpart is missing
