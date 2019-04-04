@@ -42,6 +42,9 @@ install:
   - ENV_NAME="test-environment"
   - conda create --quiet -n ${ENV_NAME} python=${TRAVIS_PYTHON_VERSION} $DEPS pandas healpy python-dateutil
   - source activate ${ENV_NAME}
+  - if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
+      pip install python-dateutil==2.5.0
+    fi
 
   # Customise the testing environment
   # ---------------------------------
