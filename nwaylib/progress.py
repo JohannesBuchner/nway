@@ -21,7 +21,8 @@ def bar(ndigits=3, **kwargs):
 
 import inspect
 import astropy.io.fits as pyfits
-if 'overwrite' in inspect.signature(pyfits.writeto).parameters:
+args = inspect.signature(pyfits.writeto).parameters if hasattr(inspect, 'signature') else inspect.getargspec(pyfits.writeto).args
+if 'overwrite' in args:
 	arg_overwrite = 'overwrite'
 else:
 	arg_overwrite = 'clobber'
