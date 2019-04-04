@@ -58,6 +58,7 @@ install:
 script:
   - coverage run setup.py test
   - pyflakes *.py nwaylib/*.py | grep -vE '(may be undefined|imported but unused|unable to detect undefined names|local variable ._|list comprehension redefines)' | tee static_errors
+  - cat static_errors
   - test -s static_errors || exit 2
   
   - 'echo "backend: Agg" > matplotlibrc'
