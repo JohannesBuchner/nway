@@ -233,6 +233,7 @@ def _compute_single_log_bf(match_tables, source_densities, source_densities_plus
 		errors_selected = [e[mask] for e, m in zip(errors, table_mask) if m]
 		separations_selected = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
 			for row, m2 in zip(separations, table_mask) if m2]
+		# here we should call the elliptical error variant if errors is a 2d array
 		r = bayesdist.log_bf(separations_selected, errors_selected)
 		assert r.shape == separations_selected[0][0].shape, (r.shape, separations_selected[0][0].shape)
 		assert r.shape == errors_selected[0].shape, (r.shape, errors_selected[0].shape)

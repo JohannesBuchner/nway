@@ -18,6 +18,81 @@ import nwaylib.fastskymatch as match
 import nwaylib.bayesdistance as bayesdist
 import nwaylib.magnitudeweights as magnitudeweights
 
+def make_errors_table_matrix(table_names, pos_errors):
+	symmetric = True
+	rotated = False
+	errors    = []
+	for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
+		colnames = tables[ti].dtype.names
+		if pos_error[0] != ':':
+			print('    Position error for "%s": using fixed value %f' % (table_name, float(pos_error)))
+			pos_error = float(pos_error)
+			if pos_error > match_radius * 60 * 60:
+				print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (table_name, pos_error))
+			pos_error = float(pos_error) * numpy.ones(len(table))
+			errors.append((pos_error, pos_error, numpy.zeros_like(pos_error)))
+			continue
+		
+		keys = pos_error[1:].split(':')
+		if len(keys) > 3:
+			assert False, 'Invalid column specifier: %s' % pos_error
+		
+		meanings = ['ra_error', 'dec_error', 'ell_angle']
+		for k, meaning in zip(keys, meanings):
+			k2 = "%s_%s" % (table_name, k)
+			# get column
+			assert k2 in table.dtype.names, 'ERROR: Position error column "%s" not in table "%s". Have these columns: %s' % (k2, table_name, ', '.join(colnames))
+			print('    Position error for "%s": found column %s (for %s): Values are [%f..%f]' % (
+				table_name, k, meaning, tables[ti][k].min(), tables[ti][k].max()))
+		
+		if len(keys) == 3:
+			keys = keys[0], keys[1], keys[2]
+			rotated = True
+			
+			intable_errors_ra  = tables[ti][keys[0]]
+			intable_errors_dec = tables[ti][keys[1]]
+			intable_errors_rho = tables[ti][keys[2]] / 180 * pi
+			
+			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
+			table_errors_rho = table["%s_%s" % (table_name, keys[2])] / 180 * pi
+
+			intable_errors_ra, intable_errors_dec, intable_errors_rho = bayesdist.convert_from_ellipse(intable_errors_ra, intable_errors_dec, intable_errors_rho)
+			table_errors_ra, table_errors_dec, table_errors_rho = bayesdist.convert_from_ellipse(table_errors_ra, table_errors_dec, table_errors_rho)
+			
+		elif len(keys) == 2:
+			keys = keys[0], keys[1]
+			symmetric = False
+			
+			intable_errors_ra  = tables[ti][keys[0]]
+			intable_errors_dec = tables[ti][keys[1]]
+			intable_errors_rho = numpy.zeros_like(intable_errors_ra)
+			
+			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
+			table_errors_rho = numpy.zeros_like(table_errors_ra)
+			
+		elif len(keys) == 1:
+			keys = keys[0], keys[0]
+
+			intable_errors_ra  = tables[ti][keys[0]]
+			intable_errors_dec = intable_errors_ra
+			intable_errors_rho = numpy.zeros_like(intable_errors_ra)
+			
+			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+			table_errors_dec = table_errors_ra
+			table_errors_rho = numpy.zeros_like(table_errors_ra)
+			
+		
+		if intable_errors_ra.min() <= 0 or intable_errors_dec.min() <= 0:
+			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (
+				keys[0], numpy.logical_and(intable_errors_ra <= 0, intable_errors_dec <= 0).sum()))
+		if intable_errors_ra.max() > match_radius * 60 * 60 or intable_errors_dec.max() > match_radius * 60 * 60:
+			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (keys[0], max(intable_errors_ra.max(), intable_errors_dec.max())))
+		
+		errors.append((table_errors_ra, table_errors_dec, table_errors_rho))
+	return errors, (not rotated) and symmetric
+
 # set up program arguments
 
 class HelpfulParser(argparse.ArgumentParser):
@@ -179,82 +254,8 @@ print('Computing distance-based probabilities ...')
 
 print('  finding position error columns ...')
 # get the separation and error columns for the bayesian weighting
-def make_errors_table_matrix():
-	symmetric = True
-	rotated = False
-	errors    = []
-	for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
-		colnames = tables[ti].dtype.names
-		if pos_error[0] != ':':
-			print('    Position error for "%s": using fixed value %f' % (table_name, float(pos_error)))
-			pos_error = float(pos_error)
-			if pos_error > match_radius * 60 * 60:
-				print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (table_name, pos_error))
-			pos_error = float(pos_error) * numpy.ones(len(table))
-			errors.append((pos_error, pos_error, numpy.zeros_like(pos_error)))
-			continue
-		
-		keys = pos_error[1:].split(':')
-		if len(keys) > 3:
-			assert False, 'Invalid column specifier: %s' % pos_error
-		
-		meanings = ['ra_error', 'dec_error', 'ell_angle']
-		for k, meaning in zip(keys, meanings):
-			k2 = "%s_%s" % (table_name, k)
-			# get column
-			assert k2 in table.dtype.names, 'ERROR: Position error column "%s" not in table "%s". Have these columns: %s' % (k2, table_name, ', '.join(colnames))
-			print('    Position error for "%s": found column %s (for %s): Values are [%f..%f]' % (
-				table_name, k, meaning, tables[ti][k].min(), tables[ti][k].max()))
-		
-		if len(keys) == 3:
-			keys = keys[0], keys[1], keys[2]
-			rotated = True
-			
-			intable_errors_ra  = tables[ti][keys[0]]
-			intable_errors_dec = tables[ti][keys[1]]
-			intable_errors_rho = tables[ti][keys[2]] / 180 * pi
-			
-			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
-			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
-			table_errors_rho = table["%s_%s" % (table_name, keys[2])] / 180 * pi
 
-			intable_errors_ra, intable_errors_dec, intable_errors_rho = bayesdist.convert_from_ellipse(intable_errors_ra, intable_errors_dec, intable_errors_rho)
-			table_errors_ra, table_errors_dec, table_errors_rho = bayesdist.convert_from_ellipse(table_errors_ra, table_errors_dec, table_errors_rho)
-			
-		elif len(keys) == 2:
-			keys = keys[0], keys[1]
-			symmetric = False
-			
-			intable_errors_ra  = tables[ti][keys[0]]
-			intable_errors_dec = tables[ti][keys[1]]
-			intable_errors_rho = numpy.zeros_like(intable_errors_ra)
-			
-			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
-			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
-			table_errors_rho = numpy.zeros_like(table_errors_ra)
-			
-		elif len(keys) == 1:
-			keys = keys[0], keys[0]
-
-			intable_errors_ra  = tables[ti][keys[0]]
-			intable_errors_dec = intable_errors_ra
-			intable_errors_rho = numpy.zeros_like(intable_errors_ra)
-			
-			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
-			table_errors_dec = table_errors_ra
-			table_errors_rho = numpy.zeros_like(table_errors_ra)
-			
-		
-		if intable_errors_ra.min() <= 0 or intable_errors_dec.min() <= 0:
-			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (
-				keys[0], numpy.logical_and(intable_errors_ra <= 0, intable_errors_dec <= 0).sum()))
-		if intable_errors_ra.max() > match_radius * 60 * 60 or intable_errors_dec.max() > match_radius * 60 * 60:
-			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (keys[0], max(intable_errors_ra.max(), intable_errors_dec.max())))
-		
-		errors.append((table_errors_ra, table_errors_dec, table_errors_rho))
-	return errors, (not rotated) and symmetric
-
-errors, simple_errors = make_errors_table_matrix()
+errors, simple_errors = make_errors_table_matrix(table_names, pos_errors)
 if simple_errors:
 	errors = [e_ra for e_ra, e_dec, e_rho in errors]
 
@@ -327,9 +328,8 @@ for case in range(2**(len(table_names)-1)):
 		log_bf[mask] = bayesdist.log_bf_elliptical(separations_selected_ra, 
 			separations_selected_dec, errors_selected)
 	
-	print(log_bf[mask])
-	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(source_densities_plus[table_mask])
-	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(source_densities_plus[table_mask]))
+	prior[mask] = source_densities[0] * numpy.product(prior_completeness[table_mask]) / numpy.product(source_densities_plus[table_mask])
+	assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.product(source_densities_plus[table_mask]))
 
 assert numpy.isfinite(prior).all(), (prior, log_bf)
 assert numpy.isfinite(log_bf).all(), (prior, log_bf)
