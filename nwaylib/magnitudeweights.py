@@ -86,10 +86,12 @@ with the same binning.
 def adaptive_histograms(mag_all, mag_sel, weights=None):
 	if weights is None:
 		weights = numpy.ones(len(mag_sel))
-	assert len(weights) == len(mag_sel)
+	assert len(weights) == len(mag_sel), (len(weights), len(mag_sel))
 	mag_sel_idx = numpy.argsort(mag_sel)
 	mag_sel_sorted = mag_sel[mag_sel_idx]
 	weight_axis = numpy.cumsum(weights[mag_sel_idx]) / numpy.sum(weights)
+	weight_axis[0] = 0
+	weight_axis[-1] = 1
 	
 	func_sel = scipy.interpolate.interp1d(weight_axis, mag_sel_sorted)
 	# choose bin borders based on cumulative distribution, using 15 points

@@ -318,7 +318,6 @@ for case in range(2**(len(table_names)-1)):
 		log_bf[mask] = bayesdist.log_bf_elliptical(separations_selected_ra, 
 			separations_selected_dec, errors_selected)
 	
-	print(log_bf[mask])
 	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(source_densities_plus[table_mask])
 	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(source_densities_plus[table_mask]))
 
@@ -443,7 +442,7 @@ for mag, magfile in magnitude_columns:
 		
 		assert len(rows) > 1, 'No magnitude values within radius for "%s".' % mag
 		mag_sel = mag_all[rows]
-		mag_sel_weights = selection_weights
+		mag_sel_weights = rows_weights
 		
 		# remove vaguely possible options from alternative histogram
 		rows_possible = numpy.unique(results[table_name][selection_possible])
@@ -455,11 +454,11 @@ for mag, magfile in magnitude_columns:
 
 		#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
 
-		print('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
+		print('    magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
 		
 		# make function fitting to ratio shape
-		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=rows_weights)
-		print('magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
+		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=mag_sel_weights[mask_sel])
+		print('    magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
 		with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
 			f.write(b'# lo hi selected others\n')
 			numpy.savetxt(f,
@@ -469,7 +468,7 @@ for mag, magfile in magnitude_columns:
 			print('ERROR: too few secure matches to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename.')
 			sys.exit(1)
 	else:
-		print('magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col))
+		print('    magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col))
 		bins_lo, bins_hi, hist_sel, hist_all = numpy.loadtxt(magfile).transpose()
 		bins = numpy.array(list(bins_lo) + [bins_hi[-1]])
 	func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
