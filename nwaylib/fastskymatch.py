@@ -7,14 +7,13 @@ from __future__ import print_function, division
 import numpy
 import itertools
 from collections import defaultdict
-import os, sys
+import os
 import astropy.io.fits as pyfits
 from astropy.coordinates import SkyCoord, SkyOffsetFrame
 import astropy.units as u
 from numpy import sin, cos, arctan2, hypot, arccos, arcsin, pi, exp, log
 import healpy
 import joblib
-import os
 cachedir = 'cache'
 if not os.path.isdir(cachedir): os.mkdir(cachedir)
 mem = joblib.Memory(cachedir=cachedir, verbose=False)
@@ -250,7 +249,6 @@ def match_multiple(tables, table_names, err, fits_formats, logger, circular=True
 	)
 	
 	logger.log('    adding angular separation columns')
-	cols = []
 	max_separation = numpy.zeros(len(results))
 	for i in range(len(tables)):
 		a_ra  = tbhdu.data["%s_%s" % (table_names[i], ra_keys[i])]

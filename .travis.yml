@@ -45,7 +45,7 @@ install:
 
   # Customise the testing environment
   # ---------------------------------
-  - pip install setuptools codecov
+  - pip install setuptools codecov pyflakes
 
   # Summerise environment
   # ---------------------
@@ -57,6 +57,9 @@ install:
 
 script:
   - coverage run setup.py test
+  - pyflakes *.py nwaylib/*.py | grep -vE '(may be undefined|imported but unused|unable to detect undefined names|local variable ._|list comprehension redefines)' | tee static_errors
+  - cat static_errors
+  - if test -s static_errors; then exit 2; else true; fi
   
   - 'echo "backend: Agg" > matplotlibrc'
   - cd doc/

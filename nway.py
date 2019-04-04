@@ -9,8 +9,7 @@ Example: nway.py --radius 10 --prior-completeness 0.95 --mag GOODS:mag_H auto --
 
 import sys
 import numpy
-from numpy import log10, pi, exp, logical_and
-import matplotlib.pyplot as plt
+from numpy import log10, pi, exp
 import astropy.io.fits as pyfits
 import argparse
 import nwaylib.progress as progress
@@ -37,6 +36,9 @@ parser.add_argument('--radius', type=float, required=True,
 parser.add_argument('--mag-radius', default=None, type=float,
 	help='search radius for building the magnitude histogram of target sources. If not set, the Bayesian posterior is used.')
 
+parser.add_argument('--mag-auto-minprob', default=0.9, type=float,
+	help='minimum posterior probability (default: 0.9) for the magnitude histogram of secure target sources. Used in the Bayesian procedure.''')
+
 parser.add_argument('--mag-exclude-radius', default=None, type=float,
 	help='exclusion radius for building the magnitude histogram of field sources. If not set, --mag-radius is used.')
 
@@ -57,7 +59,7 @@ parser.add_argument('--acceptable-prob', metavar='PROB', type=float, default=0.5
 	help='ratio limit up to which secondary solutions are flagged')
 
 parser.add_argument('--min-prob', type=float, default=0,
-	help='lowest probability allowed in final catalogue. If 0, no trimming is performed.')
+	help='lowest probability allowed in final catalogue. If 0, no trimming is performed (default).')
 
 parser.add_argument('--out', metavar='OUTFILE', help='output file name', required=True)
 
@@ -129,6 +131,9 @@ mag_exclude_radius = args.mag_exclude_radius # in arc sec
 if mag_exclude_radius is None:
 	mag_exclude_radius = mag_include_radius
 
+magauto_post_single_minvalue = args.mag_auto_minprob
+assert 0 < magauto_post_single_minvalue <= 1, 'probability should be between 0 and 1'
+
 magnitude_columns = args.mag
 print('    magnitude columns: ', ', '.join([c for c, _ in magnitude_columns]))
 
@@ -147,7 +152,7 @@ for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 	
 	keys = pos_error[1:].split(':')
 	if len(keys) > 3:
-		assert False, 'Invalid column specifier: %s' % nsep
+		assert False, 'Invalid column specifier: %s' % pos_error
 	if len(keys) > 1:
 		simple_errors = False
 	
@@ -184,14 +189,14 @@ def make_errors_table_matrix():
 			print('    Position error for "%s": using fixed value %f' % (table_name, float(pos_error)))
 			pos_error = float(pos_error)
 			if pos_error > match_radius * 60 * 60:
-				print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (k, pos_error))
+				print('WARNING: Given separation error for "%s" is larger than the match radius! Increase --radius to >> %s' % (table_name, pos_error))
 			pos_error = float(pos_error) * numpy.ones(len(table))
 			errors.append((pos_error, pos_error, numpy.zeros_like(pos_error)))
 			continue
 		
 		keys = pos_error[1:].split(':')
 		if len(keys) > 3:
-			assert False, 'Invalid column specifier: %s' % nsep
+			assert False, 'Invalid column specifier: %s' % pos_error
 		
 		meanings = ['ra_error', 'dec_error', 'ell_angle']
 		for k, meaning in zip(keys, meanings):
@@ -201,10 +206,8 @@ def make_errors_table_matrix():
 			print('    Position error for "%s": found column %s (for %s): Values are [%f..%f]' % (
 				table_name, k, meaning, tables[ti][k].min(), tables[ti][k].max()))
 		
-		this_rotated = False
 		if len(keys) == 3:
 			keys = keys[0], keys[1], keys[2]
-			this_rotated = True
 			rotated = True
 			
 			intable_errors_ra  = tables[ti][keys[0]]
@@ -325,8 +328,8 @@ for case in range(2**(len(table_names)-1)):
 			separations_selected_dec, errors_selected)
 	
 	print(log_bf[mask])
-	prior[mask] = source_densities[0] * numpy.product(prior_completeness[table_mask]) / numpy.product(source_densities_plus[table_mask])
-	assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.product(source_densities_plus[table_mask]))
+	prior[mask] = source_densities[0] * args.prior_completeness / numpy.product(source_densities_plus[table_mask])
+	assert numpy.isfinite(prior[mask]).all(), (source_densities, args.prior_completeness, numpy.product(source_densities_plus[table_mask]))
 
 assert numpy.isfinite(prior).all(), (prior, log_bf)
 assert numpy.isfinite(log_bf).all(), (prior, log_bf)
@@ -429,25 +432,30 @@ for mag, magfile in magnitude_columns:
 				print('WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.')
 			selection = table['Separation_max'] < mag_include_radius
 			selection_possible = table['Separation_max'] < mag_exclude_radius
+			selection_weights = numpy.ones(len(selection))
 		else:
-			selection = post > 0.9
+			selection = post > magauto_post_single_minvalue
+			selection_weights = post
 			selection_possible = post > 0.01
 		
 		# ignore cases where counterpart is missing
 		assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
 		selection = numpy.logical_and(selection, res_defined)
+		selection_weights = selection_weights[res_defined]
 		selection_possible = numpy.logical_and(selection_possible, res_defined)
 		
 		#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
 		
 		#rows = results[table_name][selection].tolist()
-		rows = list(set(results[table_name][selection]))
+		rows, unique_indices = numpy.unique(results[table_name][selection], return_index=True)
+		rows_weights = selection_weights[unique_indices]
 		
 		assert len(rows) > 1, 'No magnitude values within radius for "%s".' % mag
 		mag_sel = mag_all[rows]
+		mag_sel_weights = rows_weights
 		
 		# remove vaguely possible options from alternative histogram
-		rows_possible = list(set(results[table_name][selection_possible]))
+		rows_possible = numpy.unique(results[table_name][selection_possible])
 		mask_others = mask_all.copy()
 		mask_others[rows_possible] = False
 		
@@ -456,21 +464,21 @@ for mag, magfile in magnitude_columns:
 
 		#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
 
-		print('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
+		print('    magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
 		
 		# make function fitting to ratio shape
-		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel])
-		print('magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
+		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=mag_sel_weights[mask_sel])
+		print('    magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
 		with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
 			f.write(b'# lo hi selected others\n')
 			numpy.savetxt(f,
 				numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
 				fmt = ["%10.5f"]*4)
 		if mask_sel.sum() < 100:
-			print('ERROR: too few secure matches to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename.')
+			print('ERROR: too few secure matches to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename. You can also decrease the mag-auto-minprob parameter.')
 			sys.exit(1)
 	else:
-		print('magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col))
+		print('    magnitude histogramming: using histogram from "%s" for column "%s"' % (magfile, col))
 		bins_lo, bins_hi, hist_sel, hist_all = numpy.loadtxt(magfile).transpose()
 		bins = numpy.array(list(bins_lo) + [bins_hi[-1]])
 	func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)

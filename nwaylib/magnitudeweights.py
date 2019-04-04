@@ -51,7 +51,6 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 		drawstyle='steps-post', label='selected')
 	plt.legend(loc='best')
 	plt.ylabel('normalized weight')
-	plt.xlabel(name)
 	plt.xlim(mags.min(), mags.max())
 	plt.subplot(2, 1, 2)
 	plt.plot(bin_mag[:-1], hist_n, '-',
@@ -83,12 +82,19 @@ def fitfunc_histogram(bin_mag, hist_sel, hist_all):
 creates the histograms for the two columns in an adaptive way (based on mag_sel)
 with the same binning.
 """
-def adaptive_histograms(mag_all, mag_sel):
-	func_sel = scipy.interpolate.interp1d(
-		numpy.linspace(0, 1, len(mag_sel)), 
-		sorted(mag_sel))
-	# choose bin borders based on cumulative distribution, using 20 points
-	x = func_sel(numpy.linspace(0, 1, 15))
+def adaptive_histograms(mag_all, mag_sel, weights=None):
+	if weights is None:
+		weights = numpy.ones(len(mag_sel))
+	assert len(weights) == len(mag_sel), (len(weights), len(mag_sel))
+	mag_sel_idx = numpy.argsort(mag_sel)
+	mag_sel_sorted = mag_sel[mag_sel_idx]
+	weight_axis = numpy.cumsum(weights[mag_sel_idx]) / numpy.sum(weights)
+	weight_axis[0] = 0
+	weight_axis[-1] = 1
+	
+	func_sel = scipy.interpolate.interp1d(weight_axis, mag_sel_sorted)
+	# choose bin borders based on cumulative distribution, using 15 points
+	x = numpy.unique(func_sel(numpy.linspace(0, 1, 15)))
 	lo, hi = numpy.nanmin(mag_all), numpy.nanmax(mag_all)
 	if x[-1] < lo:
 		x = numpy.asarray(list(x) + [hi+1])
@@ -96,7 +102,7 @@ def adaptive_histograms(mag_all, mag_sel):
 		x = numpy.asarray([lo-1] + list(x))
 	# linear histogram (for no adaptiveness):
 	##x = numpy.linspace(mag_all.min(), mag_all.max(), 20)
-	hist_sel, bins = numpy.histogram(mag_sel, bins=x,    density=True)
+	hist_sel, bins = numpy.histogram(mag_sel, bins=x,    density=True, weights=weights)
 	hist_all, bins = numpy.histogram(mag_all, bins=bins, density=True)
 	return bins, hist_sel, hist_all
 

@@ -28,11 +28,11 @@ def checkupdates(current_version=None):
 			print('A newer version of NWAY seems to be available.')
 			print('Please update because it may fix bugs.')
 			print()
-	except Exception as e:
+	except Exception:
 		pass
-	except ImportError as e:
+	except ImportError:
 		pass
-	except IOError as e:
+	except IOError:
 		pass
 	
 
