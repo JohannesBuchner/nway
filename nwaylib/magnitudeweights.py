@@ -60,6 +60,7 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	plt.ylabel('normalized weight')
 	plt.xlabel(name)
 	plt.xlim(mags.min(), mags.max())
+	plt.yscale('log')
 	plt.savefig(name.replace(':', '_') + '_fit.pdf', bbox_inches='tight')
 	plt.close()
 
@@ -91,6 +92,7 @@ def adaptive_histograms(mag_all, mag_sel, weights=None):
 	weight_axis = numpy.cumsum(weights[mag_sel_idx]) / numpy.sum(weights)
 	weight_axis[0] = 0
 	weight_axis[-1] = 1
+	#weight_axis = numpy.linspace(0, 1, len(mag_sel_sorted))
 	
 	func_sel = scipy.interpolate.interp1d(weight_axis, mag_sel_sorted)
 	# choose bin borders based on cumulative distribution, using 15 points

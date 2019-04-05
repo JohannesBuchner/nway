@@ -441,7 +441,7 @@ for mag, magfile in magnitude_columns:
 		# ignore cases where counterpart is missing
 		assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
 		selection = numpy.logical_and(selection, res_defined)
-		selection_weights = selection_weights[res_defined]
+		selection_weights = selection_weights[selection]
 		selection_possible = numpy.logical_and(selection_possible, res_defined)
 		
 		#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
