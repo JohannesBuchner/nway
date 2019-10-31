@@ -1,7 +1,7 @@
 scipy
 numpy
 astropy
-progressbar2
+tqdm
 matplotlib
 joblib
 healpy

@@ -13,6 +13,7 @@ from astropy.coordinates import SkyCoord, SkyOffsetFrame
 import astropy.units as u
 from numpy import sin, cos, arctan2, hypot, arccos, arcsin, pi, exp, log
 import healpy
+import tqdm
 import joblib
 cachedir = 'cache'
 if not os.path.isdir(cachedir): os.mkdir(cachedir)
@@ -20,7 +21,7 @@ mem = joblib.Memory(cachedir=cachedir, verbose=False)
 
 def dist(apos, bpos):
 	"""
-	Angular separation between two points on a sphere.
+	Angular separation (in degrees) between two points on a sphere.
 	http://en.wikipedia.org/wiki/Great-circle_distance
 	"""
 	(a_ra, a_dec), (b_ra, b_dec) = apos, bpos
@@ -81,7 +82,7 @@ def get_healpix_resolution_degrees(nside):
 	return resfactor * resol
 
 @mem.cache(ignore=['logger'])
-def crossproduct(radectables, err, logger):
+def crossproduct(radectables, err, logger, pairwise_errs=[]):
 	# check if away from the poles and RA=0
 	use_flat_bins = True
 	for ra, dec in radectables:
@@ -110,7 +111,7 @@ def crossproduct(radectables, err, logger):
 	buckets = defaultdict(lambda : [[] for _ in range(len(radectables))])
 	primary_cat_keys = None
 	
-	pbar = logger.progress(ndigits=3, maxval=sum([len(t[0]) for t in radectables])).start()
+	pbar = tqdm.tqdm(total=sum([len(t[0]) for t in radectables]))
 	for ti, (ra_table, dec_table) in enumerate(radectables):
 		if use_flat_bins:
 			for ei, (ra, dec) in enumerate(zip(ra_table, dec_table)):
@@ -122,7 +123,7 @@ def crossproduct(radectables, err, logger):
 					# only primary catalogue is allowed to define new buckets
 					if ti == 0 or k in buckets:
 						buckets[k][ti].append(ei)
-				pbar.increment()
+				pbar.update()
 		else:
 			# get healpixels
 			ra, dec = ra_table, dec_table
@@ -141,17 +142,17 @@ def crossproduct(radectables, err, logger):
 				for ei, keys in enumerate(neighbors):
 					for k in keys:
 						buckets[k][ti].append(ei)
-					pbar.increment()
+					pbar.update()
 			else:
 				for ei, keys in enumerate(neighbors):
 					for k in keys:
 						if k in primary_cat_keys:
 							buckets[k][ti].append(ei)
-					pbar.increment()
+					pbar.update()
 			if ti == 0:
 				primary_cat_keys = set(buckets.keys())
 				
-	pbar.finish()
+	pbar.close()
 	
 	# add no-counterpart options
 	results = set()
@@ -160,17 +161,48 @@ def crossproduct(radectables, err, logger):
 	#print('matching: %6d matches expected after hashing' % numpy.sum([
 	#	len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]]) 
 	#		for lists in buckets.values()]))
-
-	pbar = logger.progress(ndigits=5, maxval=len(buckets)).start()
+	
+	#pbar = logger.progress(ndigits=5, maxval=len(buckets)).start()
+	pbar = tqdm.tqdm(total=len(buckets))
 	while buckets:
 		k, lists = buckets.popitem()
-		pbar.increment()
+		pbar.update()
 		# add for secondary catalogues the option of missing source
 		for l in lists[1:]:
 			l.insert(0, -1)
 		# create the cartesian product
-		results.update(itertools.product(*[sorted(l) for l in lists]))
-	pbar.finish()
+		local_results = itertools.product(*[sorted(l) for l in lists])
+		
+		# if pairwise filtering is requested, use it to trim down solutions
+		if pairwise_errs:
+			local_results = numpy.array(list(local_results))
+			#nstart = len(local_results)
+			for tablei, tablej, errij in pairwise_errs:
+				indicesi = local_results[:,tablei]
+				indicesj = local_results[:,tablej]
+				# first find entries that actually have both entries
+				mask_both = numpy.logical_and(indicesi >= 0, indicesj >= 0)
+				#if not mask_both.any():
+				#	continue
+				# get the RA/Dec
+				rai, deci = radectables[tablei]
+				raj, decj = radectables[tablej]
+				rai, deci = rai[indicesi[mask_both]], deci[indicesi[mask_both]]
+				raj, decj = raj[indicesj[mask_both]], decj[indicesj[mask_both]]
+				# compute distances
+				mask_good = dist((rai, deci), (raj, decj)) < errij * 60 * 60
+				# select the ones where one is missing, or those within errij
+				mask_good2 = ~mask_both
+				mask_good2[mask_both][mask_good] = True
+				#print(mask_good2.sum(), mask_both.shape, mask_both.sum(), mask_good.sum())
+				local_results = local_results[mask_good2,:]
+			
+			#print("compression:%d/%d" % (len(local_results), nstart))
+			results.update([tuple(l) for l in local_results])
+		else:
+			results.update(local_results)
+		del local_results
+	pbar.close()
 
 	n = len(results)
 	logger.log('matching: %6d unique matches from cartesian product. sorting ...' % n)
@@ -184,7 +216,7 @@ if hasattr(pyfits.BinTableHDU, 'from_columns'):
 else:
 	fits_from_columns = pyfits.new_table
 
-def match_multiple(tables, table_names, err, fits_formats, logger, circular=True):
+def match_multiple(tables, table_names, err, fits_formats, logger, circular=True, pairwise_errs=[]):
 	"""
 	computes the cartesian product of all possible matches,
 	limited to a maximum distance of err (in degrees).
@@ -211,7 +243,7 @@ def match_multiple(tables, table_names, err, fits_formats, logger, circular=True
 	logger.log('    using DEC columns: %s' % ', '.join(dec_keys))
 
 	ratables = [(t[ra_key], t[dec_key]) for t, ra_key, dec_key in zip(tables, ra_keys, dec_keys)]
-	resultstable = crossproduct(ratables, err, logger=logger)
+	resultstable = crossproduct(ratables, err, logger=logger, pairwise_errs=pairwise_errs)
 	results = resultstable.view(dtype=[(table_name, resultstable.dtype) for table_name in table_names]).reshape((-1,))
 
 	keys = []
@@ -220,13 +252,13 @@ def match_multiple(tables, table_names, err, fits_formats, logger, circular=True
 	
 	logger.log('merging in %d columns from input catalogues ...' % sum([1 + len(table.dtype.names) for table in tables]))
 	cat_columns = []
-	pbar = logger.progress(ndigits=3, maxval=sum([1 + len(table.dtype.names) for table in tables])).start()
+	pbar = tqdm.tqdm(total=sum([1 + len(table.dtype.names) for table in tables]))
 	for table, table_name, fits_format in zip(tables, table_names, fits_formats):
 		tbl = table[results[table_name]]
 		# set missing to nan
 		mask_missing = results[table_name] == -1
 		
-		pbar.increment()
+		pbar.update()
 		for n, format in zip(table.dtype.names, fits_format):
 			k = "%s_%s" % (table_name, n)
 			keys.append(k)
@@ -239,8 +271,8 @@ def match_multiple(tables, table_names, err, fits_formats, logger, circular=True
 			
 			fitscol = pyfits.Column(name=k, format=format, array=col)
 			cat_columns.append(fitscol)
-			pbar.increment()
-	pbar.finish()
+			pbar.update()
+	pbar.close()
 	
 	tbhdu = fits_from_columns(pyfits.ColDefs(cat_columns))
 	header = dict(

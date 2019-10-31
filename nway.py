@@ -12,6 +12,7 @@ import numpy
 from numpy import log10, pi, exp
 import astropy.io.fits as pyfits
 import argparse
+import tqdm
 import nwaylib.progress as progress
 import nwaylib.logger as logger
 import nwaylib.fastskymatch as match
@@ -140,8 +141,16 @@ parser.add_argument('--out', metavar='OUTFILE', help='output file name', require
 
 parser.add_argument('catalogues', type=str, nargs='+',
 	help="""input catalogue fits files and position errors.
+
 	Example: cdfs4Ms_srclist_v3.fits :Pos_error CANDELS_irac1.fits 0.5 gs_short.fits 0.1
 	""")
+
+parser.add_argument('--prefilter-pair', metavar='CATNAME1 CATNAME2 radius', type=str, nargs=3, action='append', default=[],
+	help="""name of two <table>s where combinations more distant than radius (in arcsec)
+	should not considered. This reduces the memory needs when several large catalogs
+	with high accuracy are matched against some with low accuracy (high --radius).
+
+	Example: --prefilter-pair GOODS IRAC 0.1""")
 
 
 # parsing arguments
@@ -198,6 +207,11 @@ else:
 min_prob = args.min_prob
 
 match_radius = args.radius / 60. / 60 # in degrees
+
+pairwise_errs = [(table_names.index(tablea), table_names.index(tableb), float(err))
+	for tablea, tableb, err in args.prefilter_pair]
+print(pairwise_errs)
+
 #if args.mag_radius is not None:
 #	mag_radius = match_radius # in arc sec
 #else:
@@ -244,7 +258,7 @@ for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 
 # first match input catalogues, compute possible combinations in match_radius
 results, columns, match_header = match.match_multiple(tables, table_names, match_radius, fits_formats, circular=simple_errors,
-	logger=logger.NormalLogger())
+	logger=logger.NormalLogger(), pairwise_errs=pairwise_errs)
 table = match.fits_from_columns(pyfits.ColDefs(columns)).data
 
 assert len(table) > 0, 'No matches.'
@@ -345,8 +359,7 @@ if args.consider_unrelated_associations:
 		# correct for unrelated associations
 		# identify those in need of correction
 		# two unconsidered catalogues are needed for an unrelated association
-		pbar = progress.bar(ndigits=6)
-		for i in pbar(candidates):
+		for i in tqdm.tqdm(candidates):
 			# list which ones we are missing
 			missing_cats = [k for k, sep in enumerate(separations[0]) if numpy.isnan(sep[i])]
 			pid = table[primary_id_key][i]
@@ -514,11 +527,10 @@ match_header['COL_PRIM'] = primary_id_key
 match_header['COLS_ERR'] = ' '.join(['%s_%s' % (ti, poscol) for ti, poscol in zip(table_names, pos_errors)])
 print('    grouping by column "%s" and flagging ...' % (primary_id_key))
 
-pbar = progress.bar(ndigits=6)
 pid_index = primary_ids.index(pid)
 best_log_bf = 0
 # go through more complex associations
-for primary_id, ilo, ihi in pbar(list(zip(primary_ids, primary_id_start, primary_id_end))):
+for primary_id, ilo, ihi in tqdm.tqdm(list(zip(primary_ids, primary_id_start, primary_id_end))):
 	# group
 	mask = slice(ilo, ihi)
 	

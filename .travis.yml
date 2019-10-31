@@ -13,11 +13,11 @@ matrix:
     #- python: "2.7"
     #  env: DEPS="scipy matplotlib astropy=1.3.1 progressbar"
     - python: "2.7"
-      env: DEPS="scipy matplotlib astropy progressbar2"
+      env: DEPS="scipy matplotlib astropy tqdm"
     - python: "3.5"
-      env: DEPS="scipy matplotlib astropy=1.3 progressbar2"
+      env: DEPS="scipy matplotlib astropy=1.3 tqdm"
     - python: "3.6"
-      env: DEPS="scipy matplotlib astropy progressbar2" 
+      env: DEPS="scipy matplotlib astropy tqdm" 
 
 install:
   # Fetch and install conda
