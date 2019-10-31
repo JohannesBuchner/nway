@@ -210,7 +210,9 @@ match_radius = args.radius / 60. / 60 # in degrees
 
 pairwise_errs = [(table_names.index(tablea), table_names.index(tableb), float(err))
 	for tablea, tableb, err in args.prefilter_pair]
-print(pairwise_errs)
+
+if len(pairwise_errs) > 0:
+	print('    pair-wise pre-filtering on')
 
 #if args.mag_radius is not None:
 #	mag_radius = match_radius # in arc sec
