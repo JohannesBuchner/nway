@@ -7,6 +7,8 @@ Version 4.0:
 	
 	Elliptical errors (4.2)
 
+	tqdm instead of progressbar2, histogram robustness (4.3)
+
 Version 3.0:
 
 	Healpix-based hashing instead of a ra/dec grid. Works now accurately
