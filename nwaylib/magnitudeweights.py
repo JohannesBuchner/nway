@@ -98,9 +98,10 @@ def adaptive_histograms(mag_all, mag_sel, weights=None):
 	# choose bin borders based on cumulative distribution, using 15 points
 	x = numpy.unique(func_sel(numpy.linspace(0, 1, 15)))
 	lo, hi = numpy.nanmin(mag_all), numpy.nanmax(mag_all)
-	if x[-1] < lo:
+	# extend to make sure ratios are well-defined
+	if x[-1] < hi:
 		x = numpy.asarray(list(x) + [hi+1])
-	if x[0] > hi:
+	if x[0] > lo:
 		x = numpy.asarray([lo-1] + list(x))
 	# linear histogram (for no adaptiveness):
 	##x = numpy.linspace(mag_all.min(), mag_all.max(), 20)
