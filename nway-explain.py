@@ -132,13 +132,18 @@ for col_ra, col_dec, col_err, marker, color in zip(cols_ra, cols_dec, cols_err, 
 		ra_err = numpy.ones(mask.sum()) * float(err)
 		dec_err = numpy.ones(mask.sum()) * float(err)
 	pos = set(zip(data[col_ra][mask], data[col_dec][mask], ra_err, dec_err, pa_err))
+	ras = numpy.array([ra for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99])
+	decs = numpy.array([dec for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99])
+	ra_errs = numpy.array([ra_err for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99]) / 60. / 60.
+	dec_errs = numpy.array([dec_err for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99]) / 60. / 60.
+	pa_errs = numpy.array([pa_err for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99])
 	r,  = plt.plot(convx(ras), convy(decs), marker=marker, mec=color, mfc='None', ms=8, mew=2, ls=' ', label='%s %s' % (col_ra, col_dec))
 	patches = [
-		Ellipse((convx(ra), convy(dec)), 
+		Ellipse((convx(ra), convy(dec)),
 		2 * converr(ra_err / 60 / 60),
 		2 * converr(dec_err / 60 / 60),
 		angle=90 - pa_err)
-			for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99]
+			for ra, dec, ra_err, dec_err, pa_err in zip(ras, decs, ra_errs, dec_errs, pa_errs)]
 	p = PatchCollection(patches)
 	p.set_facecolor('None')
 	p.set_edgecolor(color)
