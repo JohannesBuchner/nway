@@ -1,8 +1,8 @@
 import numpy
 from numpy import pi, sin, exp, cos, log, log10
 
-fout = open('randomcatO.csv', 'w')
-fout.write('ID,RA,DEC\n')
+fout = open('randomcatO.csv', 'wb')
+fout.write(b'ID,RA,DEC\n')
 
 rarange  = numpy.arange(150.0, 150.1, 1./60./60.)
 decrange = numpy.arange(2.0, 2.1,     1./60./60.)

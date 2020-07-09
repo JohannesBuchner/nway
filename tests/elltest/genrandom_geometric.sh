@@ -13,7 +13,7 @@ nway.py --radius=10.0 randomcatX.fits :a:b randomcatO.fits 0.1 --out=random_asym
 nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatO.fits 0.1 --out=random_elltest.fits --min-prob=0.01 || exit 1
 
 
-topcat -stilts plot2sky \
+echo topcat -stilts plot2sky \
    xpix=1081 ypix=548 \
    crowd=0.9998301109057076 \
    clon=150.0338559501912 clat=2.040905749390326 radius=0.003505914272661 \
@@ -31,7 +31,7 @@ topcat -stilts plot2sky \
       shading_2=auto \
    layer_3=Mark \
       lon_3=OPT_RA lat_3=OPT_DEC aux_3=p_i \
-      shading_3=aux size_3=3 
+      shading_3=aux size_3=3 \
 
 
 python3 ../../nway-explain.py random_circtest.fits 95 || exit 1
