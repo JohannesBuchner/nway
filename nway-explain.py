@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division
-
-__doc__ = """Explain a multiway association of astrometric catalogue. Use --help for usage.
+"""Explain a multiway association of astrometric catalogue. Use --help for usage.
 
 Example: nway-explain.py out.fits 179
 """
 
+from __future__ import print_function, division
 import matplotlib.pyplot as plt
 import numpy
 import astropy.io.fits as pyfits
 import sys
 import argparse
-from matplotlib.patches import Circle
+from matplotlib.patches import Ellipse
 from matplotlib.collections import PatchCollection
 from matplotlib.backends.backend_pdf import PdfPages
 
@@ -114,16 +113,34 @@ ii = numpy.argsort(data['p_i'][mask])[::-1]
 for col_ra, col_dec, col_err, marker, color in zip(cols_ra, cols_dec, cols_err, markers, colors):
 	tblname, err = col_err.split('_', 1)
 	if err.startswith(':'):
-		err = data[tblname + '_' + err[1:]][mask]
+		err_components = err[1:].split(':')
+		if len(err_components) == 1:
+			ra_err = data[tblname + '_' + err_components[0]][mask]
+			dec_err = ra_err
+			pa_err = numpy.zeros(ra_err.shape)
+		elif len(err_components) == 2:
+			ra_err = data[tblname + '_' + err_components[0]][mask]
+			dec_err = data[tblname + '_' + err_components[1]][mask]
+			pa_err = numpy.zeros(ra_err.shape)
+		elif len(err_components) == 3:
+			ra_err = data[tblname + '_' + err_components[0]][mask]
+			dec_err = data[tblname + '_' + err_components[1]][mask]
+			pa_err = data[tblname + '_' + err_components[2]][mask]
+		else:
+			assert len(err_components) == 3, err_components
 	else:
-		err = numpy.ones(mask.sum()) * float(err)
-	pos = set(zip(data[col_ra][mask], data[col_dec][mask], err))
-	ras = numpy.array([ra for ra, dec, err in pos if ra != -99])
-	decs = numpy.array([dec for ra, dec, err in pos if ra != -99])
-	errs = numpy.array([err for ra, dec, err in pos if ra != -99]) / 60. / 60.
+		ra_err = numpy.ones(mask.sum()) * float(err)
+		dec_err = numpy.ones(mask.sum()) * float(err)
+	pos = set(zip(data[col_ra][mask], data[col_dec][mask], ra_err, dec_err, pa_err))
+	ras = numpy.array([ra for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99])
+	decs = numpy.array([dec for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99])
+	ra_errs = numpy.array([ra_err for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99]) / 60. / 60.
+	dec_errs = numpy.array([dec_err for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99]) / 60. / 60.
+	pa_errs = numpy.array([pa_err for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99])
 	r,  = plt.plot(convx(ras), convy(decs), marker=marker, mec=color, mfc='None', ms=8, mew=2, ls=' ', label='%s %s' % (col_ra, col_dec))
 	#plt.circles(ras, decs, errs, facecolor='None', edgecolor=r.get_color())
-	patches = [Circle((convx(ra), convy(dec)), converr(err)) for ra, dec, err in zip(ras, decs, errs)]
+	patches = [Ellipse((convx(ra), convy(dec)), converr(ra_err), converr(dec_err), angle=pa_err)
+		for ra, dec, ra_err, dec_err, pa_err in zip(ras, decs, ra_errs, dec_errs, pa_errs)]
 	p = PatchCollection(patches)
 	p.set_facecolor('None')
 	p.set_edgecolor(color)
@@ -246,8 +263,3 @@ print("Disclaimer: These results assume that the input (sky densities, positiona
 print()
 plt.savefig(outfilename, bbox_inches='tight')
 plt.close()
-
-
-
-
-

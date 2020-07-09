@@ -123,7 +123,11 @@ script:
   # we should test for created output files
   - ls
   
+  # test elliptical errors
+  - cd tests/elltest/; bash genrandom_geometric.sh
+
   - cd -
   - python nway-apitest.py
+  
 
 after_success: codecov
