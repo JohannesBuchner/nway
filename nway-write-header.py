@@ -9,7 +9,7 @@ if len(sys.argv) != 4:
 tablename: name of the catalogue
 skyarea: catalogue area in square degrees
 
-Author: Johannes Buchner (C) 2014-2017
+Author: Johannes Buchner (C) 2014-2020
 """ % sys.argv[0])
 	sys.exit(1)
 
@@ -25,6 +25,3 @@ if 'overwrite' in args:
 else:
 	arg_overwrite = 'clobber'
 f.writeto(sys.argv[1], **{arg_overwrite:True})
-
-
-

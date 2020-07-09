@@ -2,7 +2,7 @@
 Probabilistic Cross-Identification of Astronomical Sources
 
 Reference: Budavari & Szalay (2008), ApJ, 679:301-309
-Authors: Johannes Buchner (C) 2013-2016
+Authors: Johannes Buchner (C) 2013-2020
 Authors: Tamas Budavari (C) 2012
 """
 from __future__ import print_function, division
@@ -201,5 +201,3 @@ def test_log_bf():
 	print("Circular:")
 	print("-----------")
 	print(log_bf([[None, 0]], [0.1,0.2]))
-
-

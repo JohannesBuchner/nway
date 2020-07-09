@@ -2,7 +2,7 @@
 Probabilistic Cross-Identification of Astronomical Sources
 
 Reference: Budavari & Szalay (2008), ApJ, 679:301-309
-Authors: Johannes Buchner (C) 2013-2016
+Authors: Johannes Buchner (C) 2013-2020
 Authors: Tamas Budavari (C) 2012
 """
 from nwaylib.bayesdistance import *
@@ -25,6 +25,3 @@ def test_log_bf():
 	q = numpy.zeros(len(sep))
 	print(log_bf(numpy.array([[numpy.nan + sep, sep, sep], [sep, numpy.nan + sep, sep], [sep, sep, numpy.nan + sep]]), 
 		[0.1 + q, 0.2 + q, 0.3 + q]))
-
-
-

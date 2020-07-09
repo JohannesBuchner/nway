@@ -33,7 +33,7 @@ nway uses the following python packages:
 
 * numpy, scipy, matplotlib
 * astropy
-* progressbar2 or progressbar or progressbar-latest
+* tqdm
 * joblib
 * healpy
 * pandas
@@ -60,9 +60,4 @@ Licence
 
 This program is free and open-source software, 
 licensed under AGPLv3 (see LICENSE and COPYING files).
-Written by Johannes Buchner (C) 2013-2017
-
-
-
-
-
+Written by Johannes Buchner (C) 2013-2020
