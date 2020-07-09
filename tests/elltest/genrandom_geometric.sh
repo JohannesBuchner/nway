@@ -34,6 +34,6 @@ echo topcat -stilts plot2sky \
       shading_3=aux size_3=3 \
 
 
-python3 ../../nway-explain.py random_circtest.fits 95 || exit 1
-python3 ../../nway-explain.py random_asymtest.fits 95 || exit 1
-python3 ../../nway-explain.py random_elltest.fits 95 || exit 1
+nway-explain.py random_circtest.fits 95 || exit 1
+nway-explain.py random_asymtest.fits 95 || exit 1
+nway-explain.py random_elltest.fits 95 || exit 1
