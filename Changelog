@@ -8,6 +8,8 @@ Version 4.0:
 	Elliptical errors (4.2)
 
 	tqdm instead of progressbar2, histogram robustness (4.3)
+	
+	Elliptical errors in visualisations (4.4)
 
 Version 3.0:
 
@@ -48,4 +50,3 @@ Version 1.0:
 		post_group_this_match -> p_i
 
 	match_flag was modified to use p_i instead of post.
-
