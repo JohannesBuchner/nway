@@ -124,7 +124,7 @@ script:
   - ls
   
   # test elliptical errors
-  - cd tests/elltest/; bash genrandom_geometric.sh
+  - cd ../tests/elltest/; bash -v genrandom_geometric.sh
 
   - cd -
   - python nway-apitest.py
