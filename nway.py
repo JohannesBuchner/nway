@@ -383,8 +383,8 @@ if args.consider_unrelated_associations:
 					# identify the prior
 					prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
 					# compute a log_bf
-					errors_selected = [[errors[k][j]] for k in augmented_cats]
 					if simple_errors:
+						errors_selected = [[errors[k][j]] for k in augmented_cats]
 						separations_selected = [[[separations[k][k2][j]] 
 							for k2 in augmented_cats] for k in augmented_cats]
 						log_bf_j = bayesdist.log_bf(numpy.array(separations_selected),
@@ -394,6 +394,8 @@ if args.consider_unrelated_associations:
 							for k2 in augmented_cats] for k in augmented_cats]
 						separations_selected_dec = [[[separations_dec[k][k2][j]] 
 							for k2 in augmented_cats] for k in augmented_cats]
+						errors_selected = [([errors[k][0][j]], [errors[k][1][j]], [errors[k][2][j]])
+							for k in augmented_cats]
 						log_bf_j = bayesdist.log_bf_elliptical(numpy.array(separations_selected_ra),
 							 numpy.array(separations_selected_dec), 
 							 numpy.array(errors_selected))
@@ -638,6 +640,3 @@ hdulist.writeto(outfile, **progress.kwargs_overwrite_true)
 
 import nwaylib.checkupdates
 nwaylib.checkupdates.checkupdates()
-
-
-

@@ -16,7 +16,9 @@ for i, ra in enumerate(rarange):
 fout.close()
 
 fout = open('randomcatX.csv', 'w')
+fout2 = open('randomcatR.csv', 'w')
 fout.write('ID,RA,DEC,pos_err,a,b,phi\n')
+fout2.write('ID,RA,DEC,pos_err,a,b,phi\n')
 
 id = 1
 ractr  = rarange.mean()
@@ -41,6 +43,8 @@ for i in range(10):
 		rotangle = angle if (i+1) % 4 == 0 else angle + pi/2
 		
 		fout.write("%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n" % (id, ra, dec, symerror*60*60,  a*60*60, b*60*60, rotangle/pi*180))
+		fout2.write("%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f\n" % (id, numpy.random.normal(ra, symerror), numpy.random.normal(dec, symerror), symerror*60*60,  a*60*60, b*60*60, rotangle/pi*180))
 		id += 1
 	lastr = r
 fout.close()
+fout2.close()

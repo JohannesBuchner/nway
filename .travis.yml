@@ -127,11 +127,13 @@ script:
   # test elliptical errors
   - cd tests/elltest/
   - nway.py --radius=10.0 randomcatX.fits :pos_err randomcatO.fits 0.1 --out=random_circtest.fits --min-prob=0.01
-  - nway-explain.py random_circtest.fits 95 || exit 1
-  - nway.py --radius=10.0 randomcatX.fits :a:b randomcatO.fits 0.1 --out=random_asymtest.fits --min-prob=0.01 || exit 1
-  - nway-explain.py random_asymtest.fits 95 || exit 1
-  - nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatO.fits 0.1 --out=random_elltest.fits --min-prob=0.01 || exit 1
-  - nway-explain.py random_elltest.fits 95 || exit 1
+  - nway-explain.py random_circtest.fits 95
+  - nway.py --radius=10.0 randomcatX.fits :a:b randomcatO.fits 0.1 --out=random_asymtest.fits --min-prob=0.01
+  - nway-explain.py random_asymtest.fits 95
+  - nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatO.fits 0.1 --out=random_elltest.fits --min-prob=0.01
+  - nway-explain.py random_elltest.fits 95
+  - nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatR.fits :a:b:phi randomcatO.fits 0.1 --out=random3_elltest.fits --min-prob=0.01
+  - nway-explain.py random3_elltest.fits 95
 
   - cd -
   - python nway-apitest.py
