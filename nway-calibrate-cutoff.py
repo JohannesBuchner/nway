@@ -78,10 +78,10 @@ plt.savefig(args.realfile + '_p_any_p_i.png', bbox_inches='tight')
 plt.close()
 print('created plot "%s_p_any_p_i.pdf"' % args.realfile)
 
-for rate in 0.05,:
+for rate in [0.01,0.03,0.05,0.1]:
 	print()
-	# find where error-rate is < 10%
-	mask = numpy.array(error_rate) < 0.1
+	# find where error-rate is < rate
+	mask = numpy.array(error_rate) < rate
 	if not mask.any():
 		print('A false detection rate of <%d%% is not possible.' % (rate*100))
 	else:
