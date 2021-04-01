@@ -42,8 +42,8 @@ nway works with both Python 3 and Python 2 and various astropy versions.
 
 .. image:: https://codecov.io/gh/JohannesBuchner/nway/branch/master/graph/badge.svg
 	:target: https://codecov.io/gh/JohannesBuchner/nway
-.. image:: https://travis-ci.org/JohannesBuchner/nway.svg?branch=master
-	:target: https://travis-ci.org/JohannesBuchner/nway
+.. image:: https://travis-ci.com/JohannesBuchner/nway.svg?branch=master
+	:target: https://travis-ci.com/JohannesBuchner/nway
 
 Reporting issues
 -----------------
