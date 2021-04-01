@@ -11,6 +11,8 @@ Version 4.0:
 	
 	Elliptical errors in visualisations (4.4)
 
+	Elliptical error bug fix (4.5)
+
 Version 3.0:
 
 	Healpix-based hashing instead of a ra/dec grid. Works now accurately
