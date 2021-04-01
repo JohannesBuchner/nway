@@ -4,9 +4,14 @@ Functions for finding pairs within a certain search distance "err".
 Very fast method based on hashing.
 """
 from __future__ import print_function, division
-from nwaylib.fastskymatch import *
+from nwaylib.fastskymatch import dist, array2fits, match_multiple, wraptable2fits, fits_from_columns
+import astropy.io.fits as pyfits
+import numpy
 import nwaylib.progress as progress
 import nwaylib.logger as logger
+import astropy.units as u
+from astropy.coordinates import SkyCoord, SkyOffsetFrame
+import numpy.testing as test
 
 def test_dist():
 	
@@ -66,6 +71,38 @@ def run_match(nfiles, ngen=40):
 		assert len(ra)>20
 		assert len(dec)==len(ra)
 
+def test_dist_astropyconsistent():
+	# positions:
+	dec = numpy.linspace(0, 90, 4000)[1:-1]
+	ra = 0
+	shift = 1e-5
+	offset_ra  = shift
+	offset_dec = 0 * shift
+
+	# precision:
+	sigma_ra  = 1 * u.arcsec
+	sigma_dec = 1 * u.arcsec
+	sigma_ra2  = sigma_ra / 10
+	sigma_dec2 = sigma_dec / 10
+	sigma_ra_tot = (sigma_ra**-2 + sigma_ra2**-2)**-0.5
+	sigma_dec_tot = (sigma_dec**-2 + sigma_dec2**-2)**-0.5
+
+	a = SkyCoord(ra, dec, frame="icrs", unit="deg")
+	b = SkyCoord(ra+offset_ra, dec+offset_dec, frame="icrs", unit="deg")
+	localframe = SkyOffsetFrame(origin=a)
+	na = a.transform_to(localframe)
+	nb = b.transform_to(localframe)
+	
+	# compute projected distance on the sky using our function
+	d = dist((ra, dec), (ra+offset_ra, dec+offset_dec))
+	# compute comparison with astropy
+	diff = b.separation(a).to(u.deg)
+
+	# compute simple flat version
+	dra  = na.lon - nb.lon
+	ddec = na.lat - nb.lat
+	simplelocaldiff = (dra**2 + ddec**2)**0.5
+	test.assert_almost_equal(diff / u.deg, simplelocaldiff / u.deg)
 
 	
 
@@ -80,6 +117,3 @@ def test_match_4():
 
 def test_match_5():
 	run_match(5, ngen=40)
-
-
-

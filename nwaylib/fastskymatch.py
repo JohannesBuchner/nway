@@ -17,7 +17,7 @@ import tqdm
 import joblib
 cachedir = 'cache'
 if not os.path.isdir(cachedir): os.mkdir(cachedir)
-mem = joblib.Memory(cachedir=cachedir, verbose=False)
+mem = joblib.Memory(cachedir, verbose=False)
 
 def dist(apos, bpos):
 	"""
@@ -349,5 +349,3 @@ def array2fits(table, extname):
 	cat_columns = pyfits.ColDefs([pyfits.Column(name=n, format='E',array=table[n]) 
 		for n in table.dtype.names])
 	return wraptable2fits(cat_columns, extname)
-
-

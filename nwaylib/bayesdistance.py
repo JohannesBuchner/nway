@@ -7,7 +7,7 @@ Authors: Tamas Budavari (C) 2012
 """
 from __future__ import print_function, division
 import numpy
-from numpy import log, log10, pi, exp, logical_and, where, e
+from numpy import log, log10, pi, e
 
 # use base 10 everywhere
 
@@ -81,11 +81,40 @@ def log_bf(p, s):
 # vectorized in the following means that many 2D matrices/vectors are going to be handled.
 # i.e., each entry in the matrix or vector, is a vector of numbers.
 
+def assert_possemdef(M):
+	tr = M[0][0] + M[1][1]
+	det = M[0][0] * M[1][1] - M[0][1] * M[0][1]
+	ev1 = (tr + (tr**2 - 4 * det)**0.5) / 2
+	ev2 = (tr - (tr**2 - 4 * det)**0.5) / 2
+	assert (ev1 >= 0).all(), ("EV1:", ev1[~(ev1>0)], M)
+	assert (ev2 >= 0).all(), ("EV2:", ev2[~(ev2>0)], M)
+
 def matrix_multiply(A, B):
 	""" 2D matrix multiplication, vectorized """
+	assert_possemdef(A)
+	assert_possemdef(B)
 	(a11, a12), (a21, a22) = A
 	(b11, b12), (b21, b22) = B
-	return (a11*b11+a12*b21, a11*b12+a12*b22), (a21*b11+a22*b21, a21*b12+a22*b22)
+	M = (a11*b11+a12*b21, a11*b12+a12*b22), (a21*b11+a22*b21, a21*b12+a22*b22)
+	assert_possemdef(M)
+	return M
+
+def matrix_add(A, B):
+	""" 2D matrix addition, vectorized """
+	assert_possemdef(A)
+	assert_possemdef(B)
+	(a11, a12), (a21, a22) = A
+	(b11, b12), (b21, b22) = B
+	M = (a11 + b11, a12 + b12), (a21 + b21, a22 + b22)
+	assert_possemdef(M)
+	return M
+
+def matrix_invert(A):
+	""" invert a matrix A, vectorized """
+	(a, b), (c, d) = A
+	F = 1.0 / (a * d - c * b)
+	assert (F > 0).all()
+	return (F * d, -F * b), (-F * c, F * a)
 
 def matrix_det(A):
 	""" 2D matrix determinant, vectorized """
@@ -112,7 +141,7 @@ def vector_multiply(a, b):
 
 def apply_vABv(v, A, B):
 	""" compute v^T A B v, vectorized """
-	return vector_multiply(v, apply_vector_right(matrix_multiply(A, B), v))
+	return vector_multiply(v, apply_vector_right(matrix_add(A, B), v))
 
 def make_covmatrix(sigma_x, sigma_y, rho=0):
 	""" create covariance matrix from given standard deviations and normalised correlation rho, vectorized """
@@ -125,7 +154,10 @@ def make_invcovmatrix(sigma_x, sigma_y, rho=0):
 		(F * -rho * sigma_x * sigma_y, F * sigma_x**2)
 
 def convert_from_ellipse(a, b, phi):
-	""" create covariance parameters from ellipse major axis a, minor axis b and angle phi; vectorized """
+	""" create covariance parameters from ellipse major axis a, minor axis b and angle phi; vectorized 
+
+	as in Pineau+16, eq 8-10, for example.
+	"""
 	a2 = a**2
 	b2 = b**2
 	s = numpy.sin(phi)
@@ -164,6 +196,13 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 			if i < j:
 				v = (separations_ra[i][j], separations_dec[i][j])
 				q += apply_vABv(v, Mi, Mj)
+				Mi = numpy.array(list(Mi))
+				Mj = numpy.array(list(Mj))
+				print(Mi.shape, Mj.shape)
+				print("sep:", separations_ra[i][j][33:36], separations_dec[i][j][33:36])
+				print("error matrix i:", Mi[:,:,33:36])
+				print("error matrix j:", Mj[:,:,33:36])
+				print("distance:", q[33:36])
 	exponent = - q / 2 / wsum
 	return (norm + s + exponent) * log10(e)
 
