@@ -198,7 +198,6 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 
 	error_matrices = [make_invcovmatrix(si, sj, rho)
 		for si, sj, rho in pos_errors]
-	# [assert_possemdef(M) for M in error_matrices]
 
 	# precision parameter w = 1/sigma^2
 	exponent = 0
@@ -213,12 +212,7 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 				w = [vector_multiply(vnormed, apply_vector_right(M, vnormed))
 					for M in error_matrices]
 				wsum = numpy.sum(w, axis=0)
-				# assert (q_here >= 0).all(), q_here
-				# print("vnormed:", vnormed)
 				slog = numpy.sum(log(w), axis=0) - log(wsum)
-				print("wsum:", wsum, "w:", w, "slog", slog, "q:", q)
 				exponent += q / wsum / -2 + slog
-				del q, slog, w, wsum
 
-	print("exponent:", exponent, "norm:", norm)
 	return (norm + exponent) * log10(e)
