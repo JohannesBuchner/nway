@@ -38,7 +38,7 @@ def unnormalised_log_posterior(prior, log_bf, ncat):
 def log_bf2(psi, s1, s2):
 	"""
 	log10 of the 2-way Bayes factor, see eq.(16)
-	psi separation 
+	psi separation
 	s1 and s2=accuracy of coordinates
 	"""
 	s = s1*s1 + s2*s2;
@@ -62,12 +62,12 @@ def log_bf(p, s):
 	p: separations matrix (NxN matrix of arrays)
 	s: errors (list of N arrays)
 	"""
-	
+
 	n = len(s)
 	# precision parameter w = 1/sigma^2
 	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
 	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
-	
+
 	wsum = numpy.sum(w, axis=0)
 	s = numpy.sum(log(w), axis=0) - log(wsum)
 	q = 0
@@ -82,22 +82,21 @@ def log_bf(p, s):
 # i.e., each entry in the matrix or vector, is a vector of numbers.
 
 def assert_possemdef(M):
+	"""Check that the 2x2 matrix M is positive semi-definite, vectorized"""
 	tr = M[0][0] + M[1][1]
 	det = M[0][0] * M[1][1] - M[0][1] * M[0][1]
-	ev1 = (tr + (tr**2 - 4 * det)**0.5) / 2
-	ev2 = (tr - (tr**2 - 4 * det)**0.5) / 2
-	assert (ev1 >= 0).all(), ("EV1:", ev1[~(ev1>0)], M)
-	assert (ev2 >= 0).all(), ("EV2:", ev2[~(ev2>0)], M)
+	mask = numpy.isclose(tr**2, 4 * det)
+	if mask.all():
+		return
+	# bad square root:
+	mask_badsqrt = numpy.logical_and(~mask, tr**2 < 4 * det)
+	assert not numpy.any(mask_badsqrt), (tr[mask_badsqrt], det[mask_badsqrt], M)
 
-def matrix_multiply(A, B):
-	""" 2D matrix multiplication, vectorized """
-	assert_possemdef(A)
-	assert_possemdef(B)
-	(a11, a12), (a21, a22) = A
-	(b11, b12), (b21, b22) = B
-	M = (a11*b11+a12*b21, a11*b12+a12*b22), (a21*b11+a22*b21, a21*b12+a22*b22)
-	assert_possemdef(M)
-	return M
+	ev1 = (tr[~mask] + (tr[~mask]**2 - 4 * det[~mask])**0.5) / 2
+	ev2 = (tr[~mask] - (tr[~mask]**2 - 4 * det[~mask])**0.5) / 2
+
+	assert (ev1 >= 0).all(), ("EV1:", ev1[~(ev1>0)], tr[~mask][~(ev1>0)], det[~mask][~(ev1>0)], M)
+	assert (ev2 >= 0).all(), ("EV2:", ev2[~(ev2>0)], tr[~mask][~(ev2>0)], det[~mask][~(ev2>0)], M)
 
 def matrix_add(A, B):
 	""" 2D matrix addition, vectorized """
@@ -126,7 +125,7 @@ def apply_vector_right(A, b):
 	(a11, a12), (a21, a22) = A
 	(b1, b2) = b
 	return a11*b1+a12*b2, a21*b1+a22*b2
-	
+
 def apply_vector_left(a, B):
 	""" multiply 2D matrix with 2D vector, vectorized """
 	a1, a2 = a
@@ -154,7 +153,7 @@ def make_invcovmatrix(sigma_x, sigma_y, rho=0):
 		(F * -rho * sigma_x * sigma_y, F * sigma_x**2)
 
 def convert_from_ellipse(a, b, phi):
-	""" create covariance parameters from ellipse major axis a, minor axis b and angle phi; vectorized 
+	""" create covariance parameters from ellipse major axis a, minor axis b and angle phi; vectorized
 
 	as in Pineau+16, eq 8-10, for example.
 	"""
@@ -177,17 +176,18 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 	separations_dec: DEC separations matrix (NxN matrix of arrays)
 	pos_errors: errors (list of (N,3) arrays) giving sigma_RA, sigma_DEC, rho
 	"""
-	
+
 	# p ~ separations, s ~ pos_errors
 	n = len(pos_errors)
-	
-	error_matrices = [make_invcovmatrix(si, sj, rho) 
+
+	error_matrices = [make_invcovmatrix(si, sj, rho)
 		for si, sj, rho in pos_errors]
-	
+	[assert_possemdef(M) for M in error_matrices]
+
 	# precision parameter w = 1/sigma^2
 	w = [matrix_det(mi)**0.5 for mi in error_matrices]
 	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
-	
+
 	wsum = numpy.sum(w, axis=0)
 	s = numpy.sum(log(w), axis=0) - log(wsum)
 	q = 0
@@ -196,13 +196,6 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 			if i < j:
 				v = (separations_ra[i][j], separations_dec[i][j])
 				q += apply_vABv(v, Mi, Mj)
-				Mi = numpy.array(list(Mi))
-				Mj = numpy.array(list(Mj))
-				print(Mi.shape, Mj.shape)
-				print("sep:", separations_ra[i][j][33:36], separations_dec[i][j][33:36])
-				print("error matrix i:", Mi[:,:,33:36])
-				print("error matrix j:", Mj[:,:,33:36])
-				print("distance:", q[33:36])
 	exponent = - q / 2 / wsum
 	return (norm + s + exponent) * log10(e)
 
@@ -221,7 +214,7 @@ def test_log_bf():
 			log_bf_elliptical([[None, 0]], psi2, [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)]))
 		test.assert_almost_equal(log_bf(psi2, poserrs),
 			log_bf_elliptical(psi2, [[None, 0]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)]))
-		
+
 	for psi in sep:
 		print(psi)
 		bf3 = log_bf3(psi, psi, psi, 0.1, 0.2, 0.3)
@@ -230,7 +223,7 @@ def test_log_bf():
 		print('  ', g)
 		test.assert_almost_equal(bf3, g)
 	q = numpy.zeros(len(sep))
-	print(log_bf(numpy.array([[numpy.nan + sep, sep, sep], [sep, numpy.nan + sep, sep], [sep, sep, numpy.nan + sep]]), 
+	print(log_bf(numpy.array([[numpy.nan + sep, sep, sep], [sep, numpy.nan + sep, sep], [sep, sep, numpy.nan + sep]]),
 		[0.1 + q, 0.2 + q, 0.3 + q]))
 
 	print("Elliptical:")
