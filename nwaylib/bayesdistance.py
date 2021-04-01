@@ -182,7 +182,7 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 
 	error_matrices = [make_invcovmatrix(si, sj, rho)
 		for si, sj, rho in pos_errors]
-	#[assert_possemdef(M) for M in error_matrices]
+	# [assert_possemdef(M) for M in error_matrices]
 
 	# precision parameter w = 1/sigma^2
 	w = [matrix_det(mi)**0.5 for mi in error_matrices]
@@ -196,7 +196,7 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 			if i < j:
 				v = (separations_ra[i][j], separations_dec[i][j])
 				q_here = apply_vABv(v, Mi, Mj)
-				assert (q_here >= 0).all(), q_here
+				# assert (q_here >= 0).all(), q_here
 				q += q_here
 	exponent = - q / 2 / wsum
 	return (norm + s + exponent) * log10(e)
