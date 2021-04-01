@@ -7,7 +7,7 @@ Authors: Tamas Budavari (C) 2012
 """
 import numpy
 import numpy.testing as test
-from nwaylib.bayesdistance import log_bf, log_bf2, log_bf3, make_invcovmatrix, apply_vABv, convert_from_ellipse
+from nwaylib.bayesdistance import log_bf, log_bf2, log_bf3, make_invcovmatrix, apply_vABv, convert_from_ellipse, log_bf_elliptical
 
 def test_log_bf_consistent2():
 	# test that log_bf function reduces to log_bf2 for 2 catalogs:
@@ -129,3 +129,174 @@ def test_corrmatrix_distances_elliptical():
 	assert delta_corr[2] < delta_symm[2] / 1.4, (delta_corr[2], delta_symm[2])
 	# step in the orthogonal should be about sqrt(2) larger
 	assert delta_corr[3] > delta_symm[3] * 1.4, (delta_corr[3], delta_symm[3])
+
+def test_diag_mult():
+	#[[None, 0]], [[None, 0]]
+	dx = 1.0
+	v = numpy.array([dx, 0.]), numpy.array([0., dx])
+	sigma1 = 1 * numpy.ones(2)
+	sigma2 = 2 * numpy.ones(2)
+	prec1 = 1 / sigma1**2
+	prec2 = 1 / sigma2**2
+	A = make_invcovmatrix(sigma1, sigma1, 0)
+	B = make_invcovmatrix(sigma2, sigma2, 0)
+	print(v, A, B)
+	d = apply_vABv(v, A, B)
+	test.assert_almost_equal(dx * (prec1 + prec2), d)
+
+from numpy import log
+from nwaylib.bayesdistance import log_arcsec2rad, vector_multiply, apply_vector_right, vector_normalised, matrix_multiply
+
+def test_ell_circ_consistent2():
+	f = 1
+	N = 5
+	sigma1 = 100 * numpy.ones(N)
+	sigma2 = 1 * numpy.ones(N)
+	A = [sigma1 * f, sigma1 * f, 0]
+	B = [sigma2 * f, sigma2 * f, 0]
+
+	s = [sigma1, sigma2]
+
+	stepa = numpy.array([0, 0, 1, 1, 23.4])
+	stepb = numpy.array([0, 1, 0, 1, -1.2])
+	separations_ra, separations_dec = [[None, stepa]], [[None, stepb]]
+	p = [[None, (stepa**2 + stepb**2)**0.5]]
+	n = 2
+	# precision parameter w = 1/sigma^2
+	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
+	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
+
+	error_matrices = [make_invcovmatrix(si, sj, rho)
+		for si, sj, rho in [A, B]]
+
+	# total precision
+	wsum = numpy.sum(w, axis=0)
+	#wdet = [matrix_det(mi)**-0.5 for mi in error_matrices]
+	#wsum2 = numpy.sum(error_matrices, axis=0)
+	# find precision in the direction of v:
+	# weighing of the precision depends on the correlation / angle
+	qterms = []
+	double_qterms = []
+	exponent2_terms = []
+	for i, wi in enumerate(w):
+		Mi = error_matrices[i]
+		for j, wj in enumerate(w):
+			Mj = error_matrices[j]
+			if i < j:
+				print(i,j,wi,wj,p)
+				# delta^2 * prec * prec
+				q = wi * wj * p[i][j]**2
+				qterms.append(-q / 2 / wsum)
+
+				v = (separations_ra[i][j], separations_dec[i][j])
+				vnorm = (separations_ra[i][j]**2 + separations_dec[i][j]**2)**0.5
+				# for zero separation, use equal errors to avoid NaNs
+				#    does not matter, because these terms will be zero anyway
+				with numpy.errstate(invalid='ignore'):
+					vnormed = (
+						numpy.where(vnorm == 0, 2.**-0.5, separations_ra[i][j] / vnorm), 
+						numpy.where(vnorm == 0, 2.**-0.5, separations_dec[i][j] / vnorm), 
+					)
+				test.assert_almost_equal(vnormed[0][1:], vector_normalised(v)[0][1:])
+				test.assert_almost_equal(vnormed[1][1:], vector_normalised(v)[1][1:])
+				# get the wsum appropriate for this direction:
+				w2 = [vector_multiply(vnormed, apply_vector_right(M, vnormed))
+					for M in error_matrices]
+				wsum2 = numpy.sum(w2, axis=0)
+				assert numpy.isfinite(wsum2).all(), (wsum2, w2, vnormed, vnorm)
+				assert (wsum2 > 0).all(), (wsum2, "w2:", w2, "normed v:", vnormed, "vnorm:", vnorm)
+
+				# delta * (prec + prec) * delta
+				(si1, corri), (_, si2) = Mi
+				(sj1, corrj), (_, sj2) = Mj
+				assert (corri == 0).all()
+				assert (corrj == 0).all()
+				test.assert_almost_equal(si1, sigma1**-2)
+				test.assert_almost_equal(si2, sigma1**-2)
+				test.assert_almost_equal(sj1, sigma2**-2)
+				test.assert_almost_equal(sj2, sigma2**-2)
+
+				Mij = matrix_multiply(Mi, Mj)
+				(sij1, corrij), (_, sij2) = Mij
+				test.assert_almost_equal(sij1, sigma1**-2 * sigma2**-2)
+				test.assert_almost_equal(sij2, sigma1**-2 * sigma2**-2)
+
+				q2 = vector_multiply(v, apply_vector_right(Mij, v))
+				test.assert_almost_equal(q2, separations_ra[i][j]**2 * sij1 + separations_dec[i][j]**2 * sij2)
+				double_qterms.append(-q2 / 2 / wsum2)
+				slog2 = numpy.sum(log(w), axis=0) - log(wsum)
+				print("wsum2:", wsum2, "w2:", w2, "slog2:", slog2, "q2:", q2)
+				exponent2_terms.append(-q2 / 2 / wsum2 + slog2)
+				test.assert_almost_equal(qterms[-1], double_qterms[-1])
+
+	slog = numpy.sum(log(w), axis=0) - log(wsum)
+	print(qterms, double_qterms)
+	exponent = sum(qterms) + slog
+	exponent2 = sum(exponent2_terms)
+	print("exponent:", exponent, exponent2)
+	test.assert_almost_equal(exponent, exponent2)
+	print("norm:", norm)
+	bf = (norm + exponent) * numpy.log10(numpy.e)
+	test.assert_almost_equal(bf, log_bf(p, s))	
+	bf_ell = (norm + exponent2) * numpy.log10(numpy.e)
+	test.assert_almost_equal(bf, bf_ell)
+	test.assert_almost_equal(bf_ell, log_bf_elliptical(separations_ra, separations_dec, [A, B]))
+	
+
+def test_ell_circ_consistent():
+	f = 1
+	sigma1 = 100 * numpy.ones(1)
+	sigma2 = 1 * numpy.ones(1)
+	A = [sigma1 * f, sigma1 * f, 0]
+	B = [sigma2 * f, sigma2 * f, 0]
+
+	# identical circular errors, co-centered
+	bf_ell = log_bf_elliptical([[None, 0]], [[None, 0]], [B, B])
+	bf_circ = log_bf([[None, 0]], [sigma2,sigma2])
+	test.assert_almost_equal(bf_ell, bf_circ, decimal=5)
+	print("---")
+
+	# identical circular errors, co-centered 2
+	bf_ell = log_bf_elliptical([[None, 0]], [[None, 0]], [A, A])
+	bf_circ = log_bf([[None, 0]], [sigma1,sigma1])
+	test.assert_almost_equal(bf_ell, bf_circ, decimal=5)
+	print("---")
+
+	step = 1.0 * numpy.ones(1)
+	dstep = step # * 2**0.5
+
+	print("---")
+	# equally sized pos errors, off centered
+	bf_ell = log_bf_elliptical([[None, dstep]], [[None, 0]], [A, A])
+	bf_circ = log_bf([[None, step]], [sigma1, sigma1])
+	test.assert_almost_equal(bf_ell, bf_circ)
+
+	print("---")
+	# equally sized pos errors, off centered
+	bf_ell = log_bf_elliptical([[None, dstep]], [[None, 0]], [B, B])
+	bf_circ = log_bf([[None, step]], [sigma2, sigma2])
+	test.assert_almost_equal(bf_ell, bf_circ)
+
+	print("---")
+	# different pos errors per catalog:
+	bf_ell = log_bf_elliptical([[None, dstep]], [[None, 0]], [A, B])
+	print(bf_ell)
+	bf_circ = log_bf([[None, step]], [sigma1, sigma2])
+	test.assert_almost_equal(bf_ell, bf_circ)
+
+	print("---")
+	bf_ell = log_bf_elliptical([[None, step]], [[None, 0]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)])
+	bf_circ = log_bf([[None, dstep]], [0.1,0.2])
+	test.assert_almost_equal(bf_ell, bf_circ, decimal=5)
+
+	bf_ell2 = log_bf_elliptical([[None, 2*step]], [[None, 0]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)])
+	bf_circ2 = log_bf([[None, 2*dstep]], [0.1,0.2])
+	test.assert_almost_equal(bf_ell2, bf_circ2, decimal=5)
+	
+	print(bf_ell2, bf_ell)
+
+	bf_ell = log_bf_elliptical([[None, 1.]], [[None, 1.]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)])
+	bf_circ = log_bf([[None, 2**0.5]], [0.1,0.2])
+	test.assert_almost_equal(bf_ell, bf_circ)
+"""
+"""

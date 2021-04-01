@@ -67,16 +67,17 @@ def log_bf(p, s):
 	# precision parameter w = 1/sigma^2
 	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
 	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
+	del s
 
 	wsum = numpy.sum(w, axis=0)
-	s = numpy.sum(log(w), axis=0) - log(wsum)
+	slog = numpy.sum(log(w), axis=0) - log(wsum)
 	q = 0
 	for i, wi in enumerate(w):
 		for j, wj in enumerate(w):
 			if i < j:
 				q += wi * wj * p[i][j]**2
 	exponent = - q / 2 / wsum
-	return (norm + s + exponent) * log10(e)
+	return (norm + slog + exponent) * log10(e)
 
 # vectorized in the following means that many 2D matrices/vectors are going to be handled.
 # i.e., each entry in the matrix or vector, is a vector of numbers.
@@ -108,6 +109,13 @@ def matrix_add(A, B):
 	# assert_possemdef(M)
 	return M
 
+def matrix_multiply(A, B):
+	""" 2D matrix multiplication, vectorized """
+	(a11, a12), (a21, a22) = A
+	(b11, b12), (b21, b22) = B
+	M = (a11*b11+a12*b21, a11*b12+a12*b22), (a21*b11+a22*b21, a21*b12+a22*b22)
+	return M
+
 def matrix_invert(A):
 	""" invert a matrix A, vectorized """
 	(a, b), (c, d) = A
@@ -137,6 +145,13 @@ def vector_multiply(a, b):
 	a1, a2 = a
 	b1, b2 = b
 	return a1*b1+a2*b2
+
+def vector_normalised(v):
+	vnorm = (v[0]**2 + v[1]**2)**0.5
+	return (
+		numpy.where(vnorm == 0, 2**-0.5, v[0] / (vnorm + 1e-300)), 
+		numpy.where(vnorm == 0, 2**-0.5, v[1] / (vnorm + 1e-300)),
+	)
 
 def apply_vABv(v, A, B):
 	""" compute v^T A B v, vectorized """
@@ -179,59 +194,31 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 
 	# p ~ separations, s ~ pos_errors
 	n = len(pos_errors)
+	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
 
 	error_matrices = [make_invcovmatrix(si, sj, rho)
 		for si, sj, rho in pos_errors]
 	# [assert_possemdef(M) for M in error_matrices]
 
 	# precision parameter w = 1/sigma^2
-	w = [matrix_det(mi)**0.5 for mi in error_matrices]
-	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
-
-	wsum = numpy.sum(w, axis=0)
-	s = numpy.sum(log(w), axis=0) - log(wsum)
-	q = 0
+	exponent = 0
 	for i, Mi in enumerate(error_matrices):
 		for j, Mj in enumerate(error_matrices):
 			if i < j:
 				v = (separations_ra[i][j], separations_dec[i][j])
-				q_here = apply_vABv(v, Mi, Mj)
+				q = vector_multiply(v, apply_vector_right(matrix_multiply(Mi, Mj), v))
+
+				# get precision in the direction of the separation:
+				vnormed = vector_normalised(v)
+				w = [vector_multiply(vnormed, apply_vector_right(M, vnormed))
+					for M in error_matrices]
+				wsum = numpy.sum(w, axis=0)
 				# assert (q_here >= 0).all(), q_here
-				q += q_here
-	exponent = - q / 2 / wsum
-	return (norm + s + exponent) * log10(e)
+				# print("vnormed:", vnormed)
+				slog = numpy.sum(log(w), axis=0) - log(wsum)
+				print("wsum:", wsum, "w:", w, "slog", slog, "q:", q)
+				exponent += q / wsum / -2 + slog
+				del q, slog, w, wsum
 
-
-def test_log_bf():
-	import numpy.testing as test
-	sep = numpy.array([0., 0.1, 0.2, 0.3, 0.4, 0.5])
-	for psi in sep:
-		print(psi)
-		print('  ', log_bf2(psi, 0.1, 0.2), )
-		poserrs = [0.1, 0.2]
-		psi2 = [[None, psi]]
-		print('  ', log_bf(psi2, poserrs))
-		test.assert_almost_equal(log_bf2(psi, 0.1, 0.2), log_bf(psi2, poserrs))
-		test.assert_almost_equal(log_bf(psi2, poserrs),
-			log_bf_elliptical([[None, 0]], psi2, [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)]))
-		test.assert_almost_equal(log_bf(psi2, poserrs),
-			log_bf_elliptical(psi2, [[None, 0]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)]))
-
-	for psi in sep:
-		print(psi)
-		bf3 = log_bf3(psi, psi, psi, 0.1, 0.2, 0.3)
-		print('  ', bf3)
-		g = log_bf([[None, psi, psi], [psi, None, psi], [psi, psi, None]], [0.1, 0.2, 0.3])
-		print('  ', g)
-		test.assert_almost_equal(bf3, g)
-	q = numpy.zeros(len(sep))
-	print(log_bf(numpy.array([[numpy.nan + sep, sep, sep], [sep, numpy.nan + sep, sep], [sep, sep, numpy.nan + sep]]),
-		[0.1 + q, 0.2 + q, 0.3 + q]))
-
-	print("Elliptical:")
-	print("-----------")
-	print(log_bf_elliptical([[None, 0]], [[None, 0]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)]))
-	print()
-	print("Circular:")
-	print("-----------")
-	print(log_bf([[None, 0]], [0.1,0.2]))
+	print("exponent:", exponent, "norm:", norm)
+	return (norm + exponent) * log10(e)
