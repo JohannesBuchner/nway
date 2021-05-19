@@ -195,6 +195,7 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 
 	error_matrices = [make_invcovmatrix(si, sj, rho)
 		for si, sj, rho in pos_errors]
+
 	circ_pos_errors = [((si**2 + sj**2) / 2)**0.5 for si, sj, rho in pos_errors]
 
 	new_separations = [[None for j in range(len(error_matrices))] for i in range(len(error_matrices))]
@@ -203,12 +204,13 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 		for j, Mj in enumerate(error_matrices):
 			if i < j:
 				v = (separations_ra[i][j], separations_dec[i][j])
-				d2 = v[0]**2 + v[1]**2
+				vnormed = vector_normalised(v)
+				wi = vector_multiply(apply_vector_left(vnormed, Mi), vnormed)
+				wj = vector_multiply(apply_vector_left(vnormed, Mj), vnormed)
+				
+				d2 = vector_multiply(v, v)
 				d = d2**0.5
-				qe = apply_vABv(v, Mi, Mj)
-				qc = d2 * (circ_pos_errors[i]**-2 + circ_pos_errors[j]**-2)
-				# alter the nominal separation, bring objects closer or further
-				dist_ratio = ((qe + 1e-300) / (qc + 1e-300))**0.5
-				new_separations[i][j] = d * dist_ratio
+				dist_ratio = (wi / circ_pos_errors[i]**-2) * (wj / circ_pos_errors[j]**-2)
+				new_separations[i][j] = d * dist_ratio**0.5
 
 	return log_bf(new_separations, circ_pos_errors)
