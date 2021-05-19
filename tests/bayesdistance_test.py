@@ -144,104 +144,7 @@ def test_diag_mult():
 	d = apply_vABv(v, A, B)
 	test.assert_almost_equal(dx * (prec1 + prec2), d)
 
-from numpy import log
-from nwaylib.bayesdistance import log_arcsec2rad, vector_multiply, apply_vector_right, vector_normalised, matrix_multiply
-
-def test_ell_circ_consistent2():
-	f = 1
-	N = 5
-	sigma1 = 100 * numpy.ones(N)
-	sigma2 = 1 * numpy.ones(N)
-	A = [sigma1 * f, sigma1 * f, 0]
-	B = [sigma2 * f, sigma2 * f, 0]
-
-	s = [sigma1, sigma2]
-
-	stepa = numpy.array([0, 0, 1, 1, 23.4])
-	stepb = numpy.array([0, 1, 0, 1, -1.2])
-	separations_ra, separations_dec = [[None, stepa]], [[None, stepb]]
-	p = [[None, (stepa**2 + stepb**2)**0.5]]
-	n = 2
-	# precision parameter w = 1/sigma^2
-	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
-	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
-
-	error_matrices = [make_invcovmatrix(si, sj, rho)
-		for si, sj, rho in [A, B]]
-
-	# total precision
-	wsum = numpy.sum(w, axis=0)
-	#wdet = [matrix_det(mi)**-0.5 for mi in error_matrices]
-	#wsum2 = numpy.sum(error_matrices, axis=0)
-	# find precision in the direction of v:
-	# weighing of the precision depends on the correlation / angle
-	qterms = []
-	double_qterms = []
-	exponent2_terms = []
-	for i, wi in enumerate(w):
-		Mi = error_matrices[i]
-		for j, wj in enumerate(w):
-			Mj = error_matrices[j]
-			if i < j:
-				print(i,j,wi,wj,p)
-				# delta^2 * prec * prec
-				q = wi * wj * p[i][j]**2
-				qterms.append(-q / 2 / wsum)
-
-				v = (separations_ra[i][j], separations_dec[i][j])
-				vnorm = (separations_ra[i][j]**2 + separations_dec[i][j]**2)**0.5
-				# for zero separation, use equal errors to avoid NaNs
-				#    does not matter, because these terms will be zero anyway
-				with numpy.errstate(invalid='ignore'):
-					vnormed = (
-						numpy.where(vnorm == 0, 2.**-0.5, separations_ra[i][j] / vnorm), 
-						numpy.where(vnorm == 0, 2.**-0.5, separations_dec[i][j] / vnorm), 
-					)
-				test.assert_almost_equal(vnormed[0][1:], vector_normalised(v)[0][1:])
-				test.assert_almost_equal(vnormed[1][1:], vector_normalised(v)[1][1:])
-				# get the wsum appropriate for this direction:
-				w2 = [vector_multiply(vnormed, apply_vector_right(M, vnormed))
-					for M in error_matrices]
-				wsum2 = numpy.sum(w2, axis=0)
-				assert numpy.isfinite(wsum2).all(), (wsum2, w2, vnormed, vnorm)
-				assert (wsum2 > 0).all(), (wsum2, "w2:", w2, "normed v:", vnormed, "vnorm:", vnorm)
-
-				# delta * (prec + prec) * delta
-				(si1, corri), (_, si2) = Mi
-				(sj1, corrj), (_, sj2) = Mj
-				assert (corri == 0).all()
-				assert (corrj == 0).all()
-				test.assert_almost_equal(si1, sigma1**-2)
-				test.assert_almost_equal(si2, sigma1**-2)
-				test.assert_almost_equal(sj1, sigma2**-2)
-				test.assert_almost_equal(sj2, sigma2**-2)
-
-				Mij = matrix_multiply(Mi, Mj)
-				(sij1, corrij), (_, sij2) = Mij
-				test.assert_almost_equal(sij1, sigma1**-2 * sigma2**-2)
-				test.assert_almost_equal(sij2, sigma1**-2 * sigma2**-2)
-
-				q2 = vector_multiply(v, apply_vector_right(Mij, v))
-				test.assert_almost_equal(q2, separations_ra[i][j]**2 * sij1 + separations_dec[i][j]**2 * sij2)
-				double_qterms.append(-q2 / 2 / wsum2)
-				slog2 = numpy.sum(log(w), axis=0) - log(wsum)
-				print("wsum2:", wsum2, "w2:", w2, "slog2:", slog2, "q2:", q2)
-				exponent2_terms.append(-q2 / 2 / wsum2 + slog2)
-				test.assert_almost_equal(qterms[-1], double_qterms[-1])
-
-	slog = numpy.sum(log(w), axis=0) - log(wsum)
-	print(qterms, double_qterms)
-	exponent = sum(qterms) + slog
-	exponent2 = sum(exponent2_terms)
-	print("exponent:", exponent, exponent2)
-	test.assert_almost_equal(exponent, exponent2)
-	print("norm:", norm)
-	bf = (norm + exponent) * numpy.log10(numpy.e)
-	test.assert_almost_equal(bf, log_bf(p, s))	
-	bf_ell = (norm + exponent2) * numpy.log10(numpy.e)
-	test.assert_almost_equal(bf, bf_ell)
-	test.assert_almost_equal(bf_ell, log_bf_elliptical(separations_ra, separations_dec, [A, B]))
-	
+from nwaylib.bayesdistance import vector_multiply, apply_vector_right, assert_possemdef, matrix_add
 
 def test_ell_circ_consistent():
 	f = 1
@@ -298,5 +201,27 @@ def test_ell_circ_consistent():
 	bf_ell = log_bf_elliptical([[None, 1.]], [[None, 1.]], [convert_from_ellipse(0.1,0.1,0), convert_from_ellipse(0.2,0.2,0)])
 	bf_circ = log_bf([[None, 2**0.5]], [0.1,0.2])
 	test.assert_almost_equal(bf_ell, bf_circ)
-"""
-"""
+
+
+def test_ell_semdef_pos():
+	N = 400
+	sigma_ra = 1.0
+	sigma_dec = numpy.random.uniform(size=N)
+	sigma_x_corr, sigma_y_corr, rho_corr = convert_from_ellipse(sigma_ra, sigma_dec, numpy.random.uniform(0, 2 * numpy.pi))
+	symsigmaI1 = make_invcovmatrix(sigma_x_corr, sigma_y_corr, rho_corr)
+	assert_possemdef(symsigmaI1)
+	
+	sigma2_ra = numpy.random.uniform(size=N)
+	sigma2_dec = numpy.random.uniform(size=N)
+	sigma2_x_corr, sigma2_y_corr, rho2_corr = convert_from_ellipse(sigma2_ra, sigma2_dec, numpy.random.uniform(0, 2 * numpy.pi))
+	symsigmaI2 = make_invcovmatrix(sigma2_x_corr, sigma2_y_corr, rho2_corr)
+	assert_possemdef(symsigmaI2)
+	assert_possemdef(matrix_add(symsigmaI1, symsigmaI2))
+
+	v = numpy.random.normal(0, 1, size=(2, N))
+	q = apply_vABv(v, symsigmaI1, symsigmaI2)
+	q2 = vector_multiply(v, apply_vector_right(matrix_add(symsigmaI1, symsigmaI2), v))
+	print(q, (q>=0).all())
+	print(q2, (q2>=0).all())
+	assert (q>=0).all()
+	assert (q2>=0).all()

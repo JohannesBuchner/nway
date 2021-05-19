@@ -341,8 +341,8 @@ for case in range(2**(len(table_names)-1)):
 			for row, m in zip(separations_ra, table_mask) if m]
 		separations_selected_dec = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
 			for row, m in zip(separations_dec, table_mask) if m]
-		log_bf[mask] = bayesdist.log_bf_elliptical(separations_selected_ra, 
-			separations_selected_dec, errors_selected)
+		log_bf[mask] = bayesdist.log_bf_elliptical(
+			separations_selected_ra, separations_selected_dec, errors_selected)
 	
 	prior[mask] = source_densities[0] * numpy.product(prior_completeness[table_mask]) / numpy.product(source_densities_plus[table_mask])
 	assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.product(source_densities_plus[table_mask]))

@@ -156,6 +156,7 @@ def vector_normalised(v):
 def apply_vABv(v, A, B):
 	""" compute v^T A B v, vectorized """
 	return vector_multiply(v, apply_vector_right(matrix_add(A, B), v))
+	#return vector_multiply(apply_vector_left(v, A), apply_vector_right(B, v))
 
 def make_covmatrix(sigma_x, sigma_y, rho=0):
 	""" create covariance matrix from given standard deviations and normalised correlation rho, vectorized """
@@ -192,27 +193,22 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 	pos_errors: errors (list of (N,3) arrays) giving sigma_RA, sigma_DEC, rho
 	"""
 
-	# p ~ separations, s ~ pos_errors
-	n = len(pos_errors)
-	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
-
 	error_matrices = [make_invcovmatrix(si, sj, rho)
 		for si, sj, rho in pos_errors]
+	circ_pos_errors = [((si**2 + sj**2) / 2)**0.5 for si, sj, rho in pos_errors]
 
-	# precision parameter w = 1/sigma^2
-	exponent = 0
+	new_separations = [[None for j in range(len(error_matrices))] for i in range(len(error_matrices))]
+
 	for i, Mi in enumerate(error_matrices):
 		for j, Mj in enumerate(error_matrices):
 			if i < j:
 				v = (separations_ra[i][j], separations_dec[i][j])
-				q = vector_multiply(v, apply_vector_right(matrix_multiply(Mi, Mj), v))
+				d2 = v[0]**2 + v[1]**2
+				d = d2**0.5
+				qe = apply_vABv(v, Mi, Mj)
+				qc = d2 * (circ_pos_errors[i]**-2 + circ_pos_errors[j]**-2)
+				# alter the nominal separation, bring objects closer or further
+				dist_ratio = ((qe + 1e-300) / (qc + 1e-300))**0.5
+				new_separations[i][j] = d * dist_ratio
 
-				# get precision in the direction of the separation:
-				vnormed = vector_normalised(v)
-				w = [vector_multiply(vnormed, apply_vector_right(M, vnormed))
-					for M in error_matrices]
-				wsum = numpy.sum(w, axis=0)
-				slog = numpy.sum(log(w), axis=0) - log(wsum)
-				exponent += q / wsum / -2 + slog
-
-	return (norm + exponent) * log10(e)
+	return log_bf(new_separations, circ_pos_errors)
