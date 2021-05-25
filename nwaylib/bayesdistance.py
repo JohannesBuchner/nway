@@ -204,13 +204,16 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 		for j, Mj in enumerate(error_matrices):
 			if i < j:
 				v = (separations_ra[i][j], separations_dec[i][j])
+				# get separation length
+				d2 = vector_multiply(v, v)
+				d = d2**0.5
+				# get error in direction of separation
 				vnormed = vector_normalised(v)
 				wi = vector_multiply(apply_vector_left(vnormed, Mi), vnormed)
 				wj = vector_multiply(apply_vector_left(vnormed, Mj), vnormed)
-				
-				d2 = vector_multiply(v, v)
-				d = d2**0.5
+				# ratio of circular error to directional error:
 				dist_ratio = (wi / circ_pos_errors[i]**-2) * (wj / circ_pos_errors[j]**-2)
-				new_separations[i][j] = d * dist_ratio**0.5
+				# provide new separation
+				new_separations[i][j] = d * dist_ratio**-0.5
 
 	return log_bf(new_separations, circ_pos_errors)
