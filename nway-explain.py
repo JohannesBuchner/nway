@@ -140,8 +140,8 @@ for col_ra, col_dec, col_err, marker, color in zip(cols_ra, cols_dec, cols_err, 
 	r,  = plt.plot(convx(ras), convy(decs), marker=marker, mec=color, mfc='None', ms=8, mew=2, ls=' ', label='%s %s' % (col_ra, col_dec))
 	patches = [
 		Ellipse((convx(ra), convy(dec)),
-		2 * converr(ra_err / 60 / 60),
-		2 * converr(dec_err / 60 / 60),
+		2 * converr(ra_err),
+		2 * converr(dec_err),
 		angle=90 - pa_err)
 			for ra, dec, ra_err, dec_err, pa_err in zip(ras, decs, ra_errs, dec_errs, pa_errs)]
 	p = PatchCollection(patches)
