@@ -116,6 +116,59 @@ extra_columns = ['Separation_XMM_OPT', 'Separation_OPT_IRAC', 'Separation_XMM_IR
 for col in min_output_columns + extra_columns:
 	assert col in result.columns, ('looking for', col, 'in', result.columns)
 
+c2 = pyfits.getdata('doc/COSMOS_OPTICAL.fits', 1)
+c3 = pyfits.getdata('doc/COSMOS_IRAC.fits', 1)
+
+#for percentile in 90, 80, 70, 60, 50:
+percentile = 50
+p_any_threshold = np.percentile(result.prob_has_match[result.match_flag == 1], percentile)
+mask_unrelated = result.prob_this_match < 0.01
+mask = np.logical_and(result.prob_has_match > p_any_threshold, result.prob_this_match > 0.5)
+mask_insecure = ~mask
+secure_result = result[mask]
+insecure_result = result[mask_insecure]
+
+# generate many random combinations
+N = 100000
+c2indices = np.random.randint(len(c2), size=N)
+c3indices = np.random.randint(len(c3), size=N)
+
+X1 = np.vstack((c2['MAG'][secure_result.OPT], c3['mag_ch1'][secure_result.IRAC]))
+W1 = secure_result.prob_has_match * secure_result.prob_this_match
+X2 = np.vstack((c2['MAG'][c2indices], c3['mag_ch1'][c3indices]))
+W2 = np.ones(N, dtype=bool)
+X = np.hstack((X1, X2)).transpose()
+W = np.hstack((W1, W2))
+Y = np.hstack((np.ones(len(W1), dtype=bool),np.zeros(len(W2), dtype=bool)))
+Xp = np.vstack((c2['MAG'][insecure_result.OPT], c3['mag_ch1'][insecure_result.IRAC])).transpose()
+
+# apply random forest classifier to distinguish target from field
+import corner
+import matplotlib.pyplot as plt
+corner.corner(X1.transpose())
+plt.savefig("nwayml-train-target.pdf", bbox_inches='tight')
+plt.close()
+corner.corner(X2.transpose())
+plt.savefig("nwayml-train-field.pdf", bbox_inches='tight')
+plt.close()
+
+print("training random forest...")
+import sklearn.ensemble
+rfc = sklearn.ensemble.RandomForestClassifier(n_estimators=400)
+rfc.fit(X, Y, sample_weight=W)
+Yp = rfc.predict_log_proba(Xp)[:,1]
+
+corner.corner(Xp[Yp > np.log(0.9),:])
+plt.savefig("nwayml-result-target.pdf", bbox_inches='tight')
+plt.close()
+corner.corner(Xp[Yp < np.log(0.1),:])
+plt.savefig("nwayml-result-field.pdf", bbox_inches='tight')
+plt.close()
+
+# add Yp as a bayes factor weight
+result.bf[mask_insecure] += Yp
+
+
 result = nwaylib.nway_match(
 	[
 	table_from_fits('doc/COSMOS_XMM.fits', area=2.0),

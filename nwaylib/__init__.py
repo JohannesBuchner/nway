@@ -19,12 +19,108 @@ class UndersampledException(Exception):
 class EmptyResultException(Exception):
 	pass
 
+def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger):
+	biases = {}
+	for i, t in enumerate(match_tables):
+		table_name = t['name']
+		for magvals, maghist, magname in zip(t['mags'], t['maghists'], t['magnames']):
+			col_name = magname
+			col = "%s_%s" % (table_name, col_name)
+			mag = "%s:%s" % (table_name, col_name)
+			logger.log('Incorporating bias "%s" ...' % mag)
+			
+			res = table[table.columns[i]].values
+			res_defined = res != -1
+			# get magnitudes of all
+			# mark -99 as undefined
+			mag_all = magvals
+			mag_all[mag_all == -99] = numpy.nan
+		
+			# get magnitudes of selected
+			mask_all = numpy.isfinite(mag_all)
+			
+		
+			if maghist is None:
+				if mag_include_radius is not None:
+					selection = table['Separation_max'].values < mag_include_radius
+					selection_possible = table['Separation_max'].values < mag_exclude_radius
+					selection_weights = numpy.ones(len(selection))
+				else:
+					selection = (table['dist_post'] > magauto_post_single_minvalue).values
+					selection_weights = table['dist_post'].values
+					selection_possible = (table['dist_post'] > 0.01).values
+				
+				# ignore cases where counterpart is missing
+				assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
+				selection = numpy.logical_and(selection, res_defined)
+				selection_weights = selection_weights[res_defined]
+				selection_possible = numpy.logical_and(selection_possible, res_defined)
+				
+				#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
+				
+				#rows = results[table_name][selection].tolist()
+				assert selection.shape == res.shape, (selection.shape, res.shape)
+				rows, unique_indices = numpy.unique(res[selection], return_index=True)
+				rows_weights = selection_weights[unique_indices]
+				
+				assert len(rows) > 0, 'No magnitude values within radius for "%s".' % mag
+				mag_sel = magvals[rows]
+				mag_sel_weights = rows_weights
+				
+				# remove vaguely possible options from alternative histogram
+				assert selection_possible.shape == res.shape, (selection_possible.shape, res.shape)
+				#print(res, selection, selection_possible)
+				rows_possible = numpy.unique(res[selection_possible])
+				mask_others = mask_all.copy()
+				mask_others[rows_possible] = False
+				
+				# all options in the total (field+target sources) histogram
+				mask_sel = ~numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
+
+				#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
+
+				logger.log('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
+				
+				# make function fitting to ratio shape
+				bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=mag_sel_weights[mask_sel])
+				if store_mag_hists:
+					logger.log('magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
+					with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
+						f.write(b'# lo hi selected others\n')
+						numpy.savetxt(f,
+							numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
+							fmt = ["%10.5f"]*4)
+				if mask_sel.sum() < 100:
+					raise UndersampledException('ERROR: too few secure matches (%d) to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename. You can also decrease the mag-auto-minprob parameter.' % mask_sel.sum())
+			else:
+				logger.log('magnitude histogramming: using user-supplied histogram for "%s"' % (col))
+				bins_lo, bins_hi, hist_sel, hist_all = maghist #numpy.loadtxt(magfile).transpose()
+				bins = numpy.array(list(bins_lo) + [bins_hi[-1]])
+			func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
+			if store_mag_hists:
+				magnitudeweights.plot_fit(bins, hist_sel, hist_all, func, mag)
+			magcol = magvals[res]
+			magcol[~numpy.logical_and(res_defined, numpy.isfinite(magcol))] = -99
+			#magcol[~res_defined] = -99
+			weights = log10(func(magcol))
+			# undefined magnitudes do not contribute
+			weights[numpy.isnan(weights)] = 0
+			biases[col] = weights
+
+	# add the bias columns
+	table = table.assign(**{'bias_%s' % col:10**weights for col, weights in biases.items()})
+	log_bf = table['dist_bayesfactor'].values
+	total = log_bf + sum(biases.values())
+	
+	return table, total
+
 def nway_match(match_tables, match_radius, prior_completeness,
 	mag_include_radius=None, mag_exclude_radius=None, magauto_post_single_minvalue=0.9,
 	prob_ratio_secondary = 0.5,
 	min_prob=0., consider_unrelated_associations=True, 
 	store_mag_hists=True,
-	logger=NormalLogger()):
+	logger=NormalLogger(),
+	biasing_function=_apply_magnitude_biasing):
 	"""
 	match_tables: list of catalogues, each a dict with entries:
 		- name (short catalog name, no spaces, used in output columns)
@@ -102,7 +198,7 @@ def nway_match(match_tables, match_radius, prior_completeness,
 	table = table.assign(dist_post=post)
 
 	# find magnitude biasing functions
-	table, total = _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger=logger)
+	table, total = biasing_function(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger=logger)
 
 	table = _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prior, total, logger=logger)
 	
@@ -289,100 +385,6 @@ def _correct_unrelated_associations(table, separations, errors, ncats, source_de
 		if best_logpost > 0:
 			group['dist_bayesfactor'] += best_logpost
 
-def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger):
-	biases = {}
-	for i, t in enumerate(match_tables):
-		table_name = t['name']
-		for magvals, maghist, magname in zip(t['mags'], t['maghists'], t['magnames']):
-			col_name = magname
-			col = "%s_%s" % (table_name, col_name)
-			mag = "%s:%s" % (table_name, col_name)
-			logger.log('Incorporating bias "%s" ...' % mag)
-			
-			res = table[table.columns[i]].values
-			res_defined = res != -1
-			# get magnitudes of all
-			# mark -99 as undefined
-			mag_all = magvals
-			mag_all[mag_all == -99] = numpy.nan
-		
-			# get magnitudes of selected
-			mask_all = numpy.isfinite(mag_all)
-			
-		
-			if maghist is None:
-				if mag_include_radius is not None:
-					selection = table['Separation_max'].values < mag_include_radius
-					selection_possible = table['Separation_max'].values < mag_exclude_radius
-					selection_weights = numpy.ones(len(selection))
-				else:
-					selection = (table['dist_post'] > magauto_post_single_minvalue).values
-					selection_weights = table['dist_post'].values
-					selection_possible = (table['dist_post'] > 0.01).values
-				
-				# ignore cases where counterpart is missing
-				assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
-				selection = numpy.logical_and(selection, res_defined)
-				selection_weights = selection_weights[res_defined]
-				selection_possible = numpy.logical_and(selection_possible, res_defined)
-				
-				#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
-				
-				#rows = results[table_name][selection].tolist()
-				assert selection.shape == res.shape, (selection.shape, res.shape)
-				rows, unique_indices = numpy.unique(res[selection], return_index=True)
-				rows_weights = selection_weights[unique_indices]
-				
-				assert len(rows) > 0, 'No magnitude values within radius for "%s".' % mag
-				mag_sel = magvals[rows]
-				mag_sel_weights = rows_weights
-				
-				# remove vaguely possible options from alternative histogram
-				assert selection_possible.shape == res.shape, (selection_possible.shape, res.shape)
-				#print(res, selection, selection_possible)
-				rows_possible = numpy.unique(res[selection_possible])
-				mask_others = mask_all.copy()
-				mask_others[rows_possible] = False
-				
-				# all options in the total (field+target sources) histogram
-				mask_sel = ~numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
-
-				#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
-
-				logger.log('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
-				
-				# make function fitting to ratio shape
-				bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=mag_sel_weights[mask_sel])
-				if store_mag_hists:
-					logger.log('magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
-					with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
-						f.write(b'# lo hi selected others\n')
-						numpy.savetxt(f,
-							numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
-							fmt = ["%10.5f"]*4)
-				if mask_sel.sum() < 100:
-					raise UndersampledException('ERROR: too few secure matches (%d) to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename. You can also decrease the mag-auto-minprob parameter.' % mask_sel.sum())
-			else:
-				logger.log('magnitude histogramming: using user-supplied histogram for "%s"' % (col))
-				bins_lo, bins_hi, hist_sel, hist_all = maghist #numpy.loadtxt(magfile).transpose()
-				bins = numpy.array(list(bins_lo) + [bins_hi[-1]])
-			func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
-			if store_mag_hists:
-				magnitudeweights.plot_fit(bins, hist_sel, hist_all, func, mag)
-			magcol = magvals[res]
-			magcol[~numpy.logical_and(res_defined, numpy.isfinite(magcol))] = -99
-			#magcol[~res_defined] = -99
-			weights = log10(func(magcol))
-			# undefined magnitudes do not contribute
-			weights[numpy.isnan(weights)] = 0
-			biases[col] = weights
-
-	# add the bias columns
-	table = table.assign(**{'bias_%s' % col:10**weights for col, weights in biases.items()})
-	log_bf = table['dist_bayesfactor'].values
-	total = log_bf + sum(biases.values())
-	
-	return table, total
 
 def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prior, total, logger):
 	logger.log('')
@@ -455,5 +457,3 @@ def _truncate_table(table, min_prob, logger):
 		table = table[mask]
 
 	return table
-
-
