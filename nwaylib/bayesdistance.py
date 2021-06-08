@@ -212,7 +212,8 @@ def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 				wi = vector_multiply(apply_vector_left(vnormed, Mi), vnormed)
 				wj = vector_multiply(apply_vector_left(vnormed, Mj), vnormed)
 				# ratio of circular error to directional error:
-				dist_ratio = (wi / circ_pos_errors[i]**-2) * (wj / circ_pos_errors[j]**-2)
+				# combine the uncertainties by adding the variances
+				dist_ratio = (circ_pos_errors[i]**2 + circ_pos_errors[j]**2) / (1/wi + 1/wj)
 				# provide new separation
 				new_separations[i][j] = d * dist_ratio**-0.5
 
