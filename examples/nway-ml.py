@@ -75,7 +75,7 @@ W2 = np.ones(N)
 Y2 = np.zeros(N, dtype=bool)
 
 
-def compute_ml_biases(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger):
+def apply_ml_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger):
 	if mag_include_radius is not None:
 		selection = table['Separation_max'].values < mag_include_radius
 		selection_weights = numpy.ones(len(selection))
@@ -136,15 +136,10 @@ def compute_ml_biases(match_tables, table, mag_include_radius, mag_exclude_radiu
 	plt.suptitle("P<%.3f%%" % (np.exp(thresh_lo)*100))
 	plt.savefig("nwayml-result-field.pdf", bbox_inches='tight')
 	plt.close()
-	return newbf, ~selection
-
-
-def apply_ml_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger):
-	newbf, to_update = compute_ml_biases(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger)
 
 	log_bf = table['dist_bayesfactor'].values
 	total = log_bf.copy()
-	total[to_update] = newbf
+	total[~selection] = newbf
 	
 	return table, total
 
