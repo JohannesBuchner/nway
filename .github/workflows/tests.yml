@@ -1,0 +1,130 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.6, 3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install flake8 pytest python-dateutil setuptools codecov pyflakes -r conda-requirements.txt
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Install package
+      run: python -m pip install -e .
+    - name: Test with pytest
+      run: |
+        coverage run setup.py test
+
+    - name: pyflakes
+      run: |
+        pyflakes *.py nwaylib/*.py | grep -vE '(may be undefined|imported but unused|unable to detect undefined names|local variable ._|list comprehension redefines)' | tee static_errors
+        cat static_errors
+        if test -s static_errors; then exit 2; else true; fi
+  
+    - name: nway-write-header
+      run: |
+        'echo "backend: Agg" > matplotlibrc'
+        cd doc/
+        'echo "backend: Agg" > matplotlibrc'
+        python -c 'import pandas, nwaylib, nwaylib.progress'
+        nway-write-header.py COSMOS_OPTICAL.fits OPT  2
+        nway-write-header.py COSMOS_IRAC.fits    IRAC 2
+        nway-write-header.py COSMOS_XMM.fits     XMM  2
+  
+  - name: creating offset catalogues
+      run: |
+        nway-create-fake-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits
+        test -e COSMOS_XMM-fake.fits
+        nway-create-shifted-catalogue.py --radius 40 --shift-ra 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits
+        test -e COSMOS_XMM-shift.fits
+        rm -f COSMOS_XMM-shift.fits
+        nway-create-shifted-catalogue.py --radius 40 --shift-dec 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits
+        test -e COSMOS_XMM-shift.fits
+
+  - name: 2 catalogue match
+      run: |
+        nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2.fits --radius 20
+        test -e example2.fits
+        nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-offset.fits --radius 20
+        test -e example2-offset.fits
+
+  # 2 catalogue match, with magnitudes
+  - name: 2 catalogue match, with magnitudes
+      run: |
+        nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-mag.fits --radius 20 --mag OPT:MAG auto --mag-radius=4
+        test -e example2-mag.fits
+        test -e OPT_MAG_fit.pdf
+        test -e OPT_MAG_fit.txt
+        nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt
+        test -e example2-mag-offset.fits
+
+  - name: 3 catalogue match
+      run: |
+        nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3.fits --radius 20
+        test -e example3.fits
+        nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-offset.fits --radius 20
+        test -e example3-offset.fits
+
+  - name: 3 catalogue match, with magnitudes
+      run: |
+        nway.py --radius 20 COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --mag OPT:MAG auto --mag IRAC:mag_ch1 auto --mag-radius 4 --out=example3-mag.fits
+        test -e example3-mag.fits
+        test -e IRAC_mag_ch1_fit.pdf
+        test -e IRAC_mag_ch1_fit.txt
+        nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt  --mag IRAC:mag_ch1 IRAC_mag_ch1_fit.txt 
+        test -e example3-mag-offset.fits
+
+  - name: nway-explain
+      run: |
+        nway-explain.py example3.fits 422
+
+  - name: cutoff calibration
+      run: |
+        nway-calibrate-cutoff.py example2.fits example2-offset.fits 
+        test -e example2.fits_p_any_cutoffquality.pdf
+        test -e example2.fits_p_any_p_i.pdf
+        nway-calibrate-cutoff.py example3-mag.fits example3-mag-offset.fits 
+        ls 
+        cd -
+  
+  - name: test elliptical errors
+      run: |
+        cd tests/elltest/
+        nway.py --radius=10.0 randomcatX.fits :pos_err randomcatO.fits 0.1 --out=random_circtest.fits --min-prob=0.01
+        nway-explain.py random_circtest.fits 95
+        nway.py --radius=10.0 randomcatX.fits :a:b randomcatO.fits 0.1 --out=random_asymtest.fits --min-prob=0.01
+        nway-explain.py random_asymtest.fits 95
+        nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatO.fits 0.1 --out=random_elltest.fits --min-prob=0.01
+        nway-explain.py random_elltest.fits 95
+        nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatR.fits :a:b:phi randomcatO.fits 0.1 --out=random3_elltest.fits --min-prob=0.01
+        nway-explain.py random3_elltest.fits 95
+        cd -
+
+  - name: API test
+      run: |
+        python nway-apitest.py
