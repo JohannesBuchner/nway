@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest python-dateutil setuptools codecov pyflakes
+        python -m pip install flake8 pytest python-dateutil setuptools codecov pyflakes numpy
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -38,6 +38,7 @@ jobs:
       run: python setup.py install
     - name: Test with pytest
       run: |
+        python -c 'import pandas, nwaylib, nwaylib.progress'
         coverage run setup.py test
 
     - name: pyflakes
@@ -47,14 +48,16 @@ jobs:
         if test -s static_errors; then exit 2; else true; fi
   
     - name: API test
-      run: python nway-apitest.py
+      run: coverage run -a nway-apitest.py
+    
+    - name: submit coverage results
+      run: codecov
 
     - name: nway-write-header
       run: |
         echo "backend: Agg" > matplotlibrc
         cd doc/
         echo "backend: Agg" > matplotlibrc
-        python -c 'import pandas, nwaylib, nwaylib.progress'
         nway-write-header.py COSMOS_OPTICAL.fits OPT  2
         nway-write-header.py COSMOS_IRAC.fits    IRAC 2
         nway-write-header.py COSMOS_XMM.fits     XMM  2
