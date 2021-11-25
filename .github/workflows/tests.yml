@@ -56,7 +56,7 @@ jobs:
         nway-write-header.py COSMOS_IRAC.fits    IRAC 2
         nway-write-header.py COSMOS_XMM.fits     XMM  2
   
-  - name: creating offset catalogues
+    - name: creating offset catalogues
       run: |
         nway-create-fake-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits
         test -e COSMOS_XMM-fake.fits
@@ -66,15 +66,15 @@ jobs:
         nway-create-shifted-catalogue.py --radius 40 --shift-dec 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits
         test -e COSMOS_XMM-shift.fits
 
-  - name: 2 catalogue match
+    - name: 2 catalogue match
       run: |
         nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2.fits --radius 20
         test -e example2.fits
         nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-offset.fits --radius 20
         test -e example2-offset.fits
 
-  # 2 catalogue match, with magnitudes
-  - name: 2 catalogue match, with magnitudes
+    # 2 catalogue match, with magnitudes
+    - name: 2 catalogue match, with magnitudes
       run: |
         nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-mag.fits --radius 20 --mag OPT:MAG auto --mag-radius=4
         test -e example2-mag.fits
@@ -83,14 +83,14 @@ jobs:
         nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt
         test -e example2-mag-offset.fits
 
-  - name: 3 catalogue match
+    - name: 3 catalogue match
       run: |
         nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3.fits --radius 20
         test -e example3.fits
         nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-offset.fits --radius 20
         test -e example3-offset.fits
 
-  - name: 3 catalogue match, with magnitudes
+    - name: 3 catalogue match, with magnitudes
       run: |
         nway.py --radius 20 COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --mag OPT:MAG auto --mag IRAC:mag_ch1 auto --mag-radius 4 --out=example3-mag.fits
         test -e example3-mag.fits
@@ -99,11 +99,11 @@ jobs:
         nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt  --mag IRAC:mag_ch1 IRAC_mag_ch1_fit.txt 
         test -e example3-mag-offset.fits
 
-  - name: nway-explain
+    - name: nway-explain
       run: |
         nway-explain.py example3.fits 422
 
-  - name: cutoff calibration
+    - name: cutoff calibration
       run: |
         nway-calibrate-cutoff.py example2.fits example2-offset.fits 
         test -e example2.fits_p_any_cutoffquality.pdf
@@ -112,7 +112,7 @@ jobs:
         ls 
         cd -
   
-  - name: test elliptical errors
+    - name: test elliptical errors
       run: |
         cd tests/elltest/
         nway.py --radius=10.0 randomcatX.fits :pos_err randomcatO.fits 0.1 --out=random_circtest.fits --min-prob=0.01
@@ -125,6 +125,6 @@ jobs:
         nway-explain.py random3_elltest.fits 95
         cd -
 
-  - name: API test
+    - name: API test
       run: |
         python nway-apitest.py
