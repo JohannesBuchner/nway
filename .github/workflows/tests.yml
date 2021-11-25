@@ -46,7 +46,7 @@ jobs:
         if test -s static_errors; then exit 2; else true; fi
   
     - name: API test
-      run: coverage run -a nway-apitest.py
+      run: coverage run -a examples/nway-apitest.py
     
     - name: submit coverage results
       run: codecov
