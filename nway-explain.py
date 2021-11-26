@@ -131,6 +131,7 @@ for col_ra, col_dec, col_err, marker, color in zip(cols_ra, cols_dec, cols_err, 
 	else:
 		ra_err = numpy.ones(mask.sum()) * float(err)
 		dec_err = numpy.ones(mask.sum()) * float(err)
+		pa_err = numpy.zeros(ra_err.shape)
 	pos = set(zip(data[col_ra][mask], data[col_dec][mask], ra_err, dec_err, pa_err))
 	ras = numpy.array([ra for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99])
 	decs = numpy.array([dec for ra, dec, ra_err, dec_err, pa_err in pos if ra != -99])
