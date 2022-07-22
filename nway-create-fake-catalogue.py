@@ -148,6 +148,9 @@ for index in pbar(range(n)):
 	dmask = d[b_nearest] * 60 * 60 > radius
 	#d = d[dmask]
 	b_nearest = b_nearest[dmask]
+
+	assert len(b_nearest)>0, "Method failed: No sources found nearby, could not interpolate a fake source."
+
 	#print('have %d neighbors' % len(b_nearest))
 	b_nearest = b_nearest[:100]
 	#print('distances:', d[b_nearest] * 60 * 60)

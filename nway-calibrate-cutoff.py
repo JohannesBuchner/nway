@@ -88,6 +88,6 @@ for rate in [0.01,0.03,0.05,0.1]:
 		i = numpy.min(numpy.where(mask)[0])
 		#print(i)
 		print('For a false detection rate of <%d%%' % (rate*100))
-		print('--> use only counterparts with p_any>%.2f (%.2f%% of matches)' % (cutoffs[i], efficiency[i]))
+		print('--> use only counterparts with p_any>%.2f (%.2f%% of matches)' % (cutoffs[i], efficiency[i]*100))
 
 
