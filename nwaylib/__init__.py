@@ -353,13 +353,13 @@ def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclud
 				
 				# make function fitting to ratio shape
 				bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=mag_sel_weights[mask_sel])
-				if store_mag_hists:
-					logger.log('magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
-					with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
-						f.write(b'# lo hi selected others\n')
-						numpy.savetxt(f,
-							numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
-							fmt = ["%10.5f"]*4)
+				#if store_mag_hists:
+					#logger.log('magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
+					#with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
+					#	f.write(b'# lo hi selected others\n')
+					#	numpy.savetxt(f,
+					#		numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
+					#		fmt = ["%10.5f"]*4)
 				if mask_sel.sum() < 100:
 					raise UndersampledException('ERROR: too few secure matches (%d) to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename. You can also decrease the mag-auto-minprob parameter.' % mask_sel.sum())
 			else:

@@ -61,8 +61,8 @@ def plot_fit(bin_mag, hist_sel, hist_all, func, name):
 	plt.xlabel(name)
 	plt.xlim(mags.min(), mags.max())
 	plt.yscale('log')
-	plt.savefig(name.replace(':', '_') + '_fit.pdf', bbox_inches='tight')
-	plt.close()
+	#plt.savefig(name.replace(':', '_') + '_fit.pdf', bbox_inches='tight')
+	plt.show()
 
 """
 creates the biasing functions
