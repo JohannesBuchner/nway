@@ -298,7 +298,7 @@ if not simple_errors:
 
 print('  building primary_id index ...')
 primary_id_key = match.get_tablekeys(tables[0], 'ID', tablename=table_names[0])
-assert len(np.unique(tables[0][primary_id_key])) != len(tables[0][primary_id_key]), "ERROR: ID column '%s' in primary catalog contains duplicates."
+assert len(numpy.unique(tables[0][primary_id_key])) != len(tables[0][primary_id_key]), "ERROR: ID column '%s' in primary catalog contains duplicates."
 primary_id_key = '%s_%s' % (table_names[0], primary_id_key)
 
 primary_ids = []
