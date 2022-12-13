@@ -25,7 +25,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: python -m pip install flake8 pytest python-dateutil setuptools codecov pyflakes numpy cython astropy
+      run: python -m pip install flake8 pytest python-dateutil setuptools codecov pyflakes numpy cython astropy healpy
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
