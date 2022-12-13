@@ -117,3 +117,70 @@ def test_match_4():
 
 def test_match_5():
 	run_match(5, ngen=40)
+
+import nwaylib
+import nwaylib.logger as logger
+
+def create_affine_invariance_test(ngen=1000, dilution_factor=0, factor=1):
+	numpy.random.seed(1)
+	print()
+	print("create_affine_invariance_test(ngen=", ngen, ", dilution_factor=",dilution_factor, ", factor=", factor)
+	nfiles = 2
+	lo = 0.0
+	hi = 0.1 * factor
+	errs = [5 * factor, 0.001]
+	area = (hi - lo)**2
+	IDs = numpy.arange(ngen)
+	ra_true = numpy.random.uniform(size=ngen) * hi
+	dec_true = numpy.random.uniform(size=ngen) * hi
+
+	def genwithextra(err, nextra):
+		ra  = numpy.random.normal(0, 1, size=len(ra_true)) * err / 3600 + ra_true
+		dec = numpy.random.normal(0, 1, size=len(dec_true)) * err / 3600 + dec_true
+		print('pos:', ra[:4], dec[:4], '+-', err)
+		if nextra > 0:
+			ID_extra = numpy.arange(nextra) + 1000000
+			ra_extra = numpy.random.uniform(lo, hi, size=nextra)
+			dec_extra = numpy.random.uniform(lo, hi, size=nextra)
+		else:
+			ID_extra, ra_extra, dec_extra = [], [], []
+		return numpy.array(list(zip(IDs, ra, dec, err * numpy.ones(ngen))) + list(zip(ID_extra, ra_extra, dec_extra, err * numpy.ones(nextra))), 
+			dtype=[('ID', 'i'), ('ra', 'f'), ('dec', 'f'), ('err', 'f')])
+
+	filenames = ['test_input_%d_%d_%d.fits' % (factor, dilution_factor, i) for i in range(nfiles)]
+	
+	nway_inputs = []
+
+	for fitsname, err, f, table_name in zip(filenames, errs, [0, dilution_factor], ["X", "O"]):
+		print('generating toy data for %s!' % fitsname)
+		table_data = genwithextra(err=err, nextra=ngen * f)
+		hdulist = array2fits(table_data, table_name)
+		hdulist[0].header['GENERAT'] = 'match test table, random'
+		hdulist[1].header['SKYAREA'] = area
+		hdulist.writeto(fitsname, **progress.kwargs_overwrite_true)
+		nway_inputs.append(dict(name=table_name, ra=table_data['ra'], dec=table_data['dec'], error=table_data['err'], area=area, mags=[], maghists=[], magnames=[]))
+	
+	result = nwaylib.nway_match(nway_inputs,
+		match_radius = errs[0] * 10, # in arcsec
+		prior_completeness = 1.0,
+		logger=logger.NullOutputLogger(),
+	)
+
+	p_any = result['prob_has_match'][result['match_flag'] == 1]
+	print(numpy.median(p_any), numpy.min(p_any), numpy.max(p_any),)
+
+
+def run_affine_invariance_test(ngen=10000):
+	# check that a 10x field side length increase with same error increase
+	# leads to the same p_any distribution
+	
+	for dilution_factor in 0,: #1, 10:
+		print("="*60)
+		print("Dilution:", dilution_factor)
+		for factor in 1, 10, 100:
+			create_affine_invariance_test(ngen=ngen, dilution_factor=dilution_factor, factor=factor)
+
+			
+
+if __name__ == '__main__':
+	run_affine_invariance_test()

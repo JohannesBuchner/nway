@@ -16,6 +16,7 @@ Author: Johannes Buchner (C) 2014-2020
 
 f = pyfits.open(sys.argv[1])
 print('current', f[1].name, 'SKYAREA:', f[1].header.get('SKYAREA', None))
+assert '_' not in sys.argv[2], 'Table name must not contain underscore "_".'
 f[1].name = sys.argv[2]
 f[1].header['SKYAREA'] = float(sys.argv[3])
 print('new    ', f[1].name, 'SKYAREA:', f[1].header.get('SKYAREA', None))
