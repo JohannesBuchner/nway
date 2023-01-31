@@ -13,8 +13,7 @@ def checkupdates(current_version=None):
 		if os.path.exists('I_will_check_for_NWAY_updates_myself_thank_you'):
 			return
 		if current_version is None:
-			current_version = open(os.path.join(os.path.abspath(
-				os.path.dirname(__file__)), 'VERSION')).read().strip()
+			current_version = '4.5.3'
 		import json
 		from StringIO import StringIO
 		import urllib3
@@ -34,5 +33,3 @@ def checkupdates(current_version=None):
 		pass
 	except IOError:
 		pass
-	
-

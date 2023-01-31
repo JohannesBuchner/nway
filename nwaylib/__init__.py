@@ -1,8 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Multiway association between astrometric catalogues"""
 from __future__ import print_function, division
-
-__doc__ = """Multiway association between astrometric catalogues"""
 
 import numpy
 from numpy import log10, pi
@@ -13,6 +10,11 @@ from .logger import NullOutputLogger, NormalLogger
 from . import fastskymatch as match
 from . import bayesdistance as bayesdist
 from . import magnitudeweights as magnitudeweights
+
+__author__ = """Johannes Buchner"""
+__email__ = 'johannes.buchner.acad@gmx.com'
+__version__ = '4.5.3'
+
 
 class UndersampledException(Exception):
 	pass
@@ -455,5 +457,3 @@ def _truncate_table(table, min_prob, logger):
 		table = table[mask]
 
 	return table
-
-
