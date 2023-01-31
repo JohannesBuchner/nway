@@ -13,7 +13,7 @@ def checkupdates(current_version=None):
 		if os.path.exists('I_will_check_for_NWAY_updates_myself_thank_you'):
 			return
 		if current_version is None:
-			current_version = '4.5.3'
+			current_version = '4.5.4'
 		import json
 		from StringIO import StringIO
 		import urllib3
