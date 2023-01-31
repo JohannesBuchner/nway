@@ -65,7 +65,7 @@ def log_bf(p, s):
 
 	n = len(s)
 	# precision parameter w = 1/sigma^2
-	w = [numpy.asarray(si, dtype=numpy.float)**-2. for si in s]
+	w = [numpy.asarray(si, dtype=float)**-2. for si in s]
 	norm = (n - 1) * log(2) + 2 * (n - 1) * log_arcsec2rad
 	del s
 

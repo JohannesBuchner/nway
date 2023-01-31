@@ -44,7 +44,7 @@ primary_id_col = header['COL_PRIM']
 #print('    searching for %s == %s' % (primary_id_col, args.id))
 if issubclass(data.dtype[primary_id_col].type, numpy.integer):
 	mask = data[primary_id_col] == int(args.id)
-elif issubclass(data.dtype[primary_id_col].type, numpy.float):
+elif issubclass(data.dtype[primary_id_col].type, float):
 	mask = data[primary_id_col] == float(args.id)
 else:
 	mask = data[primary_id_col] == args.id
