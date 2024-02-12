@@ -10,7 +10,7 @@ with open('README.rst') as f:
 
 setup(
 	name='nway',
-	version='4.5.4',
+	version='4.6.0',
 	author='Johannes Buchner',
 	author_email='johannes.buchner.acad@gmx.com',
 	packages=['nwaylib'],

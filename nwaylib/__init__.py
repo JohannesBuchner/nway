@@ -13,7 +13,7 @@ from . import magnitudeweights as magnitudeweights
 
 __author__ = """Johannes Buchner"""
 __email__ = 'johannes.buchner.acad@gmx.com'
-__version__ = '4.5.4'
+__version__ = '4.6.0'
 
 
 class UndersampledException(Exception):
