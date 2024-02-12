@@ -52,11 +52,11 @@ def make_errors_table_matrix(table_names, pos_errors):
 			
 			intable_errors_ra  = tables[ti][keys[0]]
 			intable_errors_dec = tables[ti][keys[1]]
-			intable_errors_rho = tables[ti][keys[2]] / 180 * pi
+			intable_errors_rho = (tables[ti][keys[2]] - 90) / 180 * pi
 			
 			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
 			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
-			table_errors_rho = table["%s_%s" % (table_name, keys[2])] / 180 * pi
+			table_errors_rho = (table["%s_%s" % (table_name, keys[2])] - 90) / 180 * pi
 
 			intable_errors_ra, intable_errors_dec, intable_errors_rho = bayesdist.convert_from_ellipse(intable_errors_ra, intable_errors_dec, intable_errors_rho)
 			table_errors_ra, table_errors_dec, table_errors_rho = bayesdist.convert_from_ellipse(table_errors_ra, table_errors_dec, table_errors_rho)
