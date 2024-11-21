@@ -1,7 +1,7 @@
 Patches welcome for the following tasks:
 
 * allow elliptical errors for the primary catalogue
-  * This would require, instead of one error column, three: sigma, correlation strength and orientation. 
+  * This would require, instead of one error column, three: sigma, correlation strength and orientation. (questions: is this not done yet? it is just matter of updating the manual)
 * Parallelisation:
   * For the hashing: catalogues could be processed in parallel and the hash bins merged at the end.
     * This should be relatively easy to implement if really needed.
@@ -12,4 +12,5 @@ Patches welcome for the following tasks:
     * This should be easy to parallelise. Each group has a start and length, and computations are embarrassingly parallel.
   * For other processing:
     * Most computations operaten on the entire arrays. These could benefit from parallelisation in chunks, but usually these steps are not the slowest parts.
+* add instructions on how to use NWAY considering and external probability and provide the grid.
 
