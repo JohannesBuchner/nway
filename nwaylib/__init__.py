@@ -242,8 +242,8 @@ def _compute_single_log_bf(match_tables, source_densities, source_densities_plus
 		assert r.shape == mask.sum(), (r.shape, mask.sum(), mask.shape)
 		log_bf[mask] = r
 
-		prior[mask] = source_densities[0] * numpy.product(prior_completeness[table_mask]) / numpy.product(source_densities_plus[table_mask])
-		assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.product(source_densities_plus[table_mask]))
+		prior[mask] = source_densities[0] * numpy.prod(prior_completeness[table_mask]) / numpy.prod(source_densities_plus[table_mask])
+		assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.prod(source_densities_plus[table_mask]))
 
 
 	assert numpy.isfinite(prior).all(), (prior, log_bf)
@@ -278,7 +278,7 @@ def _correct_unrelated_associations(table, separations, errors, ncats, source_de
 				separations_selected = [[[separations[k][k2][j]] for k2 in augmented_cats] for k in augmented_cats]
 				errors_selected = [[errors[k][j]] for k in augmented_cats]
 				# identify the prior
-				prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
+				prior_j = source_densities[augmented_cats[0]] / numpy.prod(source_densities_plus[augmented_cats])
 				# compute a log_bf
 				log_bf_j = bayesdist.log_bf(numpy.array(separations_selected), numpy.array(errors_selected))
 				logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
