@@ -14,7 +14,7 @@ def checkupdates(current_version=None):
 		if os.path.exists('I_will_check_for_NWAY_updates_myself_thank_you'):
 			return
 		if current_version is None:
-			current_version = '4.6.0'
+			current_version = '4.7.0'
 		import json
 
 		import certifi

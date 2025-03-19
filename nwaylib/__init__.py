@@ -14,7 +14,7 @@ from .logger import NormalLogger, NullOutputLogger
 
 __author__ = """Johannes Buchner"""
 __email__ = 'johannes.buchner.acad@gmx.com'
-__version__ = '4.6.0'
+__version__ = '4.7.0'
 
 
 class UndersampledException(Exception):
