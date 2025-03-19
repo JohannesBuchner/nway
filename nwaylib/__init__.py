@@ -1,15 +1,16 @@
 """Multiway association between astrometric catalogues"""
-from __future__ import print_function, division
+from __future__ import division, print_function
 
-import numpy
-from numpy import log10, pi
-import pandas
 from collections import OrderedDict
 
-from .logger import NullOutputLogger, NormalLogger
-from . import fastskymatch as match
+import numpy
+import pandas
+from numpy import log10, pi
+
 from . import bayesdistance as bayesdist
+from . import fastskymatch as match
 from . import magnitudeweights as magnitudeweights
+from .logger import NormalLogger, NullOutputLogger
 
 __author__ = """Johannes Buchner"""
 __email__ = 'johannes.buchner.acad@gmx.com'
@@ -18,15 +19,21 @@ __version__ = '4.6.0'
 
 class UndersampledException(Exception):
 	pass
+
+
 class EmptyResultException(Exception):
 	pass
+
+
+default_logger = NormalLogger()
+
 
 def nway_match(match_tables, match_radius, prior_completeness,
 	mag_include_radius=None, mag_exclude_radius=None, magauto_post_single_minvalue=0.9,
 	prob_ratio_secondary = 0.5,
-	min_prob=0., consider_unrelated_associations=True, 
+	min_prob=0., consider_unrelated_associations=True,
 	store_mag_hists=True,
-	logger=NormalLogger()):
+	logger=default_logger):
 	"""
 	match_tables: list of catalogues, each a dict with entries:
 		- name (short catalog name, no spaces, used in output columns)
@@ -39,37 +46,37 @@ def nway_match(match_tables, match_radius, prior_completeness,
 		- maghists (list of prior information for each entry in mags)
 		  use None to automatically build a histogram of target/non-target sources.
 		  Otherwise, supply the histogram manually: bins_lo, bins_hi, hist_sel, hist_all.
-	
+
 	match_radius: maximum radius in arcsec to consider.
-		More distant counterparts are cut off. 
+		More distant counterparts are cut off.
 		Set to a very large value, e.g. 5 times the largest positional error.
 		Setting to larger values does not change the result, but
 		setting to smaller values improves performance.
-	
-	prior_completeness: expected fraction of sources in the primary catalogue 
+
+	prior_completeness: expected fraction of sources in the primary catalogue
 		that are expected to have a counterpart (e.g., 90%).
 		If an array is passed, completeness for each catalog. First
 		entry has to be 1.
-	
+
 	mag_include_radius:
 		search radius for building the magnitude histogram of target sources. If None (default), the Bayesian posterior is used
-	
+
 	mag_exclude_radius:
 		exclusion radius for building the magnitude histogram of field sources. If None (default), mag_include_radius is used
-	
+
 	magauto_post_single_minvalue:
 		minimum posterior probability (default: 0.9) for the magnitude histogram of secure target sources. Used in the Bayesian procedure.
-	
+
 	prob_ratio_secondary: for each primary catalogue entry, the most probable associations is marked with match_flag=1. Comparably good solutions receive match_flag=2 (all others are match_flag=0). The prob_ratio_secondary parameter controls the lowest probability ratio p(secondary)/p(primary) still considered comparable.
-	
+
 	min_prob: Minimum probability for truncating the output table.
 		default: 0 (no truncation)
-	
-	consider_unrelated_associations: Correction for missing sources in 
+
+	consider_unrelated_associations: Correction for missing sources in
 		partial assocations. Keep to True.
-	
+
 	store_mag_hists: Write constructed mag hists to file (filename based on table name and mags).
-	
+
 	logger: NormalLogger for stderr output and progress bars, NullOutputLogger if silent
 	"""
 	if mag_exclude_radius is None:
@@ -79,12 +86,12 @@ def nway_match(match_tables, match_radius, prior_completeness,
 			logger.warn('WARNING: magnitude radius is very large (>= matching radius). Consider using a smaller value.')
 
 	ncats = len(match_tables)
-	
+
 	table, resultstable, separations, errors = _create_match_table(match_tables, match_radius, logger=logger)
 
 	if not len(table) > 0:
 		raise EmptyResultException('No matches.')
-	
+
 	source_densities, source_densities_plus = _compute_source_densities(match_tables, logger=logger)
 
 	# first pass: find secure matches and secure non-matches
@@ -94,7 +101,7 @@ def nway_match(match_tables, match_radius, prior_completeness,
 		dist_bayesfactor_uncorrected=log_bf,
 		dist_bayesfactor=log_bf
 	)
-	
+
 	if consider_unrelated_associations:
 		_correct_unrelated_associations(table, separations, errors, ncats, source_densities, source_densities_plus, logger=logger)
 		log_bf = table['dist_bayesfactor']
@@ -107,9 +114,9 @@ def nway_match(match_tables, match_radius, prior_completeness,
 	table, total = _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger=logger)
 
 	table = _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prior, total, logger=logger)
-	
+
 	table = _truncate_table(table, min_prob, logger=logger)
-	
+
 	return table
 
 
@@ -134,19 +141,19 @@ def _create_match_table(match_tables, match_radius, logger):
 	logger.log('    adding angular separation columns')
 	max_separation = numpy.zeros(nresults)
 	for i in range(len(match_tables)):
-		a_ra  = ratables[i][0][resultstable[:,i]]
+		a_ra = ratables[i][0][resultstable[:,i]]
 		a_dec = ratables[i][1][resultstable[:,i]]
 		errors.append(match_tables[i]['error'][resultstable[:,i]])
 		row = []
 		for j in range(len(match_tables)):
 			if i < j:
-				b_ra  = ratables[j][0][resultstable[:,j]]
+				b_ra = ratables[j][0][resultstable[:,j]]
 				b_dec = ratables[j][1][resultstable[:,j]]
 				col = match.dist((a_ra, a_dec), (b_ra, b_dec))
-				assert not numpy.isnan(col).any(), ['%d distances are nan' % numpy.isnan(col).sum(), 
-					a_ra[numpy.isnan(col)], a_dec[numpy.isnan(col)], 
+				assert not numpy.isnan(col).any(), ['%d distances are nan' % numpy.isnan(col).sum(),
+					a_ra[numpy.isnan(col)], a_dec[numpy.isnan(col)],
 					b_ra[numpy.isnan(col)], b_dec[numpy.isnan(col)]]
-				
+
 				assert not (a_ra == b_ra).all()
 				# store distance in arcsec
 				col[resultstable[:,i] == -1] = numpy.nan
@@ -188,6 +195,7 @@ def _create_match_table(match_tables, match_radius, logger):
 
 	return table, resultstable, separations, errors
 
+
 def _compute_source_densities(match_tables, logger):
 	source_densities = []
 	source_densities_plus = []
@@ -208,13 +216,14 @@ def _compute_source_densities(match_tables, logger):
 	source_densities = numpy.array(source_densities)
 	return source_densities, source_densities_plus
 
+
 def _compute_single_log_bf(match_tables, source_densities, source_densities_plus, table, separations, errors, prior_completeness, logger):
 	logger.log('Computing distance-based probabilities ...')
 	ncats = len(match_tables)
 
 	if numpy.shape(prior_completeness) == ():
 		prior_completeness = numpy.array([1.0] + [float(prior_completeness)**(1./(ncats-1)) for i in range(1, ncats)])
-	
+
 	if len(prior_completeness) != ncats:
 		raise Exception('Prior completeness needs one value per catalog. Received "%s".' % prior_completeness)
 	assert prior_completeness[0] == 1.0
@@ -233,7 +242,7 @@ def _compute_single_log_bf(match_tables, source_densities, source_densities_plus
 				mask = numpy.logical_and(mask, numpy.isnan(separations[0][i]))
 		# select errors
 		errors_selected = [e[mask] for e, m in zip(errors, table_mask) if m]
-		separations_selected = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
+		separations_selected = [[cell[mask] for cell, m in zip(row, table_mask) if m]
 			for row, m2 in zip(separations, table_mask) if m2]
 		# here we should call the elliptical error variant if errors is a 2d array
 		r = bayesdist.log_bf(separations_selected, errors_selected)
@@ -245,10 +254,10 @@ def _compute_single_log_bf(match_tables, source_densities, source_densities_plus
 		prior[mask] = source_densities[0] * numpy.prod(prior_completeness[table_mask]) / numpy.prod(source_densities_plus[table_mask])
 		assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.prod(source_densities_plus[table_mask]))
 
-
 	assert numpy.isfinite(prior).all(), (prior, log_bf)
 	assert numpy.isfinite(log_bf).all(), (prior, log_bf)
 	return prior, log_bf
+
 
 def _correct_unrelated_associations(table, separations, errors, ncats, source_densities, source_densities_plus, logger):
 	logger.log('    correcting for unrelated associations ...')
@@ -291,6 +300,7 @@ def _correct_unrelated_associations(table, separations, errors, ncats, source_de
 		if best_logpost > 0:
 			group['dist_bayesfactor'] += best_logpost
 
+
 def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger):
 	biases = {}
 	for i, t in enumerate(match_tables):
@@ -300,18 +310,17 @@ def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclud
 			col = "%s_%s" % (table_name, col_name)
 			mag = "%s:%s" % (table_name, col_name)
 			logger.log('Incorporating bias "%s" ...' % mag)
-			
+
 			res = table[table.columns[i]].values
 			res_defined = res != -1
 			# get magnitudes of all
 			# mark -99 as undefined
 			mag_all = magvals
 			mag_all[mag_all == -99] = numpy.nan
-		
+
 			# get magnitudes of selected
 			mask_all = numpy.isfinite(mag_all)
-			
-		
+
 			if maghist is None:
 				if mag_include_radius is not None:
 					selection = table['Separation_max'].values < mag_include_radius
@@ -321,38 +330,38 @@ def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclud
 					selection = (table['dist_post'] > magauto_post_single_minvalue).values
 					selection_weights = table['dist_post'].values
 					selection_possible = (table['dist_post'] > 0.01).values
-				
+
 				# ignore cases where counterpart is missing
 				assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
 				selection = numpy.logical_and(selection, res_defined)
 				selection_weights = selection_weights[res_defined]
 				selection_possible = numpy.logical_and(selection_possible, res_defined)
-				
+
 				#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
-				
+
 				#rows = results[table_name][selection].tolist()
 				assert selection.shape == res.shape, (selection.shape, res.shape)
 				rows, unique_indices = numpy.unique(res[selection], return_index=True)
 				rows_weights = selection_weights[unique_indices]
-				
+
 				assert len(rows) > 0, 'No magnitude values within radius for "%s".' % mag
 				mag_sel = magvals[rows]
 				mag_sel_weights = rows_weights
-				
+
 				# remove vaguely possible options from alternative histogram
 				assert selection_possible.shape == res.shape, (selection_possible.shape, res.shape)
 				#print(res, selection, selection_possible)
 				rows_possible = numpy.unique(res[selection_possible])
 				mask_others = mask_all.copy()
 				mask_others[rows_possible] = False
-				
+
 				# all options in the total (field+target sources) histogram
 				mask_sel = ~numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
 
 				#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
 
 				logger.log('magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
-				
+
 				# make function fitting to ratio shape
 				bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=mag_sel_weights[mask_sel])
 				if store_mag_hists:
@@ -360,20 +369,19 @@ def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclud
 					with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
 						f.write(b'# lo hi selected others\n')
 						numpy.savetxt(f,
-							numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
-							fmt = ["%10.5f"]*4)
+							numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]),
+							fmt = ["%10.5f"] * 4)
 				if mask_sel.sum() < 100:
 					raise UndersampledException('ERROR: too few secure matches (%d) to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename. You can also decrease the mag-auto-minprob parameter.' % mask_sel.sum())
 			else:
 				logger.log('magnitude histogramming: using user-supplied histogram for "%s"' % (col))
-				bins_lo, bins_hi, hist_sel, hist_all = maghist #numpy.loadtxt(magfile).transpose()
+				bins_lo, bins_hi, hist_sel, hist_all = maghist
 				bins = numpy.array(list(bins_lo) + [bins_hi[-1]])
 			func = magnitudeweights.fitfunc_histogram(bins, hist_sel, hist_all)
 			if store_mag_hists:
 				magnitudeweights.plot_fit(bins, hist_sel, hist_all, func, mag)
 			magcol = magvals[res]
 			magcol[~numpy.logical_and(res_defined, numpy.isfinite(magcol))] = -99
-			#magcol[~res_defined] = -99
 			weights = log10(func(magcol))
 			# undefined magnitudes do not contribute
 			weights[numpy.isnan(weights)] = 0
@@ -383,8 +391,9 @@ def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclud
 	table = table.assign(**{'bias_%s' % col:10**weights for col, weights in biases.items()})
 	log_bf = table['dist_bayesfactor'].values
 	total = log_bf + sum(biases.values())
-	
+
 	return table, total
+
 
 def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prior, total, logger):
 	logger.log('')
@@ -395,7 +404,7 @@ def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prio
 	table = table.assign(p_single=post)
 
 	# compute weights for group posteriors
-	# 4pi comes from Eq. 
+	# 4pi comes from Eq.
 	ncat = table['ncat'].values
 	log_post_weight = bayesdist.unnormalised_log_posterior(prior, total, ncat)
 	table = table.assign(log_post_weight=log_post_weight)
@@ -427,19 +436,19 @@ def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prio
 		# for p_any, find the one without counterparts
 		p_none = values[0]
 		p_any = 1 - 10**(p_none - bfsum)
-		# this avoids overflows in the no-counterpart solution, 
+		# this avoids overflows in the no-counterpart solution,
 		# which we want to set to 0
 		values[0] = bfsum1
 		p_i = 10**(values - bfsum1)
 		p_i[0] = 0
-		
+
 		best_val = p_i.max()
-		
+
 		# flag best & second best
 		# ignore very poor solutions
-		match_flag = numpy.where(best_val == p_i, 1, 
+		match_flag = numpy.where(best_val == p_i, 1,
 			numpy.where(p_i > prob_ratio_secondary * best_val, 2, 0))
-		
+
 		group['prob_has_match'] = p_any
 		group['prob_this_match'] = p_i
 		group['match_flag'] = match_flag
@@ -448,6 +457,7 @@ def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prio
 	table = table.groupby(table.columns[0], sort=False).apply(compute_group_statistics)
 	del table['log_post_weight']
 	return table
+
 
 def _truncate_table(table, min_prob, logger):
 	# cut away poor posteriors if requested

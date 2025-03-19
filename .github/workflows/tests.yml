@@ -44,10 +44,10 @@ jobs:
         pyflakes *.py nwaylib/*.py | grep -vE '(may be undefined|imported but unused|unable to detect undefined names|local variable ._|list comprehension redefines)' | tee static_errors
         cat static_errors
         if test -s static_errors; then exit 2; else true; fi
-  
+
     - name: API test
       run: coverage run -a nway-apitest.py
-    
+
     - name: submit coverage results
       run: codecov
 
@@ -59,7 +59,7 @@ jobs:
         nway-write-header.py COSMOS_OPTICAL.fits OPT  2
         nway-write-header.py COSMOS_IRAC.fits    IRAC 2
         nway-write-header.py COSMOS_XMM.fits     XMM  2
-  
+
     - name: creating offset catalogues
       working-directory: doc
       run: |
@@ -105,7 +105,7 @@ jobs:
         test -e example3-mag.fits
         test -e IRAC_mag_ch1_fit.pdf
         test -e IRAC_mag_ch1_fit.txt
-        nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt  --mag IRAC:mag_ch1 IRAC_mag_ch1_fit.txt 
+        nway.py COSMOS_XMM-shift.fits :pos_err COSMOS_OPTICAL.fits 0.1 COSMOS_IRAC.fits 0.5 --out=example3-mag-offset.fits --radius 20 --mag OPT:MAG OPT_MAG_fit.txt  --mag IRAC:mag_ch1 IRAC_mag_ch1_fit.txt
         test -e example3-mag-offset.fits
 
     - name: nway-explain
@@ -116,12 +116,12 @@ jobs:
     - name: cutoff calibration
       working-directory: doc
       run: |
-        nway-calibrate-cutoff.py example2.fits example2-offset.fits 
+        nway-calibrate-cutoff.py example2.fits example2-offset.fits
         test -e example2.fits_p_any_cutoffquality.pdf
         test -e example2.fits_p_any_p_i.pdf
-        nway-calibrate-cutoff.py example3-mag.fits example3-mag-offset.fits 
-        ls 
-  
+        nway-calibrate-cutoff.py example3-mag.fits example3-mag-offset.fits
+        ls
+
     - name: test elliptical errors
       working-directory: tests/elltest
       run: |

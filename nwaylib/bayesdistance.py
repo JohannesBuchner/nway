@@ -5,20 +5,23 @@ Reference: Budavari & Szalay (2008), ApJ, 679:301-309
 Authors: Johannes Buchner (C) 2013-2020
 Authors: Tamas Budavari (C) 2012
 """
-from __future__ import print_function, division
+from __future__ import division, print_function
+
 import numpy
-from numpy import log, log10, pi, e
+from numpy import e, log, log10, pi
 
 # use base 10 everywhere
 
 log_arcsec2rad = log(3600 * 180 / pi)
+
 
 def log_posterior(prior, log_bf):
 	"""
 	Returns log10 posterior probability normalised against alternative hypothesis
 	that the sources are unrelated (Budavari+08)
 	"""
-	return -log10( 1 + (1 - prior) * 10**(-log_bf - log10(prior)))
+	return -log10(1 + (1 - prior) * 10**(-log_bf - log10(prior)))
+
 
 def posterior(prior, log_bf):
 	"""
@@ -27,6 +30,7 @@ def posterior(prior, log_bf):
 	"""
 	with numpy.errstate(over='ignore'):
 		return 1. / (1 + (1 - prior) * 10**(-log_bf - log10(prior)))
+
 
 def unnormalised_log_posterior(prior, log_bf, ncat):
 	"""
@@ -41,8 +45,9 @@ def log_bf2(psi, s1, s2):
 	psi separation
 	s1 and s2=accuracy of coordinates
 	"""
-	s = s1*s1 + s2*s2;
-	return (log(2) + 2 * log_arcsec2rad - log(s) - psi*psi / 2 / s) * log10(e)
+	s = s1 * s1 + s2 * s2
+	return (log(2) + 2 * log_arcsec2rad - log(s) - psi * psi / 2 / s) * log10(e)
+
 
 def log_bf3(p12,p23,p31, s1,s2,s3):
 	"""
@@ -54,6 +59,7 @@ def log_bf3(p12,p23,p31, s1,s2,s3):
 	s = ss1*ss2 + ss2*ss3 + ss3*ss1
 	q = ss3 * p12**2 + ss1 * p23**2 + ss2 * p31**2
 	return (log(4) + 4 * log_arcsec2rad - log(s) - q / 2 / s) * log10(e)
+
 
 def log_bf(p, s):
 	"""
@@ -82,6 +88,7 @@ def log_bf(p, s):
 # vectorized in the following means that many 2D matrices/vectors are going to be handled.
 # i.e., each entry in the matrix or vector, is a vector of numbers.
 
+
 def assert_possemdef(M):
 	"""Check that the 2x2 matrix M is positive semi-definite, vectorized"""
 	tr = M[0][0] + M[1][1]
@@ -96,8 +103,9 @@ def assert_possemdef(M):
 	ev1 = (tr[~mask] + (tr[~mask]**2 - 4 * det[~mask])**0.5) / 2
 	ev2 = (tr[~mask] - (tr[~mask]**2 - 4 * det[~mask])**0.5) / 2
 
-	assert (ev1 >= 0).all(), ("EV1:", ev1[~(ev1>0)], tr[~mask][~(ev1>0)], det[~mask][~(ev1>0)], M)
-	assert (ev2 >= 0).all(), ("EV2:", ev2[~(ev2>0)], tr[~mask][~(ev2>0)], det[~mask][~(ev2>0)], M)
+	assert (ev1 >= 0).all(), ("EV1:", ev1[~(ev1 > 0)], tr[~mask][~(ev1 > 0)], det[~mask][~(ev1 > 0)], M)
+	assert (ev2 >= 0).all(), ("EV2:", ev2[~(ev2 > 0)], tr[~mask][~(ev2 > 0)], det[~mask][~(ev2 > 0)], M)
+
 
 def matrix_add(A, B):
 	""" 2D matrix addition, vectorized """
@@ -109,12 +117,14 @@ def matrix_add(A, B):
 	# assert_possemdef(M)
 	return M
 
+
 def matrix_multiply(A, B):
 	""" 2D matrix multiplication, vectorized """
 	(a11, a12), (a21, a22) = A
 	(b11, b12), (b21, b22) = B
 	M = (a11*b11+a12*b21, a11*b12+a12*b22), (a21*b11+a22*b21, a21*b12+a22*b22)
 	return M
+
 
 def matrix_invert(A):
 	""" invert a matrix A, vectorized """
@@ -123,10 +133,12 @@ def matrix_invert(A):
 	assert (F > 0).all()
 	return (F * d, -F * b), (-F * c, F * a)
 
+
 def matrix_det(A):
 	""" 2D matrix determinant, vectorized """
 	(a, b), (c, d) = A
 	return a * d - b * c
+
 
 def apply_vector_right(A, b):
 	""" multiply 2D vector with 2D matrix, vectorized """
@@ -134,11 +146,13 @@ def apply_vector_right(A, b):
 	(b1, b2) = b
 	return a11*b1+a12*b2, a21*b1+a22*b2
 
+
 def apply_vector_left(a, B):
 	""" multiply 2D matrix with 2D vector, vectorized """
 	a1, a2 = a
 	(b11, b12), (b21, b22) = B
 	return a1*b11+a2*b21, a1*b12+a2*b22
+
 
 def vector_multiply(a, b):
 	""" multiply two vectors, vectorized """
@@ -146,27 +160,32 @@ def vector_multiply(a, b):
 	b1, b2 = b
 	return a1*b1+a2*b2
 
+
 def vector_normalised(v):
 	vnorm = (v[0]**2 + v[1]**2)**0.5
 	return (
-		numpy.where(vnorm == 0, 2**-0.5, v[0] / (vnorm + 1e-300)), 
+		numpy.where(vnorm == 0, 2**-0.5, v[0] / (vnorm + 1e-300)),
 		numpy.where(vnorm == 0, 2**-0.5, v[1] / (vnorm + 1e-300)),
 	)
+
 
 def apply_vABv(v, A, B):
 	""" compute v^T A B v, vectorized """
 	return vector_multiply(v, apply_vector_right(matrix_add(A, B), v))
 	#return vector_multiply(apply_vector_left(v, A), apply_vector_right(B, v))
 
+
 def make_covmatrix(sigma_x, sigma_y, rho=0):
 	""" create covariance matrix from given standard deviations and normalised correlation rho, vectorized """
 	return (sigma_x**2, rho * sigma_x * sigma_y), (rho * sigma_x * sigma_y, sigma_y**2)
+
 
 def make_invcovmatrix(sigma_x, sigma_y, rho=0):
 	""" create inverse covariance matrix from given standard deviations and normalised correlation rho, vectorized """
 	F = 1.0 / (sigma_x**2 * sigma_y**2 * (1 - rho**2))
 	return (F * sigma_y**2, F * -rho * sigma_x * sigma_y), \
 		(F * -rho * sigma_x * sigma_y, F * sigma_x**2)
+
 
 def convert_from_ellipse(a, b, phi):
 	""" create covariance parameters from ellipse major axis a, minor axis b and angle phi; vectorized
@@ -183,6 +202,7 @@ def convert_from_ellipse(a, b, phi):
 	sigma_y = (a2 * c2 + b2 * s2)**0.5
 	rho = c * s * (a2 - b2) / (sigma_x * sigma_y)
 	return sigma_x, sigma_y, rho
+
 
 def log_bf_elliptical(separations_ra, separations_dec, pos_errors):
 	"""

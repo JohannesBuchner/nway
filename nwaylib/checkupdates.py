@@ -1,11 +1,12 @@
-from __future__ import print_function, division
+from __future__ import division, print_function
+
 
 def checkupdates(current_version=None):
 	"""
 	Check for program updates on PyPI
-	
-	If you want to disable this, create a file 
-	I_will_check_for_NWAY_updates_myself_thank_you 
+
+	If you want to disable this, create a file
+	I_will_check_for_NWAY_updates_myself_thank_you
 	in your working directory.
 	"""
 	try:
@@ -15,9 +16,10 @@ def checkupdates(current_version=None):
 		if current_version is None:
 			current_version = '4.6.0'
 		import json
-		from StringIO import StringIO
-		import urllib3
+
 		import certifi
+		import urllib3
+		from StringIO import StringIO
 		http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 		r = http.request('GET', 'https://pypi.python.org/pypi/nway/json')
 		j = json.load(StringIO(r.data))

@@ -5,15 +5,18 @@
 Example: nway-explain.py out.fits 179
 """
 
-from __future__ import print_function, division
+from __future__ import division, print_function
+
+import argparse
+import sys
+
+import astropy.io.fits as pyfits
 import matplotlib.pyplot as plt
 import numpy
-import astropy.io.fits as pyfits
-import sys
-import argparse
-from matplotlib.patches import Ellipse
-from matplotlib.collections import PatchCollection
 from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Ellipse
+
 
 class HelpfulParser(argparse.ArgumentParser):
 	def error(self, message):
@@ -21,16 +24,16 @@ class HelpfulParser(argparse.ArgumentParser):
 		self.print_help()
 		sys.exit(2)
 
+
 parser = HelpfulParser(description=__doc__,
-	epilog="""Johannes Buchner (C) 2013-2016 <johannes.buchner.acad@gmx.com>""",
+	epilog="""Johannes Buchner (C) 2013-2025 <johannes.buchner.acad@gmx.com>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-parser.add_argument('matchcatalogue', type=str, 
+parser.add_argument('matchcatalogue', type=str,
 	help="""nway output catalogue""")
 
 parser.add_argument('id', type=str,
 	help='ID to explain (from primary catalogue)')
-
 
 
 # parsing arguments
@@ -78,11 +81,13 @@ print("Assuming it has a counterpart, we have the following possible association
 print()
 
 j_option = 0
+
+
 def print_option(name, i):
 	global j_option
 	j_option += 1
 	matchflag = data['match_flag'][mask][i]
-	matchflagstars = '**' if matchflag == 1 else ('*' if matchflag==2 else '')
+	matchflagstars = '**' if matchflag == 1 else ('*' if matchflag == 2 else '')
 	if p_any < 0.1:
 		matchflagstars = ''
 	if matchflag == 0:
@@ -91,7 +96,8 @@ def print_option(name, i):
 		print('Association %d%s[match_flag==%d]: probability p_i=%.2f ' % (j_option, matchflagstars, matchflag, data['p_i'][mask][i]))
 	print('     Involved catalogues:  %s ' % (name))
 	for col in header['BIASING'].split(', '):
-		if col.strip() == '': continue
+		if col.strip() == '':
+			continue
 		bias = data['bias_' + col][mask][i]
 		if bias >= 2:
 			print('     prior %-15s increased the probability (bias_%s=%.2f)' % (col, col, bias))
@@ -99,12 +105,18 @@ def print_option(name, i):
 			print('     prior %-15s decreased the probability (bias_%s=%.2f)' % (col, col, bias))
 	print()
 
+
 def convx(ra):
 	return (ra - center_ra) * 3600
+
+
 def convy(dec):
 	return (dec - center_dec) * 3600
+
+
 def converr(err):
 	return err * 3600
+
 
 markers = ['x', '+', '^', '<', '>', 'v', 'p'] * 10
 colors = ['b', 'c', 'g', 'r', 'k', 'brown'] * 10
@@ -144,7 +156,7 @@ for col_ra, col_dec, col_err, marker, color in zip(cols_ra, cols_dec, cols_err, 
 		2 * converr(ra_err),
 		2 * converr(dec_err),
 		angle=90 - pa_err)
-			for ra, dec, ra_err, dec_err, pa_err in zip(ras, decs, ra_errs, dec_errs, pa_errs)]
+		for ra, dec, ra_err, dec_err, pa_err in zip(ras, decs, ra_errs, dec_errs, pa_errs)]
 	p = PatchCollection(patches)
 	p.set_facecolor('None')
 	p.set_edgecolor(color)
@@ -156,12 +168,14 @@ for col_ra, col_dec, col_err, marker, color in zip(cols_ra, cols_dec, cols_err, 
 			options.append((ra, dec))
 	all_options.append(options)
 
+
 def graph_make(all_options, highlight=None):
 	for j, options in enumerate(all_options):
 		if j != 0:
 			plt.plot(j, 0, marker='x', color='gray')
 		for k in range(len(options)-1):
 			plt.plot(j, -(k + 1), marker='o', color='k')
+
 
 def graph_highlight(all_options, selected):
 	x = numpy.arange(len(all_options))
@@ -181,7 +195,7 @@ for i in ii:
 	name = []
 	for col_ra, col_dec, options, tablename in zip(cols_ra, cols_dec, all_options, tablenames):
 		radec = data[col_ra][mask][i], data[col_dec][mask][i]
-		plt.text(len(j), 0.1, col_ra + '\n' + col_dec, 
+		plt.text(len(j), 0.1, col_ra + '\n' + col_dec,
 			rotation=90, size=6, ha='center', va='bottom')
 		k = options.index(radec)
 		j.append(-k)
@@ -192,7 +206,7 @@ for i in ii:
 	print_option('-'.join(name), i)
 	graph_highlight(all_options, j)
 	plt.text(-0.1, -1, 'p_i=%.2f' % data['p_i'][mask][i], ha='right', va='center')
-	plt.text(maxx + 0.1, 0, '$\leftarrow$ absent', ha='left', va='center')
+	plt.text(maxx + 0.1, 0, r'$\leftarrow$ absent', ha='left', va='center')
 	plt.ylim(-maxy-0.5, 0.5)
 	plt.xlim(-0.5, maxx+0.5)
 	plt.savefig(pp, format='pdf', bbox_inches='tight')
@@ -211,7 +225,7 @@ for j, i in enumerate(numpy.argsort(data['p_single'][mask])[::-1][:3]):
 		dec = data[col_dec][mask][i]
 		ras.append(ra)
 		decs.append(dec)
-	
+
 	plt.plot(convx(ras), convy(decs), '-', lw=(3-j), label='top %s by distance (p_single=%.2f, %d cat.)' % (j+1, data['p_single'][mask][i], data['ncat'][mask][i]), color='y')
 
 mask2 = numpy.logical_and(mask, data['match_flag'] == 1)
@@ -240,19 +254,19 @@ for i in numpy.where(mask2)[0]:
 	for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
 		ra = data[col_ra][i]
 		dec = data[col_dec][i]
-		if ra == -99: 
+		if ra == -99:
 			continue
 		if not first:
-			plt.text(convx(ra), convy(dec), 
-				' 2', va='top', ha='left', alpha=0.5, 
+			plt.text(convx(ra), convy(dec),
+				' 2', va='top', ha='left', alpha=0.5,
 				size=16, fontweight='bold')
 		first = False
 		ras.append(ra)
 		decs.append(dec)
 	plt.plot(convx(ras), convy(decs), '-', lw=0.5, label='p_i=%.2f (match_flag=2)' % (data['p_i'][i]), color='yellow')
 
-plt.xlabel('$\Delta$RA [arcsec]')
-plt.ylabel('$\Delta$DEC [arcsec]')
+plt.xlabel(r'$\Delta$RA [arcsec]')
+plt.ylabel(r'$\Delta$DEC [arcsec]')
 plt.title('Source %s, p_any=%.2f' % (args.id, p_any))
 xlo, xhi = plt.xlim()
 ylo, yhi = plt.ylim()

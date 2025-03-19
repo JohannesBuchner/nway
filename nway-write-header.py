@@ -1,8 +1,10 @@
 #!/usr/bin/env python
-from __future__ import print_function, division
-import astropy.io.fits as pyfits
-import sys
+from __future__ import division, print_function
+
 import inspect
+import sys
+
+import astropy.io.fits as pyfits
 
 if len(sys.argv) != 4:
 	sys.stderr.write("""SYNOPSIS: %s <catalogue.fits> <tablename> <skyarea>
@@ -10,7 +12,7 @@ if len(sys.argv) != 4:
 tablename: name of the catalogue
 skyarea: catalogue area in square degrees
 
-Author: Johannes Buchner (C) 2014-2020
+Author: Johannes Buchner (C) 2013-2025
 """ % sys.argv[0])
 	sys.exit(1)
 

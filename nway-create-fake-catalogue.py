@@ -1,27 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division
+from __future__ import division, print_function
 
 __doc__ = """Create a fake, random-position catalogue for testing the false association rate.
 
-For each source, tries to find a new position, by choosing randomly one of its K 
-nearest neighbors and picking a random location between them. If the new 
-location is within --radius (arcsec) of an old or new source, the random process 
-is repeated. With 2/3 probability K=10, with 1/3 probability K=100, giving a 
+For each source, tries to find a new position, by choosing randomly one of its K
+nearest neighbors and picking a random location between them. If the new
+location is within --radius (arcsec) of an old or new source, the random process
+is repeated. With 2/3 probability K=10, with 1/3 probability K=100, giving a
 good balance between reproducing local structures and filling the field.
 
 Example: nway-create-fake-catalogue.py --radius 20 COSMOS-XMM.fits fake-COSMOS-XMM.fits
 """
 
-import sys
-import numpy
-from numpy import log10, pi, exp, logical_and, cos, arccos, sin, arcsin, tan, arctan, arctan2, sqrt
-import matplotlib.pyplot as plt
-import astropy.io.fits as pyfits
 import argparse
-import nwaylib.progress as progress
+import sys
+
+import astropy.io.fits as pyfits
 import healpy
+import matplotlib.pyplot as plt
+import numpy
+from numpy import (arccos, arcsin, arctan, arctan2, cos, exp, log10,
+                   logical_and, pi, sin, sqrt, tan)
+
 import nwaylib.fastskymatch as match
+import nwaylib.progress as progress
+
 
 class HelpfulParser(argparse.ArgumentParser):
 	def error(self, message):
@@ -29,8 +33,9 @@ class HelpfulParser(argparse.ArgumentParser):
 		self.print_help()
 		sys.exit(2)
 
+
 parser = HelpfulParser(description=__doc__,
-	epilog="""Johannes Buchner (C) 2013-2017 <johannes.buchner.acad@gmx.com>""",
+	epilog="""Johannes Buchner (C) 2013-2025 <johannes.buchner.acad@gmx.com>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--radius', type=float, required=True,
@@ -51,7 +56,7 @@ inputfitsfile = pyfits.open(filename)
 header_hdu = inputfitsfile[0]
 table = inputfitsfile[1].data
 
-ra_key  = match.get_tablekeys(table, 'RA')
+ra_key = match.get_tablekeys(table, 'RA')
 print('    using RA  column: %s' % ra_key)
 dec_key = match.get_tablekeys(table, 'DEC')
 print('    using DEC column: %s' % dec_key)
@@ -75,7 +80,7 @@ print('finding good pixelation...')
 ntarget = 20
 
 nside = 1
-for nside_next in range(30): 
+for nside_next in range(30):
 	# number of pixels
 	nside = 2**nside_next
 	npix = healpy.pixelfunc.nside2npix(nside)
@@ -83,27 +88,21 @@ for nside_next in range(30):
 		# too few pixels, can not achieve target number per pixel
 		continue
 	i = healpy.pixelfunc.ang2pix(nside, phi=phi_test, theta=theta_test, nest=True)
-	#j = healpy.pixelfunc.get_all_neighbours(nside, phi=phi_test, theta=theta_test, nest=True)
-	#neighbors = numpy.hstack((i.reshape((-1,1)), j.transpose()))
-	
+
 	k = healpy.pixelfunc.ang2pix(nside, phi=phi, theta=theta, nest=True)
-	
+
 	nneighbors = []
-	#for rai, deci, neighborsi in zip(ra_test, dec_test, neighbors):
-		# find pixels and neighbors
-		#for neighbor in neighborsi:
-		#	print(neighbor, k.shape, (k == neighbor).sum())
-		#nneighbors.append(sum([(k == neighbor).sum() for neighbor in neighborsi]))
 	for rai, deci, ii in zip(ra_test, dec_test, i):
 		nneighbors.append((k == ii).sum())
-	
+
 	nneighbors_total = sum(nneighbors)
-	
+
 	print('  nside=%d: the %d test objects have a total of %d neighbors' % (nside, len(ra_test), nneighbors_total))
 	if nneighbors_total < len(ra_test) * ntarget:
 		# small enough, accept
 		print('    accepting.')
 		break
+
 
 def greatarc_interpolate(posa, posb, f):
 	(a_ra, a_dec), (b_ra, b_dec) = posa, posb
@@ -121,10 +120,11 @@ def greatarc_interpolate(posa, posb, f):
 
 	lat_f = arctan2(z, sqrt(x**2 + y**2))
 	lon_f = arctan2(y, x)
-	
+
 	c_ra = lon_f * 180 / pi
 	c_dec = lat_f * 180 / pi
 	return c_ra, c_dec
+
 
 # for each of them, create a new one without collision
 pbar = progress.bar(ndigits=6)
@@ -149,43 +149,32 @@ for index in pbar(range(n)):
 	#d = d[dmask]
 	b_nearest = b_nearest[dmask]
 
-	assert len(b_nearest)>0, "Method failed: No sources found nearby, could not interpolate a fake source."
+	assert len(b_nearest) > 0, "Method failed: No sources found nearby, could not interpolate a fake source."
 
 	#print('have %d neighbors' % len(b_nearest))
 	b_nearest = b_nearest[:100]
-	#print('distances:', d[b_nearest] * 60 * 60)
-	#if len(b_nearest) > 10:
-	#	print('skipping, too few neighbors')
-	#	break
-	#for bindex in range(len(b_nearest)):
-		#b = b_nearest[bindex]
 	while True:
 		if numpy.random.randint(0,3) == 0:
 			b = b_nearest[numpy.random.randint(0, len(b_nearest))]
 		else:
 			b = b_nearest[numpy.random.randint(0, min(10, len(b_nearest)))]
-		
+
 		# compute point in between
 		di = d[b]
-		#di = match.dist((ra_orig[a], dec_orig[a]), (ra_nearby[b], dec_nearby[b]))
-		#print(di*60*60, d[b]*60*60)
-		#assert di * 60 * 60 > radius, (di * 60 * 60, radius, b)
 		uexclude = radius / 60 / 60 / di
 		u = numpy.random.uniform(uexclude, 1 - uexclude)
 		ra_i, dec_i = greatarc_interpolate((ra_orig[a], dec_orig[a]), (ra_nearby[b], dec_nearby[b]), u)
-		#ra_i = ra_orig[a] * u + ra_nearby[b] * (1 - u)
-		#dec_i = dec_orig[a] * u + dec_nearby[b] * (1 - u)
-	
+
 		# check for collision with original catalogue
 		d = match.dist((ra_i, dec_i), (ra_nearby, dec_nearby))
-		if (d * 60 * 60 < radius).any(): 
-			#print('rejecting, near a original source')
-			continue # try again
+		if (d * 60 * 60 < radius).any():
+			# print('rejecting, near a original source')
+			continue  # try again
 		# check for collision with new sources?
 		d = match.dist((ra_i, dec_i), (ra[:i], dec[:i]))
-		if (d * 60 * 60 < radius).any(): 
-			#print('rejecting, near a new source')
-			continue # try again
+		if (d * 60 * 60 < radius).any():
+			# print('rejecting, near a new source')
+			continue  # try again
 		ra[index] = numpy.fmod(ra_i + 360, 360)
 		dec[index] = dec_i
 		break
@@ -198,6 +187,3 @@ print('writing "%s" (%d rows)' % (outfile, len(tbhdu.data)))
 
 hdulist = pyfits.HDUList([header_hdu, tbhdu])
 hdulist.writeto(outfile, **progress.kwargs_overwrite_true)
-
-
-

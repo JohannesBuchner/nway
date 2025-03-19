@@ -1,28 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division
+from __future__ import division, print_function
 
 __doc__ = """Multiway association between astrometric catalogue. Use --help for usage.
 
 Example: nway.py --radius 10 --prior-completeness 0.95 --mag GOODS:mag_H auto --mag IRAC:mag_irac1 auto cdfs4Ms_srclist_v3.fits :Pos_error CANDELS_irac1.fits 0.5 gs_short.fits 0.1 --out=out.fits
 """
 
-import sys
-import numpy
-from numpy import log10, pi, exp
-import astropy.io.fits as pyfits
 import argparse
+import sys
+
+import astropy.io.fits as pyfits
+import numpy
 import tqdm
-import nwaylib.progress as progress
-import nwaylib.logger as logger
-import nwaylib.fastskymatch as match
+from numpy import exp, log10, pi
+
 import nwaylib.bayesdistance as bayesdist
+import nwaylib.fastskymatch as match
+import nwaylib.logger as logger
 import nwaylib.magnitudeweights as magnitudeweights
+import nwaylib.progress as progress
+
 
 def make_errors_table_matrix(table_names, pos_errors):
 	symmetric = True
 	rotated = False
-	errors    = []
+	errors = []
 	for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 		colnames = tables[ti].dtype.names
 		if pos_error[0] != ':':
@@ -33,11 +36,11 @@ def make_errors_table_matrix(table_names, pos_errors):
 			pos_error = float(pos_error) * numpy.ones(len(table))
 			errors.append((pos_error, pos_error, numpy.zeros_like(pos_error)))
 			continue
-		
+
 		keys = pos_error[1:].split(':')
 		if len(keys) > 3:
-			assert False, 'Invalid column specifier: %s' % pos_error
-		
+			raise AssertionError('Invalid column specifier: %s' % pos_error)
+
 		meanings = ['ra_error', 'dec_error', 'ell_angle']
 		for k, meaning in zip(keys, meanings):
 			k2 = "%s_%s" % (table_name, k)
@@ -45,56 +48,57 @@ def make_errors_table_matrix(table_names, pos_errors):
 			assert k2 in table.dtype.names, 'ERROR: Position error column "%s" not in table "%s". Have these columns: %s' % (k2, table_name, ', '.join(colnames))
 			print('    Position error for "%s": found column %s (for %s): Values are [%f..%f]' % (
 				table_name, k, meaning, tables[ti][k].min(), tables[ti][k].max()))
-		
+
 		if len(keys) == 3:
 			keys = keys[0], keys[1], keys[2]
 			rotated = True
-			
-			intable_errors_ra  = tables[ti][keys[0]]
+
+			intable_errors_ra = tables[ti][keys[0]]
 			intable_errors_dec = tables[ti][keys[1]]
 			intable_errors_rho = (tables[ti][keys[2]] - 90) / 180 * pi
-			
-			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+
+			table_errors_ra = table["%s_%s" % (table_name, keys[0])]
 			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
 			table_errors_rho = (table["%s_%s" % (table_name, keys[2])] - 90) / 180 * pi
 
 			intable_errors_ra, intable_errors_dec, intable_errors_rho = bayesdist.convert_from_ellipse(intable_errors_ra, intable_errors_dec, intable_errors_rho)
 			table_errors_ra, table_errors_dec, table_errors_rho = bayesdist.convert_from_ellipse(table_errors_ra, table_errors_dec, table_errors_rho)
-			
+
 		elif len(keys) == 2:
 			keys = keys[0], keys[1]
 			symmetric = False
-			
-			intable_errors_ra  = tables[ti][keys[0]]
+
+			intable_errors_ra = tables[ti][keys[0]]
 			intable_errors_dec = tables[ti][keys[1]]
 			intable_errors_rho = numpy.zeros_like(intable_errors_ra)
-			
-			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+
+			table_errors_ra = table["%s_%s" % (table_name, keys[0])]
 			table_errors_dec = table["%s_%s" % (table_name, keys[1])]
 			table_errors_rho = numpy.zeros_like(table_errors_ra)
-			
+
 		elif len(keys) == 1:
 			keys = keys[0], keys[0]
 
-			intable_errors_ra  = tables[ti][keys[0]]
+			intable_errors_ra = tables[ti][keys[0]]
 			intable_errors_dec = intable_errors_ra
 			intable_errors_rho = numpy.zeros_like(intable_errors_ra)
-			
-			table_errors_ra  = table["%s_%s" % (table_name, keys[0])]
+
+			table_errors_ra = table["%s_%s" % (table_name, keys[0])]
 			table_errors_dec = table_errors_ra
 			table_errors_rho = numpy.zeros_like(table_errors_ra)
-			
-		
+
 		if intable_errors_ra.min() <= 0 or intable_errors_dec.min() <= 0:
 			print('WARNING: Some separation errors in "%s" are 0! This will give invalid results (%d rows).' % (
 				keys[0], numpy.logical_and(intable_errors_ra <= 0, intable_errors_dec <= 0).sum()))
 		if intable_errors_ra.max() > match_radius * 60 * 60 or intable_errors_dec.max() > match_radius * 60 * 60:
-			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (keys[0], max(intable_errors_ra.max(), intable_errors_dec.max())))
-		
+			print('WARNING: Some separation errors in "%s" are larger than the match radius! Increase --radius to >> %s' % (
+				keys[0], max(intable_errors_ra.max(), intable_errors_dec.max())))
+
 		errors.append((table_errors_ra, table_errors_dec, table_errors_rho))
 	return errors, (not rotated) and symmetric
 
 # set up program arguments
+
 
 class HelpfulParser(argparse.ArgumentParser):
 	def error(self, message):
@@ -102,8 +106,9 @@ class HelpfulParser(argparse.ArgumentParser):
 		self.print_help()
 		sys.exit(2)
 
+
 parser = HelpfulParser(description=__doc__,
-	epilog="""Johannes Buchner (C) 2013-2017 <johannes.buchner.acad@gmx.com>""",
+	epilog="""Johannes Buchner (C) 2013-2025 <johannes.buchner.acad@gmx.com>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--radius', type=float, required=True,
@@ -127,7 +132,7 @@ parser.add_argument('--ignore-unrelated-associations', dest='consider_unrelated_
 parser.set_defaults(consider_unrelated_associations=True)
 
 parser.add_argument('--mag', metavar='MAGCOLUMN+MAGFILE', type=str, nargs=2, action='append', default=[],
-	help="""name of <table>:<column> for magnitude biasing, and filename for magnitude histogram 
+	help="""name of <table>:<column> for magnitude biasing, and filename for magnitude histogram
 	(use auto for auto-computation within mag-radius).
 	Example: --mag GOODS:mag_H auto --mag IRAC:mag_irac1 irac_histogram.txt""")
 
@@ -240,13 +245,13 @@ for ti, (table_name, pos_error) in enumerate(zip(table_names, pos_errors)):
 	colnames = tables[ti].dtype.names
 	if pos_error[0] != ':':
 		continue
-	
+
 	keys = pos_error[1:].split(':')
 	if len(keys) > 3:
-		assert False, 'Invalid column specifier: %s' % pos_error
+		raise AssertionError('Invalid column specifier: %s' % pos_error)
 	if len(keys) > 1:
 		simple_errors = False
-	
+
 	meanings = [
 		[],
 		['symmerror'],
@@ -276,8 +281,10 @@ if simple_errors:
 	errors = [e_ra for e_ra, e_dec, e_rho in errors]
 
 print('  finding position columns ...')
-# table is in arcsec, and therefore separations is in arcsec
+
+
 def make_separation_table_matrix(kstr, table, table_names):
+	# table is in arcsec, and therefore separations is in arcsec
 	separations = []
 	for ti, a in enumerate(table_names):
 		row = []
@@ -290,6 +297,7 @@ def make_separation_table_matrix(kstr, table, table_names):
 				row.append(numpy.ones(len(table)) * numpy.nan)
 		separations.append(row)
 	return separations
+
 
 separations = make_separation_table_matrix('Separation_%s_%s', table, table_names)
 if not simple_errors:
@@ -332,19 +340,19 @@ for case in range(2**(len(table_names)-1)):
 	# select errors
 	if simple_errors:
 		errors_selected = [e[mask] for e, m in zip(errors, table_mask) if m]
-		separations_selected = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
+		separations_selected = [[cell[mask] for cell, m in zip(row, table_mask) if m]
 			for row, m in zip(separations, table_mask) if m]
 		log_bf[mask] = bayesdist.log_bf(separations_selected, errors_selected)
 	else:
 		errors_selected = [(era[mask], edec[mask], ephi[mask])
 			for (era, edec, ephi), m in zip(errors, table_mask) if m]
-		separations_selected_ra = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
+		separations_selected_ra = [[cell[mask] for cell, m in zip(row, table_mask) if m]
 			for row, m in zip(separations_ra, table_mask) if m]
-		separations_selected_dec = [[cell[mask] for cell, m in zip(row, table_mask) if m] 
+		separations_selected_dec = [[cell[mask] for cell, m in zip(row, table_mask) if m]
 			for row, m in zip(separations_dec, table_mask) if m]
 		log_bf[mask] = bayesdist.log_bf_elliptical(
 			separations_selected_ra, separations_selected_dec, errors_selected)
-	
+
 	prior[mask] = source_densities[0] * numpy.prod(prior_completeness[table_mask]) / numpy.prod(source_densities_plus[table_mask])
 	assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.prod(source_densities_plus[table_mask]))
 
@@ -370,7 +378,8 @@ if args.consider_unrelated_associations:
 			best_logpost = 0
 			# go through more complex associations
 			for j in range(primary_id_start[pid_index], primary_id_end[pid_index]):
-				if not (ncat[j] > 2): continue
+				if not (ncat[j] > 2):
+					continue
 				# check if this association has sufficient overlap with the one we are looking for
 				# it must contain at least two of the catalogues we are missing
 				augmented_cats = []
@@ -386,25 +395,25 @@ if args.consider_unrelated_associations:
 					# compute a log_bf
 					if simple_errors:
 						errors_selected = [[errors[k][j]] for k in augmented_cats]
-						separations_selected = [[[separations[k][k2][j]] 
+						separations_selected = [[[separations[k][k2][j]]
 							for k2 in augmented_cats] for k in augmented_cats]
 						log_bf_j = bayesdist.log_bf(numpy.array(separations_selected),
 							numpy.array(errors_selected))
 					else:
-						separations_selected_ra = [[[separations_ra[k][k2][j]] 
+						separations_selected_ra = [[[separations_ra[k][k2][j]]
 							for k2 in augmented_cats] for k in augmented_cats]
-						separations_selected_dec = [[[separations_dec[k][k2][j]] 
+						separations_selected_dec = [[[separations_dec[k][k2][j]]
 							for k2 in augmented_cats] for k in augmented_cats]
 						errors_selected = [([errors[k][0][j]], [errors[k][1][j]], [errors[k][2][j]])
 							for k in augmented_cats]
 						log_bf_j = bayesdist.log_bf_elliptical(numpy.array(separations_selected_ra),
-							 numpy.array(separations_selected_dec), 
+							 numpy.array(separations_selected_dec),
 							 numpy.array(errors_selected))
 					logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
 					if logpost_j > best_logpost:
 						#print('post:', logpost_j, log_bf_j, prior_j)
 						best_logpost = logpost_j
-	
+
 			# ok, we have our correction factor, best_logpost
 			# lets multiply it onto log_bf
 			if best_logpost > 0:
@@ -430,20 +439,20 @@ for mag, magfile in magnitude_columns:
 	col_names = tables[ti].dtype.names
 	assert col_name in col_names, 'column name specified for magnitude ("%s") unknown. Known columns in table "%s": %s' % (mag, table_name, ', '.join(col_names))
 	ci = col_names.index(col_name)
-	
+
 	res = results[table_name]
 	res_defined = results[table_name] != -1
-	
+
 	# get magnitudes of all
 	mag_all = tables[ti][col_name]
 	# mark -99 as undefined
 	mag_all[mag_all == -99] = numpy.nan
-	
+
 	# get magnitudes of selected
 	mask_all = ~numpy.logical_or(numpy.isnan(mag_all), numpy.isinf(mag_all))
 
 	col = "%s_%s" % (table_name, col_name)
-	
+
 	if magfile == 'auto':
 		if mag_include_radius is not None:
 			if mag_include_radius >= match_radius * 60 * 60:
@@ -455,42 +464,42 @@ for mag, magfile in magnitude_columns:
 			selection = post > magauto_post_single_minvalue
 			selection_weights = post
 			selection_possible = post > 0.01
-		
+
 		# ignore cases where counterpart is missing
 		assert res_defined.shape == selection.shape, (res_defined.shape, selection.shape)
 		selection = numpy.logical_and(selection, res_defined)
 		selection_weights = selection_weights[selection]
 		selection_possible = numpy.logical_and(selection_possible, res_defined)
-		
+
 		#print '   selection', selection.sum(), selection_possible.sum(), (-selection_possible).sum()
-		
+
 		#rows = results[table_name][selection].tolist()
 		rows, unique_indices = numpy.unique(results[table_name][selection], return_index=True)
 		rows_weights = selection_weights[unique_indices]
-		
+
 		assert len(rows) > 1, 'No magnitude values within radius for "%s".' % mag
 		mag_sel = mag_all[rows]
 		mag_sel_weights = rows_weights
-		
+
 		# remove vaguely possible options from alternative histogram
 		rows_possible = numpy.unique(results[table_name][selection_possible])
 		mask_others = mask_all.copy()
 		mask_others[rows_possible] = False
-		
+
 		# all options in the total (field+target sources) histogram
 		mask_sel = ~numpy.logical_or(numpy.isnan(mag_sel), numpy.isinf(mag_sel))
 
 		#print '      non-nans: ', mask_sel.sum(), mask_others.sum()
 
 		print('    magnitude histogram of column "%s": %d secure matches, %d insecure matches and %d secure non-matches of %d total entries (%d valid)' % (col, mask_sel.sum(), len(rows_possible), mask_others.sum(), len(mag_all), mask_all.sum()))
-		
+
 		# make function fitting to ratio shape
 		bins, hist_sel, hist_all = magnitudeweights.adaptive_histograms(mag_all[mask_others], mag_sel[mask_sel], weights=mag_sel_weights[mask_sel])
 		print('    magnitude histogram stored to "%s".' % (mag.replace(':', '_') + '_fit.txt'))
 		with open(mag.replace(':', '_') + '_fit.txt', 'wb') as f:
 			f.write(b'# lo hi selected others\n')
 			numpy.savetxt(f,
-				numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]), 
+				numpy.transpose([bins[:-1], bins[1:], hist_sel, hist_all]),
 				fmt = ["%10.5f"]*4)
 		if mask_sel.sum() < 100:
 			print('ERROR: too few secure matches to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace "auto" with the filename. You can also decrease the mag-auto-minprob parameter.')
@@ -520,7 +529,7 @@ post = bayesdist.posterior(prior, total)
 columns.append(pyfits.Column(name='p_single', format='E', array=post))
 
 # compute weights for group posteriors
-# 4pi comes from Eq. 
+# 4pi comes from Eq.
 log_post_weight = bayesdist.unnormalised_log_posterior(prior, total, ncat)
 
 # flagging of solutions. Go through groups by primary id (IDs in first catalogue)
@@ -538,7 +547,7 @@ best_log_bf = 0
 for primary_id, ilo, ihi in tqdm.tqdm(list(zip(primary_ids, primary_id_start, primary_id_end))):
 	# group
 	mask = slice(ilo, ihi)
-	
+
 	# compute no-match probability
 	values = log_post_weight[mask]
 	offset = values.max()
@@ -548,27 +557,27 @@ for primary_id, ilo, ihi in tqdm.tqdm(list(zip(primary_ids, primary_id_start, pr
 		bfsum1 = log10((10**(values[1:] - offset)).sum()) + offset
 	else:
 		bfsum1 = 0
-	
+
 	# for p_any, find the one without counterparts
 	p_none = float(values[0])
 	p_any = 1 - 10**(p_none - bfsum)
-	# this avoids overflows in the no-counterpart solution, 
+	# this avoids overflows in the no-counterpart solution,
 	# which we want to set to 0
 	values[0] = bfsum1
 	p_i = 10**(values - bfsum1)
 	p_i[0] = 0
-	
+
 	prob_has_match[mask] = p_any
 	prob_this_match[mask] = p_i
-	
+
 	best_val = p_i.max()
-	
+
 	# flag best & second best
 	# ignore very poor solutions
-	index[mask] = numpy.where(best_val == p_i, 1, 
+	index[mask] = numpy.where(best_val == p_i, 1,
 		numpy.where(p_i > diff_secondary * best_val, 2, 0))
-	
-	
+
+
 columns.append(pyfits.Column(name='p_any', format='E', array=prob_has_match))
 columns.append(pyfits.Column(name='p_i', format='E', array=prob_this_match))
 
@@ -621,7 +630,7 @@ if not filenames[0].endswith('shifted.fits'):
 	print('   3) determining the p_any cutoff that corresponds to a false-detection rate')
 	print('      nway-calibrate-cutoff.py %s %s' % (outfile, shiftoutfile))
 	print()
-	
+
 # write out fits file
 print()
 print('creating output FITS file ...')
@@ -631,7 +640,7 @@ hdulist = match.wraptable2fits(tbhdu, 'NWAYMATCH')
 hdulist[0].header['METHOD'] = 'NWAY multi-way matching'
 hdulist[0].header['INPUT'] = ', '.join(filenames)
 hdulist[0].header['TABLES'] = ', '.join(table_names)
-hdulist[0].header['BIASING'] =  ', '.join(biases.keys())
+hdulist[0].header['BIASING'] = ', '.join(biases.keys())
 hdulist[0].header['NWAYCMD'] = ' '.join(sys.argv)
 for k, v in args.__dict__.items():
 	hdulist[0].header.add_comment("argument %s: %s" % (k, v))
@@ -640,4 +649,5 @@ print('    writing "%s" (%d rows, %d columns) ...' % (outfile, len(tbhdu.data), 
 hdulist.writeto(outfile, **progress.kwargs_overwrite_true)
 
 import nwaylib.checkupdates
+
 nwaylib.checkupdates.checkupdates()

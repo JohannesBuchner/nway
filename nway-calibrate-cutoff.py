@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division
+from __future__ import division, print_function
 
 __doc__ = """Characterise the false association rate and efficiency of a match
 with a offset (fake) match and a real match.
@@ -8,14 +8,16 @@ with a offset (fake) match and a real match.
 Example: nway-calibrate-cutoff.py example2.fits example2-shifted-match.fits
 """
 
-import sys
-import numpy
-from numpy import log10, pi, exp, logical_and
-import matplotlib.pyplot as plt
-import astropy.io.fits as pyfits
 import argparse
+import sys
+
+import astropy.io.fits as pyfits
+import matplotlib.pyplot as plt
+import numpy
+from numpy import exp, log10, logical_and, pi
 
 import nwaylib.fastskymatch as match
+
 
 class HelpfulParser(argparse.ArgumentParser):
 	def error(self, message):
@@ -23,8 +25,9 @@ class HelpfulParser(argparse.ArgumentParser):
 		self.print_help()
 		sys.exit(2)
 
+
 parser = HelpfulParser(description=__doc__,
-	epilog="""Johannes Buchner (C) 2013-2017 <johannes.buchner.acad@gmx.com>""",
+	epilog="""Johannes Buchner (C) 2013-2025 <johannes.buchner.acad@gmx.com>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('realfile', help="match output using real catalogue")

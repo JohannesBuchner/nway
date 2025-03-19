@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division
+from __future__ import division, print_function
 
 __doc__ = """Create a shifted catalogue for testing the false association rate.
 
 Example: nway-create-shifted-catalogue.py --radius 20 --shift-ra 0 --shift-dec 60 COSMOS-XMM.fits shifted-COSMOS-XMM.fits
 """
 
-import sys
-import numpy
-from numpy import log10, pi, exp, logical_and
-import matplotlib.pyplot as plt
-import astropy.io.fits as pyfits
 import argparse
-import nwaylib.progress as progress
+import sys
+
+import astropy.io.fits as pyfits
+import matplotlib.pyplot as plt
+import numpy
+from numpy import exp, log10, logical_and, pi
 
 import nwaylib.fastskymatch as match
+import nwaylib.progress as progress
+
 
 class HelpfulParser(argparse.ArgumentParser):
 	def error(self, message):
@@ -23,8 +25,9 @@ class HelpfulParser(argparse.ArgumentParser):
 		self.print_help()
 		sys.exit(2)
 
+
 parser = HelpfulParser(description=__doc__,
-	epilog="""Johannes Buchner (C) 2013-2017 <johannes.buchner.acad@gmx.com>""",
+	epilog="""Johannes Buchner (C) 2013-2025 <johannes.buchner.acad@gmx.com>""",
 	formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--shift-dec', default=0, type=float,
@@ -51,11 +54,11 @@ inputfitsfile = pyfits.open(filename)
 header_hdu = inputfitsfile[0]
 table = inputfitsfile[1].data
 
-if args.shift_ra==0 and args.shift_dec==0:
+if args.shift_ra == 0 and args.shift_dec == 0:
 	print('ERROR: You have to set either shift-ra or shift-dec to non-zero')
 	sys.exit(1)
 
-ra_key  = match.get_tablekeys(table, 'RA')
+ra_key = match.get_tablekeys(table, 'RA')
 print('    using RA  column: %s' % ra_key)
 dec_key = match.get_tablekeys(table, 'DEC')
 print('    using DEC column: %s' % dec_key)
@@ -92,6 +95,3 @@ for k, v in inputfitsfile[1].header.items():
 
 hdulist = pyfits.HDUList([header_hdu, tbhdu])
 hdulist.writeto(outfile, **progress.kwargs_overwrite_true)
-
-
-
