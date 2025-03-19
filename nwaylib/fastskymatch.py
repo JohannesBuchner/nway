@@ -233,7 +233,7 @@ def match_multiple(tables, table_names, err, fits_formats, logger, circular=True
 	"""
 	logger.log('')
 	logger.log('matching with %f arcsec radius' % (err * 60 * 60))
-	logger.log('matching: %6d naive possibilities' % numpy.product([len(t) for t in tables]))
+	logger.log('matching: %6d naive possibilities' % numpy.prod([len(t) for t in tables]))
 
 	logger.log('matching: hashing')
 

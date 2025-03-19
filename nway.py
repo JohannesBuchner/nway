@@ -345,8 +345,8 @@ for case in range(2**(len(table_names)-1)):
 		log_bf[mask] = bayesdist.log_bf_elliptical(
 			separations_selected_ra, separations_selected_dec, errors_selected)
 	
-	prior[mask] = source_densities[0] * numpy.product(prior_completeness[table_mask]) / numpy.product(source_densities_plus[table_mask])
-	assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.product(source_densities_plus[table_mask]))
+	prior[mask] = source_densities[0] * numpy.prod(prior_completeness[table_mask]) / numpy.prod(source_densities_plus[table_mask])
+	assert numpy.isfinite(prior[mask]).all(), (source_densities, prior_completeness[table_mask], numpy.prod(source_densities_plus[table_mask]))
 
 assert numpy.isfinite(prior).all(), (prior, log_bf)
 assert numpy.isfinite(log_bf).all(), (prior, log_bf)
@@ -382,7 +382,7 @@ if args.consider_unrelated_associations:
 					# ok, this is helpful.
 					# identify the separations and errors
 					# identify the prior
-					prior_j = source_densities[augmented_cats[0]] / numpy.product(source_densities_plus[augmented_cats])
+					prior_j = source_densities[augmented_cats[0]] / numpy.prod(source_densities_plus[augmented_cats])
 					# compute a log_bf
 					if simple_errors:
 						errors_selected = [[errors[k][j]] for k in augmented_cats]
