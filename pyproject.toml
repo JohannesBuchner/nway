@@ -8,7 +8,6 @@ name = "nway"
 version = "4.6.0"
 description = "Probabilistic Cross-Identification of Astronomical Sources"
 readme = "README.rst"
-url = "https://github.com/JohannesBuchner/nway/"
 requires-python = ">=3.8"
 dependencies = ["numpy", "scipy", "astropy", "tqdm", "healpy", "joblib", "matplotlib", "pandas"]
 license = {file = "LICENSE"}
@@ -20,3 +19,8 @@ authors = [
 test = [
     "pytest"
 ]
+
+[project.urls]
+Repository = "https://github.com/JohannesBuchner/nway/"
+homepage = "https://github.com/JohannesBuchner/nway/"
+documentation = "https://raw.githubusercontent.com/JohannesBuchner/nway/master/doc/nway-manual.pdf"
