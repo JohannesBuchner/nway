@@ -1,4 +1,4 @@
-NWAY - The versatile catalogue matching tool
+nway - the versatile catalogue matching tool
 ============================================
 
 .. toctree::

@@ -16,7 +16,7 @@ To use this, prepare a catalog column which gives the probability.
 Let's say your catalog is called *OPT* and your column is called *prob*.
 Then add to your nway command::
 
-   ``--mag CAT:prob prob_prior_table.txt``
+   --mag CAT:prob prob_prior_table.txt
 
 Here prob_prior_table.txt needs to map *prob* to probability,
 which is a 1:1 mapping. The "dummy" file prob_prior_table.txt is
