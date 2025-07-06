@@ -27,7 +27,7 @@ explanations.
 
 * Get different results in different version? Check what changed in the `release history <history>`_.
 
-* Want to use Python API instead of the command line? `API reference <nway>`_
+* Want to use Python API instead of the command line? `API reference <nwaylib>`_
 
 * If you are interested in the rigorous background, head to `mathematical details <math>`_.
 

@@ -2,10 +2,9 @@ User guide: Matching catalogs
 =============================
 
 To achieve reliable results, we recommend that you run matching with
-increasing amount of information (distance-based first,
-§\ `[sec:Simple-distance-based-matching] <#sec:Simple-distance-based-matching>`__,
-then adding priors on source properties
-§\ `2.6 <#chap:additional-priors>`__) and understand how each influences
+increasing amount of information (first `distance-based matching <chap:distance-based-matching>`)
+then `adding priors on source properties <chap:additional-priors>`_
+and understand how each influences
 the results.
 
 Typically, the goal is a compilation of “best matches”, i.e. choosing
@@ -29,6 +28,8 @@ criterion (``p_any>cutoff``), and made into a best match catalogue
 multiple solutions and to store these secondary solutions with similar
 probabilities in another catalogue (``match_flag==2``).
 
+.. _`chap:distance-based-matching`:
+
 Simple distance-based matching
 ------------------------------
 
@@ -39,51 +40,42 @@ illustrative case. We have three catalogues, provided as FITS files:
 
    *Input:*
 
-   ===================== ============== ==================
+   ===================== =============== ===================
    1-1 Primary Catalogue  2nd Catalogue   3rd Catalogue
-   ===================== ============== ==================
+   ===================== =============== ===================
    1-1 A                  :math:`\alpha`  :math:`\mathbb{A}`
    B                      :math:`\beta`   :math:`\mathbb{B}`
    ...                    ...             ...
-   \                                      
-   1-1                                    
-   ===================== ============== ==================
+   ===================== =============== ===================
 
    *Output:*
 
-   +--------------+--------------+--------------+-------------+---------+
-   | Primary      | 2nd          | 3rd          | Probability |         |
-   | Catalogue    | Catalogue    | Catalogue    |             |         |
-   | Entry        | Entry        | Entry        |             |         |
-   +==============+==============+==============+=============+=========+
-   | A            | :m           | :math:       | ...         | A group |
-   |              | ath:`\alpha` | `\mathbb{A}` |             |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | A            | :m           | :math:       | ...         |         |
-   |              | ath:`\alpha` | `\mathbb{B}` |             |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | A            | :m           | (none)       | ...         |         |
-   |              | ath:`\alpha` |              |             |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | A            | :            | :math:       | ...         |         |
-   |              | math:`\beta` | `\mathbb{A}` |             |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | A            | :            | :math:       | ...         |         |
-   |              | math:`\beta` | `\mathbb{B}` |             |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | A            | :            | (none)       | ...         |         |
-   |              | math:`\beta` |              |             |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | A            | (none)       | :math:       | ...         |         |
-   |              |              | `\mathbb{A}` |             |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | A            | (none)       | :math:       | ...         |         |
-   |              |              | `\mathbb{B}` |             |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | A            | (none)       | (none)       | ...         |         |
-   +--------------+--------------+--------------+-------------+---------+
-   | B            | ...          | ...          | ...         | B group |
-   +--------------+--------------+--------------+-------------+---------+
+   +--------------+----------------+--------------------+-------------+----------+
+   | Primary      | 2nd            | 3rd                | Probability | Group    |
+   | Catalogue    | Catalogue      | Catalogue          |             |          |
+   | Entry        | Entry          | Entry              |             |          |
+   +==============+================+====================+=============+==========+
+   | A            | :math:`\alpha` | :math:`\mathbb{A}` | ...         | A group  |
+   +--------------+----------------+--------------------+-------------+----------+
+   | A            | :math:`\alpha` | :math:`\mathbb{B}` | ...         |          |
+   +--------------+----------------+--------------------+-------------+----------+
+   | A            | :math:`\alpha` | (none)             | ...         |          |
+   +--------------+----------------+--------------------+-------------+----------+
+   | A            | :math:`\beta`  | :math:`\mathbb{A}` | ...         |          |
+   +--------------+----------------+--------------------+-------------+----------+
+   | A            | :math:`\beta`  | :math:`\mathbb{B}` | ...         |          |
+   +--------------+----------------+--------------------+-------------+----------+
+   | A            | :math:`\beta`  | (none)             | ...         |          |
+   +--------------+----------------+--------------------+-------------+----------+
+   | A            | (none)         | :math:`\mathbb{A}` | ...         |          |
+   +--------------+----------------+--------------------+-------------+----------+
+   | A            | (none)         | :math:`\mathbb{B}` | ...         |          |
+   +--------------+----------------+--------------------+-------------+----------+
+   | A            | (none)         | (none)             | ...         |          |
+   +--------------+----------------+--------------------+-------------+----------+
+   | B            | ...            | ...                | ...         | B group  |
+   +--------------+----------------+--------------------+-------------+----------+
+
 
 In Nway, only the first catalogue (**the primary catalogue**) plays a
 special role. For each entry of it, counterparts are sought from the
@@ -105,10 +97,10 @@ other catalogues.
          Three example catalogues are provided for you in the ``doc/``
          directory: **COSMOS_IRAC.fits, COSMOS_OPTICAL.fits and
          COSMOS_XMM.fits**. These are the same files as in Appendix B of
-         :raw-latex:`\citet{2018MNRAS.473.4937S}`, extracted from
-         :raw-latex:`\citet{Sanders2007}`/:raw-latex:`\citet{McCracken2007}`,
-         :raw-latex:`\citet{Ilbert2010}` and
-         :raw-latex:`\citet{Brusa2010}` respectively.
+         :cite:t:`2018MNRAS.473.4937S`, extracted from
+         :cite:t:`Sanders2007`/:cite:t:`McCracken2007`,
+         :cite:t:`Ilbert2010` and
+         :cite:t:`Brusa2010` respectively.
 
    #. | The data table needs to have a extension name and the keyword
         SKYAREA. The extension name is used as a prefix as all columns
@@ -253,7 +245,7 @@ compute its probability?
 The probability of a given association is computed by comparing the
 probability of a random chance alignment of unrelated sources (prior) to
 the likelihood that the source is the same. The gory mathematical
-details are laid out in Section `5.1 <#sec:math>`__, but from a user
+details are laid out in 'Mathematical details <math>`_, but from a user
 point of view the following is important:
 
 #. The chance of a random alignment depends on the source sky density of
@@ -278,10 +270,10 @@ all columns of the input catalogues:
 
 #. ``dist_post``: Distance posterior probability comparing this
    association vs. no association, as in
-   :raw-latex:`\citet{Budavari2008}`.
+   :cite:t:`Budavari2008`.
 
 #. ``p_single``: Same as ``dist_post`` unless additional information was
-   added, see Section `2.6 <#chap:additional-priors>`__.
+   added, see the `section on additional priors <chap:additional-priors>`__.
 
 #. **``p_any``**: For each entry in the primary catalogue (e.g. A) the
    probability that one of the association is the correct one is
@@ -289,7 +281,7 @@ all columns of the input catalogues:
    possible that the true counterpart has not been found yet. Our
    testing suggest that the **threshold for a secure catalogue depends
    on the application.**
-   Section `[sec:Best-practice-matching] <#sec:Best-practice-matching>`__
+   The `Best practice section <sec:Best-practice-matching>`__
    explains how to calibrate a threshold.
 
 #. | **``p_i``**: For each possible association for each entry in the
@@ -314,8 +306,8 @@ all columns of the input catalogues:
    with ``0``.
 
 Use the last three columns to identify sources with one solution,
-possible secondary solutions, and to build final catalogues. Chapter
-`5.1 <#sec:math>`__ explains how these quantities are computed. To
+possible secondary solutions, and to build final catalogues. 
+'Mathematical details <math>`_ explains how these quantities are computed. To
 filter out low-probability associations (low ``p_i``) from the output
 catalogue, the ``--min-prob`` parameter can be used.
 
@@ -341,7 +333,7 @@ catalogue, the ``--min-prob`` parameter can be used.
    is similar. The slightly higher one is marked as match_flag=1
    (orange), the other with 2 (yellow).
 
-   Section `2.6 <#chap:additional-priors>`__ solves this by adding more
+   `The next section <chap:additional-priors>`_ solves this by adding more
    information (the magnitude distribution). But we can also solve this
    another way. We know AGN (the X-ray source) emit in the infrared, so
    you can also match with an IRAC catalogue.
@@ -355,8 +347,8 @@ catalogue, the ``--min-prob`` parameter can be used.
    However, overall we should note that ``p_any`` is low, indicating
    that probably neither of the two candidates is the counterpart.
 
-.. figure:: example1.fits_explain_60388
-   :alt: 
+.. figure:: example1.fits_explain_60388.png
+   :alt: Visualisation of match geometry
 
 .. _`chap:additional-priors`:
 
@@ -368,7 +360,7 @@ provides additional hints, which associations are likely real. For
 instance, bright X-ray sources have a different color distribution in
 the WISE bands than non-X-ray emitting objects. A powerful feature of
 Nway  is to take advantage of this additional information to improve the
-matching. Section `5.2 <#sec:mag-priors>`__ has the mathematical details
+matching. The `magnitude prior section <sec:mag-priors>`__ has the mathematical details
 and a comparison to the Likelihood Ratio method.
 
 .. container::
@@ -429,8 +421,8 @@ several times.
       ``OPT_MAG_fit.pdf``, and also ``OPT_MAG_fit.txt`` as a histogram
       file:
 
-      .. image:: OPT_MAG_fit.pdf
-         :alt: image
+      .. image:: OPT_MAG_fit.png
+         :alt: histogram of optical magnitudes for target and field population
 
       They are clearly different: Lower magnitude (bright) sources are
       more likely associated to X-ray sources. This will help our
@@ -440,8 +432,8 @@ several times.
    upper association has been selected because it has a better match by
    magnitude, resolving the ambiguity.
 
-   .. image:: example2.fits_explain_60388
-      :alt: image
+   .. image:: example2.fits_explain_60388.png
+      :alt: visualisation of match geometry
 
 Multiple priors
 '''''''''''''''
@@ -482,7 +474,7 @@ this (# indicates comments):
    Keep in mind that a prior created from a different data set can only
    be used if it is applicable to the present data set. For example, in
    the introduction of the paper
-   :raw-latex:`\citet{2018MNRAS.473.4937S}` we stress that a prior from
+   :cite:t:`2018MNRAS.473.4937S` we stress that a prior from
    a comparable X-ray exposure depth must be used when deriving color
    distributions.
 
@@ -493,7 +485,7 @@ Providing priors is not limited to magnitude distributions, you can use
 colors or any other information you want (e.g. morphology, variability,
 etc.). The approach is very general, Nway  just looks at the
 corresponding bin and reweighs the probabilities. For example, in
-:raw-latex:`\citet{2018MNRAS.473.4937S}`, the counterparts to ROSAT
+:cite:t:`2018MNRAS.473.4937S`, the counterparts to ROSAT
 sources where found using WISE. The prior was build by using the
 color-magnitude (W1-W2 vs W2) properties of ~3000 secure counterparts to
 the 3XMM-Bright survey cut at the depth reached by ROSAT.
@@ -521,3 +513,5 @@ This is in general more cautious, and recommended for large catalogues
    However, if you only have a small catalogue you may build a poorly
    sampled histogram, potentially leading to biases. Nway  will warn you
    when only few sources were selected.
+
+.. bibliography::

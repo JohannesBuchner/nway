@@ -3,12 +3,12 @@ opening COSMOS_XMM.fits
     using DEC column: DEC
 finding good pixelation...
   nside=4: the 400 test objects have a total of 718800 neighbors
-  nside=8: the 400 test objects have a total of 671530 neighbors
-  nside=16: the 400 test objects have a total of 579334 neighbors
-  nside=32: the 400 test objects have a total of 579334 neighbors
-  nside=64: the 400 test objects have a total of 197421 neighbors
-  nside=128: the 400 test objects have a total of 63346 neighbors
-  nside=256: the 400 test objects have a total of 18658 neighbors
-  nside=512: the 400 test objects have a total of 5156 neighbors
+  nside=8: the 400 test objects have a total of 680105 neighbors
+  nside=16: the 400 test objects have a total of 599479 neighbors
+  nside=32: the 400 test objects have a total of 599479 neighbors
+  nside=64: the 400 test objects have a total of 207314 neighbors
+  nside=128: the 400 test objects have a total of 66517 neighbors
+  nside=256: the 400 test objects have a total of 18847 neighbors
+  nside=512: the 400 test objects have a total of 5143 neighbors
     accepting.
 writing "COSMOS_XMM-fake.fits" (1797 rows)

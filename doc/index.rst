@@ -6,11 +6,15 @@ NWAY - The versatile catalogue matching tool
    :caption: Contents:
 
    readme
+   getstarted
    installation
+   matching
+   nwayml
+   synopsis
+   modules
    contributing
    history
    issues
-   nway
    math
 
 .. include:: ../README.rst

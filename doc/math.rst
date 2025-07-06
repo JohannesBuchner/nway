@@ -26,7 +26,7 @@ following for simplicity, but handled in the code.
 If each catalogue covers the same area with some respective, homogeneous
 source density :math:`\nu_{i}`, the probability of a chance alignment on
 the sky of physically unrelated objects can then be written
-:raw-latex:`\citep[eq. 25]{Budavari2008}` as
+(:cite:t:`Budavari2008`, eq. 25), as
 
 .. math:: P(H)=N_{1}/\prod_{i=1}^{k}N_{i}=1/\prod_{i=2}^{k}N_{i}=1/\prod_{i=2}^{k}\nu_{i}\Omega_{i}.
 
@@ -41,20 +41,26 @@ the matching catalogues :math:`\Omega_{i>1}\neq\Omega_{1}`, depth of the
 catalogues and/or systematic errors in the coordinates). Our prior can
 thus be written as
 
+.. _`eq:prior`:
+
 .. math:: P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.\label{eq:prior}
 
 Bayes’ theorem connects the prior probability :math:`P(H)` to the
 posterior probability :math:`P(H|D)`, by incorporating information
 gained from the observation data :math:`D` via
 
+.. _`eq:bayes`:
+
 .. math:: P(H|D)\propto P(H)\times P(D|H).\label{eq:bayes}
 
-We now extend the approach of :raw-latex:`\citet{Budavari2008}`, to
+We now extend the approach of :cite:t:`Budavari2008`, to
 allow matches where some catalogues do not participate in a match.
-Comparing A12 and A14 in :raw-latex:`\citet{Budavari2008}`, assuming
+Comparing A12 and A14 in :cite:t:`Budavari2008`, assuming
 that positions lie on the celestial sphere and adopting the expansions
 developed in their Appendix B, we can write down likelihoods. For a
 counterpart across :math:`k` catalogues, we obtain:
+
+.. _`eq:nwaylikelihood`:
 
 .. math:: P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-2}}{\sum\sigma_{i}^{-2}}\exp\left\{ -\frac{\sum_{i<j}\psi_{ij}^{2}\sigma_{j}^{-2}\sigma_{i}^{-2}}{2\sum\sigma_{i}^{-2}}\right\} \label{eq:nwaylikelihood}
 
@@ -68,13 +74,15 @@ likelihood is unity for the hypothesis that there is no counterpart in
 any of the catalogues.
 
 In comparison to our method, the method of
-:raw-latex:`\citet{Budavari2008}` only compares two hypotheses for a
+:cite:t:`Budavari2008` only compares two hypotheses for a
 association: either all sources belong to the same object
 (:math:`H_{1}`), or they are coincidentally aligned (:math:`H_{0}`). In
 this computation each hypothesis test is run in isolation, and relative
 match probabilities for a given source are not considered. For
 completeness, we also compute the posterior of this simpler model
 comparison:
+
+.. _`eq:assocPost`:
 
 .. math::
 
@@ -86,45 +94,49 @@ comparison:
 
 The output column ``dist_bayesfactor`` stores :math:`\log B`, while the
 output column ``dist_post`` is the result of equation
-`[eq:assocPost] <#eq:assocPost>`__. The output column ``p_single`` gives
+`[eq:assocPost] <eq:assocPost>`_. The output column ``p_single`` gives
 ``dist_post`` but modified if any additional information is specified
-(see Section `5.2 <#sec:mag-priors>`__). As mentioned several times in
-the literature, the :raw-latex:`\citet{Budavari2008}` approach does not
+(see Section `5.2 <sec:mag-priors>`__). As mentioned several times in
+the literature, the :cite:t:`Budavari2008` approach does not
 include sources absent in some of the catalogues, while the formulae we
 develop below incorporate absent sources. This is similar in spirit to
-:raw-latex:`\citealp{Pineau2016}`, although the statistical approach is
+:cite:p:`Pineau2016`, although the statistical approach is
 different. We now go further and develop counterpart probabilities.
 
 The first step in catalogue inference is whether the source has any
 counterpart (:math:`p_{\mathrm{any}}`). The posterior probabilities
 :math:`P(H|D)` are computed using Bayes theorem (eq.
-`[eq:bayes] <#eq:bayes>`__) with the likelihood (eq.
-`[eq:nwaylikelihood] <#eq:nwaylikelihood>`__) and prior (eq.
-`[eq:prior] <#eq:prior>`__) appropriately adopted for the number of
+`[eq:bayes] <eq:bayes>`_) with the likelihood (eq.
+`[eq:nwaylikelihood] <eq:nwaylikelihood>`_) and prior (eq.
+`[eq:prior] <eq:prior>`_) appropriately adopted for the number of
 catalogues the particular association draws from. For each entry in the
 primary catalogue, the posteriors of all possible associations are
 normalised to unity, and :math:`P(H_{0}|D)`, the posterior probability
 of the no-counterpart hypothesis, i.e., no catalogue participates,
 computed. From this we compute:
 
+.. _`eq:post-any`:
+
 .. math:: p_{\mathrm{any}}=1-P(H_{0}|D)/\sum_{i}P(H_{i}|D)\label{eq:post-any}
 
 If :math:`p_{\mathrm{any}}` is low, this indicates that there is little
 evidence for any of the considered, combinatorically possible
 associations, except for the no-association case. The output column
-``p_any`` is the result of equation `[eq:post-any] <#eq:post-any>`__.
+``p_any`` is the result of equation `[eq:post-any] <eq:post-any>`__.
 
 If :math:`p_{\mathrm{any}}\approx1`, there is strong evidence for at
 least one of the associations to another catalogue. To compute the
 relative posterior probabilities of the options, we re-normalize with
 the no-counterpart hypothesis, :math:`H_{0}`, excluded:
 
+.. _`eq:post-assoc`:
+
 .. math:: p_{i}=P(H_{i}|D)/\sum_{i>0}P(H_{i}|D)\label{eq:post-assoc}
 
 If a particular association has a high :math:`p_{i}`, there is strong
 evidence that it is the true one, out of all present options. The output
 column ``p_i`` is the result of equation
-`[eq:post-assoc] <#eq:post-assoc>`__.
+`[eq:post-assoc] <eq:post-assoc>`__.
 
 A “very secure” counterpart could be defined by the requirement
 :math:`p_{any}>95\%` and :math:`p_{i}>95\%`, for example. However, it is
@@ -140,10 +152,10 @@ Astronomical objects of various classes often show distinct color and
 magnitude distributions. Because most bright X-ray point-sources in deep
 images are also optically bright compared to generic sources, this
 information can be exploited. Previous works
-:raw-latex:`\citep[e.g.][]{Brusa2005,Brusa2007}` have modified the
+(e.g., :cite:t:`Brusa2005`, ,:cite:t:`Brusa2007`) have modified the
 likelihood ratio coming from the angular distance :math:`f(r)`
 information (likelihood ratio method,
-:raw-latex:`\citealp{SutherlandSaunders1992}`) by a factor:
+:cite:t:`SutherlandSaunders1992`) by a factor:
 
 .. math:: LR=\frac{q(m)}{n(m)}\times f(r)
 
@@ -192,6 +204,9 @@ convolved with the distribution properties. Alternatively,
 are not yet implemented in Nway. Instead, we recommend removing
 magnitude values with large uncertainties (setting them to -99).
 
+
+.. _`sec:auto-calibration`:
+
 Auto-calibration
 ----------------
 
@@ -214,11 +229,16 @@ with and without applying the magnitude weighting are the same, which is
 true in practice. When differences are noticed, they will only
 strengthen :math:`\bar{q}(m)`, and the procedure may be iterated.
 
+.. _`sec:implementation`:
+
 Implementation
 --------------
 
-My implementation for matching :math:`n` catalogues is a Python program
-called Nway. The input catalogues have to be in FITS format. Information
+This section gives some details connecting the math above to
+a concrete and efficient implementation on a computer.
+
+The implementation for matching :math:`n` catalogues is a Python program
+called nway. The input catalogues have to be in FITS format. Information
 about the (shared) sky coverage has to be provided to the program as
 well. The program proceeds in four steps.
 
@@ -226,7 +246,7 @@ First, possible associations are found. It is unfeasible and unnecessary
 to consider all theoretical possibilities (complexity
 :math:`O(\prod_{i=1}^{k}N_{i})`), so the sky is split first to cluster
 nearby objects. For this, a hashing procedure puts each object into
-HEALPix bins :raw-latex:`\citep{Gorski2005}`. The bin width :math:`w` is
+HEALPix bins :cite:p:`Gorski2005`. The bin width :math:`w` is
 chosen so that any association of distance :math:`w` are improbable and
 negligible in practice, i.e. much larger than the largest positional
 error. An object with coordinates :math:`\phi,\,\theta` is placed in the
@@ -248,7 +268,7 @@ user-supplied prior incompleteness factor. The posterior for each
 association based on the distances only is calculated. These posteriors
 have to be modified (“correcting for unrelated associations”), to
 consider associations unrelated to primary catalogue sources (described
-in the paper, :raw-latex:`\citet{2018MNRAS.473.4937S}`, in the appendix
+in the paper, :cite:t:`2018MNRAS.473.4937S`, in the appendix
 section “Computing all possible matches”).
 
 In the third step the magnitudes are considered, and the posteriors
@@ -256,7 +276,7 @@ modified. An arbitrary number of magnitude columns in the input
 catalogues can be specified. It is possible to use external magnitude
 histograms (e.g. for sparse matching with few objects) as well as
 computing the histograms from the data itself (see Section
-`[subsec:Auto-calibration] <#subsec:Auto-calibration>`__). The breaks of
+`[subsec:Auto-calibration] <subsec:Auto-calibration>`__). The breaks of
 the histogram bins are computed adaptively based on the empirical
 cumulative distribution found. Because the histogram bins are usually
 larger than the magnitude measurement uncertainty, the latter is

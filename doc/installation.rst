@@ -47,7 +47,7 @@ Download example data
 
 For obtaining the example data files, 
 see below, installation "from sources".
-The data files (*.fits) is in the doc/ folder.
+The data (.fits files) are in the doc/ folder.
 
 From sources
 ------------

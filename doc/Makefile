@@ -4,13 +4,16 @@
 # You can set these variables from the command line.
 SPHINXOPTS    = 
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = autoemcee
+SPHINXPROJ    = nwaylib
 SOURCEDIR     = .
 BUILDDIR      = build
 
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+nwaylib.rst:
+	cd ..; sphinx-apidoc -H API -o doc/ ${SPHINXPROJ}
 
 .PHONY: help Makefile
 
@@ -65,28 +68,27 @@ logs/explain: example3.fits
 	nway-explain.py example3.fits 422 | tee logs/explain
 logs/cutoff2: example2.fits
 	nway-calibrate-cutoff.py example2.fits example2-offset.fits | tee logs/cutoff2
-	${CONVERT} example2.fits_p_any_cutoffquality.pdf 
-	${CONVERT} example2.fits_p_any_p_i.pdf
 
 logs/cutoff3: example3-mag.fits
 	nway-calibrate-cutoff.py example3-mag.fits example3-mag-offset.fits | tee logs/cutoff3
 
-random_circtest.fits: randomcatX.fits randomcatO.fits
-	nway.py --radius=10.0 randomcatX.fits :pos_err randomcatO.fits 0.1 --out=random_circtest.fits --min-prob=0.01
+random_circtest.fits: ../tests/elltest/randomcatX.fits ../tests/elltest/randomcatO.fits
+	nway.py --radius=10.0 ../tests/elltest/randomcatX.fits :pos_err ../tests/elltest/randomcatO.fits 0.1 --out=random_circtest.fits --min-prob=0.01
 	nway-explain.py random_circtest.fits 95
-random_asymtest.fits: randomcatX.fits randomcatO.fits
-	nway.py --radius=10.0 randomcatX.fits :a:b randomcatO.fits 0.1 --out=random_asymtest.fits --min-prob=0.01
+random_asymtest.fits: ../tests/elltest/randomcatX.fits ../tests/elltest/randomcatO.fits
+	nway.py --radius=10.0 ../tests/elltest/randomcatX.fits :a:b ../tests/elltest/randomcatO.fits 0.1 --out=random_asymtest.fits --min-prob=0.01
 	nway-explain.py random_asymtest.fits 95
-random_elltest.fits: randomcatX.fits randomcatO.fits
-	nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatO.fits 0.1 --out=random_elltest.fits --min-prob=0.01
+random_elltest.fits: ../tests/elltest/randomcatX.fits ../tests/elltest/randomcatO.fits
+	nway.py --radius=10.0 ../tests/elltest/randomcatX.fits :a:b:phi ../tests/elltest/randomcatO.fits 0.1 --out=random_elltest.fits --min-prob=0.01
 	nway-explain.py random_elltest.fits 95
-random3_elltest.fits: randomcatX.fits randomcatO.fits randomcatR.fits
-	nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatR.fits :a:b:phi randomcatO.fits 0.1 --out=random3_elltest.fits --min-prob=0.01
+random3_elltest.fits: ../tests/elltest/randomcatX.fits ../tests/elltest/randomcatO.fits ../tests/elltest/randomcatR.fits
+	nway.py --radius=10.0 ../tests/elltest/randomcatX.fits :a:b:phi ../tests/elltest/randomcatR.fits :a:b:phi ../tests/elltest/randomcatO.fits 0.1 --out=random3_elltest.fits --min-prob=0.01
 	nway-explain.py random3_elltest.fits 95
 
 runexamples: COSMOS_XMM-fake.fits COSMOS_XMM-shift.fits example2.fits example2-offset.fits example2-mag.fits example2-mag-offset.fits example3.fits example3-offset.fits example3-mag.fits example3-mag-offset.fits logs/explain logs/cutoff2 logs/cutoff3 random_circtest.fits random_asymtest.fits random_elltest.fits random3_elltest.fits
 runexamples: IRAC_mag_ch1_fit.png OPT_MAG_fit.png example2.fits_p_any_cutoffquality.png example2.fits_p_any_p_i.png
-
+runexamples: example1.fits_explain_60388.png example1.fits_explain_60388_options.png
+runexamples: example2.fits_explain_60388.png example2.fits_explain_60388_options.png
 
 cleanexamples:
 	rm COSMOS_XMM-fake.fits COSMOS_XMM-shift.fits example2.fits example2-offset.fits example2-mag.fits example2-mag-offset.fits example3.fits example3-offset.fits example3-mag.fits example3-mag-offset.fits logs/explain logs/cutoff2 logs/cutoff3 random_circtest.fits random_asymtest.fits random_elltest.fits random3_elltest.fits
