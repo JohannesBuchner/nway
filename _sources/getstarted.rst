@@ -19,7 +19,7 @@ explanations.
 
    Sometimes there are ``commands`` you can copy-paste.
 
-* start by `installing nway <install>`_. Do not forget to download the example data files so you can follow the tutorial!
+* start by `installing nway <installation>`_. Do not forget to download the example data files so you can follow the tutorial!
 
 * Learn basic to advanced use in the `User guide: Matching catalogs <matching>`_.
 

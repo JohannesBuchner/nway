@@ -20,4 +20,4 @@ Then add to your nway command::
 
 Here prob_prior_table.txt needs to map *prob* to probability,
 which is a 1:1 mapping. The "dummy" file prob_prior_table.txt is
-provided for download at: `https://raw.githubusercontent.com/JohannesBuchner/nway/refs/heads/master/doc/prob_prior_table.txt`.
+provided for download at: `<https://raw.githubusercontent.com/JohannesBuchner/nway/refs/heads/master/doc/prob_prior_table.txt>`_.

@@ -6,6 +6,8 @@ Program Arguments
 
 #. ``python ../nway.py --help`` ... display help page
 
+.. literalinclude:: logs/help
+
 #. ``python ../nway.py catalogue1 catalogues ...`` ... input catalogues
    as FITS files.
 
