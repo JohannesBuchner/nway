@@ -483,14 +483,14 @@ from distance matching</p></li>
 association vs. no association, as in
 <span id="id6">Budavári and Szalay [<a class="reference internal" href="#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">p_single</span></code>: Same as <code class="docutils literal notranslate"><span class="pre">dist_post</span></code> unless additional information was
-added, see Section 2.6.</p></li>
+added, see the <a class="reference external" href="chap:additional-priors">section on additional priors</a>.</p></li>
 <li><p><strong>``p_any``</strong>: For each entry in the primary catalogue (e.g. A) the
 probability that one of the association is the correct one is
 computed. Because every catalogue is limited by its depth, it is
 possible that the true counterpart has not been found yet. Our
 testing suggest that the <strong>threshold for a secure catalogue depends
 on the application.</strong>
-Section [sec:Best-practice-matching]
+The <a class="reference external" href="sec:Best-practice-matching">Best practice section</a>
 explains how to calibrate a threshold.</p></li>
 <li><div class="line-block">
 <div class="line"><strong>``p_i``</strong>: For each possible association for each entry in the
@@ -556,7 +556,7 @@ provides additional hints, which associations are likely real. For
 instance, bright X-ray sources have a different color distribution in
 the WISE bands than non-X-ray emitting objects. A powerful feature of
 Nway  is to take advantage of this additional information to improve the
-matching. Section 5.2 has the mathematical details
+matching. The <a class="reference external" href="sec:mag-priors">magnitude prior section</a> has the mathematical details
 and a comparison to the Likelihood Ratio method.</p>
 <div class="docutils container">
 <p class="rubric" id="example-using-magnitude-information">Example - Using magnitude information</p>

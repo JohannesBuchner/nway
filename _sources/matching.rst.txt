@@ -273,7 +273,7 @@ all columns of the input catalogues:
    :cite:t:`Budavari2008`.
 
 #. ``p_single``: Same as ``dist_post`` unless additional information was
-   added, see Section `2.6 <#chap:additional-priors>`__.
+   added, see the `section on additional priors <chap:additional-priors>`__.
 
 #. **``p_any``**: For each entry in the primary catalogue (e.g. A) the
    probability that one of the association is the correct one is
@@ -281,7 +281,7 @@ all columns of the input catalogues:
    possible that the true counterpart has not been found yet. Our
    testing suggest that the **threshold for a secure catalogue depends
    on the application.**
-   Section `[sec:Best-practice-matching] <#sec:Best-practice-matching>`__
+   The `Best practice section <sec:Best-practice-matching>`__
    explains how to calibrate a threshold.
 
 #. | **``p_i``**: For each possible association for each entry in the
@@ -360,7 +360,7 @@ provides additional hints, which associations are likely real. For
 instance, bright X-ray sources have a different color distribution in
 the WISE bands than non-X-ray emitting objects. A powerful feature of
 Nway  is to take advantage of this additional information to improve the
-matching. Section `5.2 <#sec:mag-priors>`__ has the mathematical details
+matching. The `magnitude prior section <sec:mag-priors>`__ has the mathematical details
 and a comparison to the Likelihood Ratio method.
 
 .. container::
