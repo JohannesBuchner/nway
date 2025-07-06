@@ -11,7 +11,7 @@ NWAY - The versatile catalogue matching tool
    matching
    nwayml
    synopsis
-   modules
+   api
    contributing
    history
    issues

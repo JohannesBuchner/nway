@@ -27,7 +27,7 @@ explanations.
 
 * Get different results in different version? Check what changed in the :doc:`release history <history>`.
 
-* Want to use Python API instead of the command line? :doc:`API reference <modules>`
+* Want to use Python API instead of the command line? :doc:`API reference <api>`
 
 * If you are interested in the rigorous background, head to :doc:`mathematical details <math>`.
 

@@ -205,7 +205,7 @@ are not yet implemented in Nway. Instead, we recommend removing
 magnitude values with large uncertainties (setting them to -99).
 
 
-.. _`sec:auto-calibration`:
+.. _`sec:Auto-calibration`:
 
 Auto-calibration
 ----------------
