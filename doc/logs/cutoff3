@@ -1,0 +1,14 @@
+created plot "example3-mag.fits_p_any_cutoffquality.pdf"
+created plot "example3-mag.fits_p_any_p_i.pdf"
+
+For a false detection rate of <1%
+--> use only counterparts with p_any>0.94 (36.78% of matches)
+
+For a false detection rate of <3%
+--> use only counterparts with p_any>0.85 (55.15% of matches)
+
+For a false detection rate of <5%
+--> use only counterparts with p_any>0.76 (64.94% of matches)
+
+For a false detection rate of <10%
+--> use only counterparts with p_any>0.55 (78.13% of matches)

@@ -1,0 +1,63 @@
+usage: nway.py [-h] --radius RADIUS [--mag-radius MAG_RADIUS]
+               [--mag-auto-minprob MAG_AUTO_MINPROB]
+               [--mag-exclude-radius MAG_EXCLUDE_RADIUS]
+               [--prior-completeness COMPLETENESS]
+               [--ignore-unrelated-associations]
+               [--mag MAGCOLUMN+MAGFILE MAGCOLUMN+MAGFILE]
+               [--acceptable-prob PROB] [--min-prob MIN_PROB] --out OUTFILE
+               [--prefilter-pair CATNAME1 CATNAME2 radius CATNAME1 CATNAME2 radius CATNAME1 CATNAME2 radius]
+               catalogues [catalogues ...]
+
+Multiway association between astrometric catalogue. Use --help for usage.
+Example: nway.py --radius 10 --prior-completeness 0.95 --mag GOODS:mag_H auto
+--mag IRAC:mag_irac1 auto cdfs4Ms_srclist_v3.fits :Pos_error
+CANDELS_irac1.fits 0.5 gs_short.fits 0.1 --out=out.fits
+
+positional arguments:
+  catalogues            input catalogue fits files and position errors.
+                        Example: cdfs4Ms_srclist_v3.fits :Pos_error
+                        CANDELS_irac1.fits 0.5 gs_short.fits 0.1
+
+options:
+  -h, --help            show this help message and exit
+  --radius RADIUS       exclusive search radius in arcsec for initial matching
+                        (default: None)
+  --mag-radius MAG_RADIUS
+                        search radius for building the magnitude histogram of
+                        target sources. If not set, the Bayesian posterior is
+                        used. (default: None)
+  --mag-auto-minprob MAG_AUTO_MINPROB
+                        minimum posterior probability (default: 0.9) for the
+                        magnitude histogram of secure target sources. Used in
+                        the Bayesian procedure. (default: 0.9)
+  --mag-exclude-radius MAG_EXCLUDE_RADIUS
+                        exclusion radius for building the magnitude histogram
+                        of field sources. If not set, --mag-radius is used.
+                        (default: None)
+  --prior-completeness COMPLETENESS
+                        expected matching completeness of sources (prior)
+                        (default: 1)
+  --ignore-unrelated-associations
+                        Ignore in the calculation source pairings unrelated to
+                        the primary source (not recommended) (default: True)
+  --mag MAGCOLUMN+MAGFILE MAGCOLUMN+MAGFILE
+                        name of <table>:<column> for magnitude biasing, and
+                        filename for magnitude histogram (use auto for auto-
+                        computation within mag-radius). Example: --mag
+                        GOODS:mag_H auto --mag IRAC:mag_irac1
+                        irac_histogram.txt (default: [])
+  --acceptable-prob PROB
+                        ratio limit up to which secondary solutions are
+                        flagged (default: 0.5)
+  --min-prob MIN_PROB   lowest probability allowed in final catalogue. If 0,
+                        no trimming is performed (default). (default: 0)
+  --out OUTFILE         output file name (default: None)
+  --prefilter-pair CATNAME1 CATNAME2 radius CATNAME1 CATNAME2 radius CATNAME1 CATNAME2 radius
+                        name of two <table>s where combinations more distant
+                        than radius (in arcsec) should not considered. This
+                        reduces the memory needs when several large catalogs
+                        with high accuracy are matched against some with low
+                        accuracy (high --radius). Example: --prefilter-pair
+                        GOODS IRAC 0.1 (default: [])
+
+Johannes Buchner (C) 2013-2025 <johannes.buchner.acad@gmx.com>

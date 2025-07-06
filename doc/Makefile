@@ -72,6 +72,9 @@ logs/cutoff2: example2.fits
 logs/cutoff3: example3-mag.fits
 	nway-calibrate-cutoff.py example3-mag.fits example3-mag-offset.fits | tee logs/cutoff3
 
+logs/help: 
+	nway.py --help | tee $@
+
 random_circtest.fits: ../tests/elltest/randomcatX.fits ../tests/elltest/randomcatO.fits
 	nway.py --radius=10.0 ../tests/elltest/randomcatX.fits :pos_err ../tests/elltest/randomcatO.fits 0.1 --out=random_circtest.fits --min-prob=0.01
 	nway-explain.py random_circtest.fits 95

@@ -72,7 +72,7 @@ and add a footnote with the URL to this repository::
 Documentation
 ---------------
 
-The documentation can be found at: https://johannesbuchner.github.io/BXA/
+The documentation can be found at: https://johannesbuchner.github.io/nway/
 
 The older manual is in the doc/ folder, https://github.com/JohannesBuchner/nway/raw/master/doc/nway-manual.pdf
 
