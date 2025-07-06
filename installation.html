@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Installation &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/installation.html" />
+    <link rel="icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User guide: Matching catalogs" href="matching.html" />
+    <link rel="prev" title="Getting started" href="getstarted.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#stable-release">Stable release</a><ul>
+<li><a class="reference internal" href="#upgrading-from-older-nway-versions">Upgrading from older Nway  versions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#download-example-data">Download example data</a></li>
+<li><a class="reference internal" href="#from-sources">From sources</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="getstarted.html" title="Previous Chapter: Getting started"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Getting started</span>
+    </a>
+  </li>
+  <li>
+    <a href="matching.html" title="Next Chapter: User guide: Matching catalogs"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">User guide: M... &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#stable-release">Stable release</a><ul>
+<li><a class="reference internal" href="#upgrading-from-older-nway-versions">Upgrading from older Nway  versions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#download-example-data">Download example data</a></li>
+<li><a class="reference internal" href="#from-sources">From sources</a></li>
+</ul>
+</li>
+</ul>
+
+  <li>
+    <a href="getstarted.html" title="Previous Chapter: Getting started"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Getting started</span>
+    </a>
+  </li>
+  <li>
+    <a href="matching.html" title="Next Chapter: User guide: Matching catalogs"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">User guide: M... &raquo;</span>
+    </a>
+  </li>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<section id="stable-release">
+<h2>Stable release<a class="headerlink" href="#stable-release" title="Link to this heading"></a></h2>
+<p>nway is a pure Python program.</p>
+<p>To install nway, run this command in your terminal:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>nway
+</pre></div>
+</div>
+<p>This is the preferred method to install nway, as it will always install the most recent stable release.</p>
+<p>The command line tool <code class="docutils literal notranslate"><span class="pre">nway.py</span></code> is installed for you as <code class="docutils literal notranslate"><span class="pre">~/.local/bin/nway.py</span></code>.</p>
+<p>If that directory is in your <code class="docutils literal notranslate"><span class="pre">$PATH</span></code>, you can run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>nway.py<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>If you don’t have <a class="reference external" href="https://pip.pypa.io">pip</a> installed, this <a class="reference external" href="http://docs.python-guide.org/en/latest/starting/installation/">Python installation guide</a> can guide
+you through the process.</p>
+<section id="upgrading-from-older-nway-versions">
+<h3>Upgrading from older Nway  versions<a class="headerlink" href="#upgrading-from-older-nway-versions" title="Link to this heading"></a></h3>
+<p>To upgrade, uninstall the older Nway  version first:</p>
+<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">uninstall</span> <span class="pre">nway</span></code></p>
+<p>Repeat until it says that nway is not installed. Then follow the
+installation instructions above.</p>
+</section>
+</section>
+<section id="download-example-data">
+<h2>Download example data<a class="headerlink" href="#download-example-data" title="Link to this heading"></a></h2>
+<p>For obtaining the example data files,
+see below, installation “from sources”.
+The data (.fits files) are in the doc/ folder.</p>
+</section>
+<section id="from-sources">
+<h2>From sources<a class="headerlink" href="#from-sources" title="Link to this heading"></a></h2>
+<p>The sources for nway can be downloaded from the <a class="reference external" href="https://github.com/JohannesBuchner/nway">Github repo</a>.</p>
+<p>You can either clone the public repository:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>git://github.com/JohannesBuchner/nway
+</pre></div>
+</div>
+<p>Or download the <a class="reference external" href="https://github.com/JohannesBuchner/nway/tarball/master">tarball</a>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>curl<span class="w"> </span>-OJL<span class="w"> </span>https://github.com/JohannesBuchner/nway/tarball/master
+</pre></div>
+</div>
+<p>Once you have a copy of the source, you can install it with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python<span class="w"> </span>setup.py<span class="w"> </span>install
+</pre></div>
+</div>
+<p>You need these python packages:</p>
+<p><code class="docutils literal notranslate"><span class="pre">scipy,</span> <span class="pre">astropy,</span> <span class="pre">matplotlib,</span> <span class="pre">tqdm,</span> <span class="pre">argparse,</span> <span class="pre">joblib,</span> <span class="pre">healpy,</span> <span class="pre">pandas</span></code>.</p>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nwaylib &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/_modules/nwaylib.html" />
+    <link rel="icon" href="../_static/icon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+<form action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <h1>Source code for nwaylib</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Multiway association between astrometric catalogues&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">log10</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">bayesdistance</span> <span class="k">as</span> <span class="n">bayesdist</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fastskymatch</span> <span class="k">as</span> <span class="n">match</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">magnitudeweights</span> <span class="k">as</span> <span class="n">magnitudeweights</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">NormalLogger</span><span class="p">,</span> <span class="n">NullOutputLogger</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Johannes Buchner&quot;&quot;&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;johannes.buchner.acad@gmx.com&#39;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;4.7.0&#39;</span>
+
+
+<div class="viewcode-block" id="UndersampledException">
+<a class="viewcode-back" href="../nwaylib.html#nwaylib.UndersampledException">[docs]</a>
+<span class="k">class</span> <span class="nc">UndersampledException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+	<span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="EmptyResultException">
+<a class="viewcode-back" href="../nwaylib.html#nwaylib.EmptyResultException">[docs]</a>
+<span class="k">class</span> <span class="nc">EmptyResultException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+	<span class="k">pass</span></div>
+
+
+
+<span class="n">default_logger</span> <span class="o">=</span> <span class="n">NormalLogger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="nway_match">
+<a class="viewcode-back" href="../nwaylib.html#nwaylib.nway_match">[docs]</a>
+<span class="k">def</span> <span class="nf">nway_match</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">match_radius</span><span class="p">,</span> <span class="n">prior_completeness</span><span class="p">,</span>
+	<span class="n">mag_include_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag_exclude_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magauto_post_single_minvalue</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+	<span class="n">prob_ratio_secondary</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+	<span class="n">min_prob</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">consider_unrelated_associations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+	<span class="n">store_mag_hists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+	<span class="n">logger</span><span class="o">=</span><span class="n">default_logger</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	match_tables: list of catalogues, each a dict with entries:</span>
+<span class="sd">		- name (short catalog name, no spaces, used in output columns)</span>
+<span class="sd">		- ra (RA in degrees)</span>
+<span class="sd">		- dec (dec in degrees)</span>
+<span class="sd">		- error (positional error in arcsec)</span>
+<span class="sd">		- area (sky area covered by the catalogue in square degrees)</span>
+<span class="sd">		- mags (list of additional columns to consider as priors)</span>
+<span class="sd">		- magnames (short name for each entry in mags, used in output columns)</span>
+<span class="sd">		- maghists (list of prior information for each entry in mags)</span>
+<span class="sd">		  use None to automatically build a histogram of target/non-target sources.</span>
+<span class="sd">		  Otherwise, supply the histogram manually: bins_lo, bins_hi, hist_sel, hist_all.</span>
+
+<span class="sd">	match_radius: maximum radius in arcsec to consider.</span>
+<span class="sd">		More distant counterparts are cut off.</span>
+<span class="sd">		Set to a very large value, e.g. 5 times the largest positional error.</span>
+<span class="sd">		Setting to larger values does not change the result, but</span>
+<span class="sd">		setting to smaller values improves performance.</span>
+
+<span class="sd">	prior_completeness: expected fraction of sources in the primary catalogue</span>
+<span class="sd">		that are expected to have a counterpart (e.g., 90%).</span>
+<span class="sd">		If an array is passed, completeness for each catalog. First</span>
+<span class="sd">		entry has to be 1.</span>
+
+<span class="sd">	mag_include_radius:</span>
+<span class="sd">		search radius for building the magnitude histogram of target sources. If None (default), the Bayesian posterior is used</span>
+
+<span class="sd">	mag_exclude_radius:</span>
+<span class="sd">		exclusion radius for building the magnitude histogram of field sources. If None (default), mag_include_radius is used</span>
+
+<span class="sd">	magauto_post_single_minvalue:</span>
+<span class="sd">		minimum posterior probability (default: 0.9) for the magnitude histogram of secure target sources. Used in the Bayesian procedure.</span>
+
+<span class="sd">	prob_ratio_secondary: for each primary catalogue entry, the most probable associations is marked with match_flag=1. Comparably good solutions receive match_flag=2 (all others are match_flag=0). The prob_ratio_secondary parameter controls the lowest probability ratio p(secondary)/p(primary) still considered comparable.</span>
+
+<span class="sd">	min_prob: Minimum probability for truncating the output table.</span>
+<span class="sd">		default: 0 (no truncation)</span>
+
+<span class="sd">	consider_unrelated_associations: Correction for missing sources in</span>
+<span class="sd">		partial assocations. Keep to True.</span>
+
+<span class="sd">	store_mag_hists: Write constructed mag hists to file (filename based on table name and mags).</span>
+
+<span class="sd">	logger: NormalLogger for stderr output and progress bars, NullOutputLogger if silent</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">mag_exclude_radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="n">mag_exclude_radius</span> <span class="o">=</span> <span class="n">mag_include_radius</span>
+	<span class="k">if</span> <span class="n">mag_include_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">mag_include_radius</span> <span class="o">&gt;=</span> <span class="n">match_radius</span><span class="p">:</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;WARNING: magnitude radius is very large (&gt;= matching radius). Consider using a smaller value.&#39;</span><span class="p">)</span>
+
+	<span class="n">ncats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_tables</span><span class="p">)</span>
+
+	<span class="n">table</span><span class="p">,</span> <span class="n">resultstable</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">_create_match_table</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">match_radius</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="n">EmptyResultException</span><span class="p">(</span><span class="s1">&#39;No matches.&#39;</span><span class="p">)</span>
+
+	<span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span> <span class="o">=</span> <span class="n">_compute_source_densities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+
+	<span class="c1"># first pass: find secure matches and secure non-matches</span>
+
+	<span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span> <span class="o">=</span> <span class="n">_compute_single_log_bf</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">prior_completeness</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+	<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+		<span class="n">dist_bayesfactor_uncorrected</span><span class="o">=</span><span class="n">log_bf</span><span class="p">,</span>
+		<span class="n">dist_bayesfactor</span><span class="o">=</span><span class="n">log_bf</span>
+	<span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">consider_unrelated_associations</span><span class="p">:</span>
+		<span class="n">_correct_unrelated_associations</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">ncats</span><span class="p">,</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+		<span class="n">log_bf</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;dist_bayesfactor&#39;</span><span class="p">]</span>
+
+	<span class="c1"># add the additional columns</span>
+	<span class="n">post</span> <span class="o">=</span> <span class="n">bayesdist</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span><span class="p">)</span>
+	<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">dist_post</span><span class="o">=</span><span class="n">post</span><span class="p">)</span>
+
+	<span class="c1"># find magnitude biasing functions</span>
+	<span class="n">table</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="n">_apply_magnitude_biasing</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">mag_include_radius</span><span class="p">,</span> <span class="n">mag_exclude_radius</span><span class="p">,</span> <span class="n">magauto_post_single_minvalue</span><span class="p">,</span> <span class="n">store_mag_hists</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+
+	<span class="n">table</span> <span class="o">=</span> <span class="n">_compute_final_probabilities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">prob_ratio_secondary</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+
+	<span class="n">table</span> <span class="o">=</span> <span class="n">_truncate_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">min_prob</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">table</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_create_match_table</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">match_radius</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+	<span class="c1"># first match input catalogues, compute possible combinations in match_radius</span>
+	<span class="n">ratables</span> <span class="o">=</span> <span class="p">[(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">match_tables</span><span class="p">]</span>
+	<span class="n">table_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">match_tables</span><span class="p">]</span>
+
+	<span class="n">resultstable</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">crossproduct</span><span class="p">(</span><span class="n">ratables</span><span class="p">,</span> <span class="n">match_radius</span> <span class="o">/</span> <span class="mf">60.</span> <span class="o">/</span> <span class="mi">60</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+	<span class="c1">#results = resultstable.view(dtype=[(t[&#39;name&#39;], resultstable.dtype) for t in match_tables]).reshape((-1,))</span>
+	<span class="n">nresults</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resultstable</span><span class="p">)</span>
+	<span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">match_tables</span><span class="p">):</span>
+		<span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+		<span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resultstable</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span>
+
+	<span class="c1"># matrix of separations</span>
+	<span class="n">separations</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">invalid_separations</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nresults</span><span class="p">)</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    adding angular separation columns&#39;</span><span class="p">)</span>
+	<span class="n">max_separation</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nresults</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">match_tables</span><span class="p">)):</span>
+		<span class="n">a_ra</span> <span class="o">=</span> <span class="n">ratables</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">resultstable</span><span class="p">[:,</span><span class="n">i</span><span class="p">]]</span>
+		<span class="n">a_dec</span> <span class="o">=</span> <span class="n">ratables</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">resultstable</span><span class="p">[:,</span><span class="n">i</span><span class="p">]]</span>
+		<span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match_tables</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;error&#39;</span><span class="p">][</span><span class="n">resultstable</span><span class="p">[:,</span><span class="n">i</span><span class="p">]])</span>
+		<span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">match_tables</span><span class="p">)):</span>
+			<span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+				<span class="n">b_ra</span> <span class="o">=</span> <span class="n">ratables</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">resultstable</span><span class="p">[:,</span><span class="n">j</span><span class="p">]]</span>
+				<span class="n">b_dec</span> <span class="o">=</span> <span class="n">ratables</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">resultstable</span><span class="p">[:,</span><span class="n">j</span><span class="p">]]</span>
+				<span class="n">col</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">dist</span><span class="p">((</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">a_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">b_ra</span><span class="p">,</span> <span class="n">b_dec</span><span class="p">))</span>
+				<span class="k">assert</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> distances are nan&#39;</span> <span class="o">%</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+					<span class="n">a_ra</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)],</span> <span class="n">a_dec</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)],</span>
+					<span class="n">b_ra</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)],</span> <span class="n">b_dec</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)]]</span>
+
+				<span class="k">assert</span> <span class="ow">not</span> <span class="p">(</span><span class="n">a_ra</span> <span class="o">==</span> <span class="n">b_ra</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+				<span class="c1"># store distance in arcsec</span>
+				<span class="n">col</span><span class="p">[</span><span class="n">resultstable</span><span class="p">[:,</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+				<span class="n">col</span><span class="p">[</span><span class="n">resultstable</span><span class="p">[:,</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+				<span class="n">col</span><span class="p">[</span><span class="n">a_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+				<span class="n">col</span><span class="p">[</span><span class="n">b_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+				<span class="n">col_arcsec</span> <span class="o">=</span> <span class="n">col</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>
+				<span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Separation_</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">table_names</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+				<span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col_arcsec</span><span class="p">)</span>
+				<span class="n">max_separation</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nanmax</span><span class="p">([</span><span class="n">col_arcsec</span><span class="p">,</span> <span class="n">max_separation</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+				<span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col_arcsec</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="c1"># mark the upper right triangle of the matrix as invalid data</span>
+				<span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">invalid_separations</span><span class="p">)</span>
+		<span class="n">separations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+		<span class="k">del</span> <span class="n">row</span>
+
+	<span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Separation_max&#39;</span><span class="p">)</span>
+	<span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">max_separation</span><span class="p">)</span>
+	<span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ncat&#39;</span><span class="p">)</span>
+	<span class="n">columns</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">resultstable</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+	<span class="c1"># now truncate all columns:</span>
+	<span class="n">mask</span> <span class="o">=</span> <span class="n">max_separation</span> <span class="o">&lt;</span> <span class="n">match_radius</span>
+	<span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+	<span class="n">errors</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">]</span>
+	<span class="n">separations</span> <span class="o">=</span> <span class="p">[[</span><span class="n">cell</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">separations</span><span class="p">]</span>
+	<span class="c1">#results = results[mask]</span>
+	<span class="n">resultstable</span> <span class="o">=</span> <span class="n">resultstable</span><span class="p">[</span><span class="n">mask</span><span class="p">,:]</span>
+	<span class="n">nresults</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resultstable</span><span class="p">)</span>
+
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching: </span><span class="si">%6d</span><span class="s1"> matches after filtering by search radius&#39;</span> <span class="o">%</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+	<span class="c1"># now we have columns, which contains the distance information.</span>
+	<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span>  <span class="n">keys</span><span class="p">)</span>
+
+	<span class="n">table</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">columns</span><span class="p">)))</span>
+	<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="o">==</span> <span class="n">nresults</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">),</span> <span class="n">nresults</span><span class="p">,</span>  <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+	<span class="k">return</span> <span class="n">table</span><span class="p">,</span> <span class="n">resultstable</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_source_densities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+	<span class="n">source_densities</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">source_densities_plus</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">match_table</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">match_tables</span><span class="p">):</span>
+		<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_table</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">])</span>
+		<span class="n">area</span> <span class="o">=</span> <span class="n">match_table</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.0</span> <span class="c1"># in square degrees</span>
+		<span class="n">area_total</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">180</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+		<span class="n">density</span> <span class="o">=</span> <span class="n">n</span> <span class="o">/</span> <span class="n">area</span> <span class="o">*</span> <span class="n">area_total</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> &quot;</span><span class="si">%s</span><span class="s1">&quot; (</span><span class="si">%d</span><span class="s1">), density gives </span><span class="si">%.2e</span><span class="s1"> objects on entire sky&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;Primary catalogue&#39;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;Catalogue&#39;</span><span class="p">,</span> <span class="n">match_table</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">n</span><span class="p">,</span> <span class="n">density</span><span class="p">))</span>
+		<span class="c1"># this takes into account that the source may be absent</span>
+		<span class="n">density_plus</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">area</span> <span class="o">*</span> <span class="n">area_total</span>
+		<span class="n">source_densities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">density</span><span class="p">)</span>
+		<span class="n">source_densities_plus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">density_plus</span><span class="p">)</span>
+
+	<span class="c1"># source can not be absent in primary catalogue</span>
+	<span class="n">source_densities_plus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_densities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">source_densities_plus</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">source_densities_plus</span><span class="p">)</span>
+	<span class="n">source_densities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">source_densities</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_single_log_bf</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">prior_completeness</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Computing distance-based probabilities ...&#39;</span><span class="p">)</span>
+	<span class="n">ncats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_tables</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">prior_completeness</span><span class="p">)</span> <span class="o">==</span> <span class="p">():</span>
+		<span class="n">prior_completeness</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">prior_completeness</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">ncats</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncats</span><span class="p">)])</span>
+
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prior_completeness</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ncats</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Prior completeness needs one value per catalog. Received &quot;</span><span class="si">%s</span><span class="s1">&quot;.&#39;</span> <span class="o">%</span> <span class="n">prior_completeness</span><span class="p">)</span>
+	<span class="k">assert</span> <span class="n">prior_completeness</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">1.0</span>
+
+	<span class="n">log_bf</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">))</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+	<span class="n">prior</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">))</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+	<span class="c1"># handle all cases (also those with missing counterparts in some catalogues)</span>
+	<span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">ncats</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+		<span class="n">table_mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">True</span><span class="p">]</span> <span class="o">+</span> <span class="p">[(</span><span class="n">case</span> <span class="o">//</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">ti</span><span class="p">))</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ti</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">match_tables</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
+		<span class="c1"># select those cases</span>
+		<span class="n">mask</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_tables</span><span class="p">)):</span>
+			<span class="k">if</span> <span class="n">table_mask</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="c1"># require not nan</span>
+				<span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="o">~</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">separations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">separations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]))</span>
+		<span class="c1"># select errors</span>
+		<span class="n">errors_selected</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">errors</span><span class="p">,</span> <span class="n">table_mask</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span><span class="p">]</span>
+		<span class="n">separations_selected</span> <span class="o">=</span> <span class="p">[[</span><span class="n">cell</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">table_mask</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span><span class="p">]</span>
+			<span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">m2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">separations</span><span class="p">,</span> <span class="n">table_mask</span><span class="p">)</span> <span class="k">if</span> <span class="n">m2</span><span class="p">]</span>
+		<span class="c1"># here we should call the elliptical error variant if errors is a 2d array</span>
+		<span class="n">r</span> <span class="o">=</span> <span class="n">bayesdist</span><span class="o">.</span><span class="n">log_bf</span><span class="p">(</span><span class="n">separations_selected</span><span class="p">,</span> <span class="n">errors_selected</span><span class="p">)</span>
+		<span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">separations_selected</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">separations_selected</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+		<span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">errors_selected</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">errors_selected</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+		<span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+		<span class="n">log_bf</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+
+		<span class="n">prior</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">source_densities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">prior_completeness</span><span class="p">[</span><span class="n">table_mask</span><span class="p">])</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">source_densities_plus</span><span class="p">[</span><span class="n">table_mask</span><span class="p">])</span>
+		<span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">prior</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="p">(</span><span class="n">source_densities</span><span class="p">,</span> <span class="n">prior_completeness</span><span class="p">[</span><span class="n">table_mask</span><span class="p">],</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">source_densities_plus</span><span class="p">[</span><span class="n">table_mask</span><span class="p">]))</span>
+
+	<span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span><span class="p">)</span>
+	<span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">log_bf</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span>
+
+
+<span class="k">def</span> <span class="nf">_correct_unrelated_associations</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">ncats</span><span class="p">,</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    correcting for unrelated associations ...&#39;</span><span class="p">)</span>
+	<span class="c1"># correct for unrelated associations</span>
+	<span class="c1"># identify those in need of correction</span>
+	<span class="c1"># two unconsidered catalogues are needed for an unrelated association</span>
+	<span class="n">primary_id</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+	<span class="c1">#candidates = numpy.unique(primary_id[(ncat &lt;= ncats - 2).values])</span>
+	<span class="n">pbar</span> <span class="o">=</span> <span class="n">logger</span><span class="o">.</span><span class="n">progress</span><span class="p">()</span>
+	<span class="k">for</span> <span class="n">primary_id_key</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">pbar</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">primary_id</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)):</span>
+		<span class="n">ncat_here</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;ncat&#39;</span><span class="p">]</span>
+		<span class="c1"># list which ones we are missing</span>
+		<span class="n">best_logpost</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="c1"># go through more complex associations</span>
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="n">ncat_here</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+			<span class="n">missing_cats</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">sep</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">separations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sep</span><span class="p">[</span><span class="n">j</span><span class="p">])]</span>
+			<span class="c1"># check if this association has sufficient overlap with the one we are looking for</span>
+			<span class="c1"># it must contain at least two of the catalogues we are missing</span>
+			<span class="n">augmented_cats</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">missing_cats</span><span class="p">:</span>
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">separations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">]):</span>
+					<span class="n">augmented_cats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+			<span class="n">n_augmented_cats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">augmented_cats</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">n_augmented_cats</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+				<span class="c1"># ok, this is helpful.</span>
+				<span class="c1"># identify the separations and errors</span>
+				<span class="n">separations_selected</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">separations</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">k2</span><span class="p">][</span><span class="n">j</span><span class="p">]]</span> <span class="k">for</span> <span class="n">k2</span> <span class="ow">in</span> <span class="n">augmented_cats</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">augmented_cats</span><span class="p">]</span>
+				<span class="n">errors_selected</span> <span class="o">=</span> <span class="p">[[</span><span class="n">errors</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">j</span><span class="p">]]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">augmented_cats</span><span class="p">]</span>
+				<span class="c1"># identify the prior</span>
+				<span class="n">prior_j</span> <span class="o">=</span> <span class="n">source_densities</span><span class="p">[</span><span class="n">augmented_cats</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">source_densities_plus</span><span class="p">[</span><span class="n">augmented_cats</span><span class="p">])</span>
+				<span class="c1"># compute a log_bf</span>
+				<span class="n">log_bf_j</span> <span class="o">=</span> <span class="n">bayesdist</span><span class="o">.</span><span class="n">log_bf</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">separations_selected</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">errors_selected</span><span class="p">))</span>
+				<span class="n">logpost_j</span> <span class="o">=</span> <span class="n">bayesdist</span><span class="o">.</span><span class="n">unnormalised_log_posterior</span><span class="p">(</span><span class="n">prior_j</span><span class="p">,</span> <span class="n">log_bf_j</span><span class="p">,</span> <span class="n">n_augmented_cats</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">logpost_j</span> <span class="o">&gt;</span> <span class="n">best_logpost</span><span class="p">:</span>
+					<span class="c1">#print(&#39;post:&#39;, logpost_j, log_bf_j, prior_j)</span>
+					<span class="n">best_logpost</span> <span class="o">=</span> <span class="n">logpost_j</span>
+
+		<span class="c1"># ok, we have our correction factor, best_logpost</span>
+		<span class="c1"># lets multiply it onto log_bf</span>
+		<span class="k">if</span> <span class="n">best_logpost</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">group</span><span class="p">[</span><span class="s1">&#39;dist_bayesfactor&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">best_logpost</span>
+
+
+<span class="k">def</span> <span class="nf">_apply_magnitude_biasing</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">mag_include_radius</span><span class="p">,</span> <span class="n">mag_exclude_radius</span><span class="p">,</span> <span class="n">magauto_post_single_minvalue</span><span class="p">,</span> <span class="n">store_mag_hists</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+	<span class="n">biases</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">match_tables</span><span class="p">):</span>
+		<span class="n">table_name</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+		<span class="k">for</span> <span class="n">magvals</span><span class="p">,</span> <span class="n">maghist</span><span class="p">,</span> <span class="n">magname</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;mags&#39;</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;maghists&#39;</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;magnames&#39;</span><span class="p">]):</span>
+			<span class="n">col_name</span> <span class="o">=</span> <span class="n">magname</span>
+			<span class="n">col</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">col_name</span><span class="p">)</span>
+			<span class="n">mag</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">col_name</span><span class="p">)</span>
+			<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Incorporating bias &quot;</span><span class="si">%s</span><span class="s1">&quot; ...&#39;</span> <span class="o">%</span> <span class="n">mag</span><span class="p">)</span>
+
+			<span class="n">res</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+			<span class="n">res_defined</span> <span class="o">=</span> <span class="n">res</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+			<span class="c1"># get magnitudes of all</span>
+			<span class="c1"># mark -99 as undefined</span>
+			<span class="n">mag_all</span> <span class="o">=</span> <span class="n">magvals</span>
+			<span class="n">mag_all</span><span class="p">[</span><span class="n">mag_all</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+
+			<span class="c1"># get magnitudes of selected</span>
+			<span class="n">mask_all</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">mag_all</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">maghist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">mag_include_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="n">selection</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Separation_max&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;</span> <span class="n">mag_include_radius</span>
+					<span class="n">selection_possible</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;Separation_max&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">&lt;</span> <span class="n">mag_exclude_radius</span>
+					<span class="n">selection_weights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selection</span><span class="p">))</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">selection</span> <span class="o">=</span> <span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;dist_post&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">magauto_post_single_minvalue</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+					<span class="n">selection_weights</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;dist_post&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+					<span class="n">selection_possible</span> <span class="o">=</span> <span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;dist_post&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+
+				<span class="c1"># ignore cases where counterpart is missing</span>
+				<span class="k">assert</span> <span class="n">res_defined</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">selection</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">res_defined</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">selection</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+				<span class="n">selection</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">selection</span><span class="p">,</span> <span class="n">res_defined</span><span class="p">)</span>
+				<span class="n">selection_weights</span> <span class="o">=</span> <span class="n">selection_weights</span><span class="p">[</span><span class="n">res_defined</span><span class="p">]</span>
+				<span class="n">selection_possible</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">selection_possible</span><span class="p">,</span> <span class="n">res_defined</span><span class="p">)</span>
+
+				<span class="c1">#print &#39;   selection&#39;, selection.sum(), selection_possible.sum(), (-selection_possible).sum()</span>
+
+				<span class="c1">#rows = results[table_name][selection].tolist()</span>
+				<span class="k">assert</span> <span class="n">selection</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">res</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+				<span class="n">rows</span><span class="p">,</span> <span class="n">unique_indices</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">selection</span><span class="p">],</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="n">rows_weights</span> <span class="o">=</span> <span class="n">selection_weights</span><span class="p">[</span><span class="n">unique_indices</span><span class="p">]</span>
+
+				<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;No magnitude values within radius for &quot;</span><span class="si">%s</span><span class="s1">&quot;.&#39;</span> <span class="o">%</span> <span class="n">mag</span>
+				<span class="n">mag_sel</span> <span class="o">=</span> <span class="n">magvals</span><span class="p">[</span><span class="n">rows</span><span class="p">]</span>
+				<span class="n">mag_sel_weights</span> <span class="o">=</span> <span class="n">rows_weights</span>
+
+				<span class="c1"># remove vaguely possible options from alternative histogram</span>
+				<span class="k">assert</span> <span class="n">selection_possible</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">res</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="p">(</span><span class="n">selection_possible</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+				<span class="c1">#print(res, selection, selection_possible)</span>
+				<span class="n">rows_possible</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">selection_possible</span><span class="p">])</span>
+				<span class="n">mask_others</span> <span class="o">=</span> <span class="n">mask_all</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+				<span class="n">mask_others</span><span class="p">[</span><span class="n">rows_possible</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+				<span class="c1"># all options in the total (field+target sources) histogram</span>
+				<span class="n">mask_sel</span> <span class="o">=</span> <span class="o">~</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mag_sel</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">mag_sel</span><span class="p">))</span>
+
+				<span class="c1">#print &#39;      non-nans: &#39;, mask_sel.sum(), mask_others.sum()</span>
+
+				<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;magnitude histogram of column &quot;</span><span class="si">%s</span><span class="s1">&quot;: </span><span class="si">%d</span><span class="s1"> secure matches, </span><span class="si">%d</span><span class="s1"> insecure matches and </span><span class="si">%d</span><span class="s1"> secure non-matches of </span><span class="si">%d</span><span class="s1"> total entries (</span><span class="si">%d</span><span class="s1"> valid)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">mask_sel</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows_possible</span><span class="p">),</span> <span class="n">mask_others</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="n">mag_all</span><span class="p">),</span> <span class="n">mask_all</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+
+				<span class="c1"># make function fitting to ratio shape</span>
+				<span class="n">bins</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span> <span class="o">=</span> <span class="n">magnitudeweights</span><span class="o">.</span><span class="n">adaptive_histograms</span><span class="p">(</span><span class="n">mag_all</span><span class="p">[</span><span class="n">mask_others</span><span class="p">],</span> <span class="n">mag_sel</span><span class="p">[</span><span class="n">mask_sel</span><span class="p">],</span> <span class="n">weights</span><span class="o">=</span><span class="n">mag_sel_weights</span><span class="p">[</span><span class="n">mask_sel</span><span class="p">])</span>
+				<span class="k">if</span> <span class="n">store_mag_hists</span><span class="p">:</span>
+					<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;magnitude histogram stored to &quot;</span><span class="si">%s</span><span class="s1">&quot;.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_fit.txt&#39;</span><span class="p">))</span>
+					<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">mag</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_fit.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+						<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;# lo hi selected others</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+						<span class="n">numpy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
+							<span class="n">numpy</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">]),</span>
+							<span class="n">fmt</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">%10.5f</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">mask_sel</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="n">UndersampledException</span><span class="p">(</span><span class="s1">&#39;ERROR: too few secure matches (</span><span class="si">%d</span><span class="s1">) to make a good histogram. If you are sure you want to use this poorly sampled histogram, replace &quot;auto&quot; with the filename. You can also decrease the mag-auto-minprob parameter.&#39;</span> <span class="o">%</span> <span class="n">mask_sel</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;magnitude histogramming: using user-supplied histogram for &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">col</span><span class="p">))</span>
+				<span class="n">bins_lo</span><span class="p">,</span> <span class="n">bins_hi</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span> <span class="o">=</span> <span class="n">maghist</span>
+				<span class="n">bins</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">bins_lo</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">bins_hi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+			<span class="n">func</span> <span class="o">=</span> <span class="n">magnitudeweights</span><span class="o">.</span><span class="n">fitfunc_histogram</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">store_mag_hists</span><span class="p">:</span>
+				<span class="n">magnitudeweights</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">mag</span><span class="p">)</span>
+			<span class="n">magcol</span> <span class="o">=</span> <span class="n">magvals</span><span class="p">[</span><span class="n">res</span><span class="p">]</span>
+			<span class="n">magcol</span><span class="p">[</span><span class="o">~</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">res_defined</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">magcol</span><span class="p">))]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99</span>
+			<span class="n">weights</span> <span class="o">=</span> <span class="n">log10</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">magcol</span><span class="p">))</span>
+			<span class="c1"># undefined magnitudes do not contribute</span>
+			<span class="n">weights</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">weights</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="n">biases</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span>
+
+	<span class="c1"># add the bias columns</span>
+	<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s1">&#39;bias_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">col</span><span class="p">:</span><span class="mi">10</span><span class="o">**</span><span class="n">weights</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">weights</span> <span class="ow">in</span> <span class="n">biases</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+	<span class="n">log_bf</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;dist_bayesfactor&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+	<span class="n">total</span> <span class="o">=</span> <span class="n">log_bf</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">(</span><span class="n">biases</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+	<span class="k">return</span> <span class="n">table</span><span class="p">,</span> <span class="n">total</span>
+
+
+<span class="k">def</span> <span class="nf">_compute_final_probabilities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">prob_ratio_secondary</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Computing final probabilities ...&#39;</span><span class="p">)</span>
+
+	<span class="c1"># add the posterior column</span>
+	<span class="n">post</span> <span class="o">=</span> <span class="n">bayesdist</span><span class="o">.</span><span class="n">posterior</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+	<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">p_single</span><span class="o">=</span><span class="n">post</span><span class="p">)</span>
+
+	<span class="c1"># compute weights for group posteriors</span>
+	<span class="c1"># 4pi comes from Eq.</span>
+	<span class="n">ncat</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;ncat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+	<span class="n">log_post_weight</span> <span class="o">=</span> <span class="n">bayesdist</span><span class="o">.</span><span class="n">unnormalised_log_posterior</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">ncat</span><span class="p">)</span>
+	<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">log_post_weight</span><span class="o">=</span><span class="n">log_post_weight</span><span class="p">)</span>
+
+	<span class="c1"># flagging of solutions. Go through groups by primary id (IDs in first catalogue)</span>
+
+	<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+		<span class="n">match_flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
+		<span class="n">prob_has_match</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)),</span>
+		<span class="n">prob_this_match</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)),</span>
+	<span class="p">)</span>
+
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    grouping by primary catalogue ID and flagging ...&#39;</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">compute_group_statistics</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+		<span class="c1"># group</span>
+		<span class="c1"># compute no-match probability</span>
+		<span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;log_post_weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+		<span class="c1">#values = grpvalues.values</span>
+		<span class="n">offset</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+		<span class="n">bfsum</span> <span class="o">=</span> <span class="n">log10</span><span class="p">((</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="n">offset</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">+</span> <span class="n">offset</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="n">offset</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+			<span class="n">bfsum1</span> <span class="o">=</span> <span class="n">log10</span><span class="p">((</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">+</span> <span class="n">offset</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">bfsum1</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">assert</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;ncat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;ncat&#39;</span><span class="p">]</span>
+		<span class="c1">#print(group[&#39;ncat&#39;].values[0])</span>
+		<span class="c1"># for p_any, find the one without counterparts</span>
+		<span class="n">p_none</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">p_any</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">p_none</span> <span class="o">-</span> <span class="n">bfsum</span><span class="p">)</span>
+		<span class="c1"># this avoids overflows in the no-counterpart solution,</span>
+		<span class="c1"># which we want to set to 0</span>
+		<span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bfsum1</span>
+		<span class="n">p_i</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="n">bfsum1</span><span class="p">)</span>
+		<span class="n">p_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+		<span class="n">best_val</span> <span class="o">=</span> <span class="n">p_i</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+		<span class="c1"># flag best &amp; second best</span>
+		<span class="c1"># ignore very poor solutions</span>
+		<span class="n">match_flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">best_val</span> <span class="o">==</span> <span class="n">p_i</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+			<span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">p_i</span> <span class="o">&gt;</span> <span class="n">prob_ratio_secondary</span> <span class="o">*</span> <span class="n">best_val</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+		<span class="n">group</span><span class="p">[</span><span class="s1">&#39;prob_has_match&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_any</span>
+		<span class="n">group</span><span class="p">[</span><span class="s1">&#39;prob_this_match&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_i</span>
+		<span class="n">group</span><span class="p">[</span><span class="s1">&#39;match_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_flag</span>
+		<span class="k">return</span> <span class="n">group</span>
+
+	<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">compute_group_statistics</span><span class="p">)</span>
+	<span class="k">del</span> <span class="n">table</span><span class="p">[</span><span class="s1">&#39;log_post_weight&#39;</span><span class="p">]</span>
+	<span class="k">return</span> <span class="n">table</span>
+
+
+<span class="k">def</span> <span class="nf">_truncate_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">min_prob</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+	<span class="c1"># cut away poor posteriors if requested</span>
+	<span class="k">if</span> <span class="n">min_prob</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">mask</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;prob_this_match&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_prob</span><span class="p">)</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    cutting away </span><span class="si">%d</span><span class="s1"> (below p_i minimum)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span> <span class="o">-</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+		<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+	<span class="k">return</span> <span class="n">table</span>
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

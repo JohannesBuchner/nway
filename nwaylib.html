@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>nwaylib package &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/nwaylib.html" />
+    <link rel="icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="API" href="modules.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">nwaylib package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-nwaylib.bayesdistance">nwaylib.bayesdistance module</a><ul>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_posterior"><code class="docutils literal notranslate"><span class="pre">log_posterior()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.posterior"><code class="docutils literal notranslate"><span class="pre">posterior()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.unnormalised_log_posterior"><code class="docutils literal notranslate"><span class="pre">unnormalised_log_posterior()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_bf2"><code class="docutils literal notranslate"><span class="pre">log_bf2()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_bf3"><code class="docutils literal notranslate"><span class="pre">log_bf3()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_bf"><code class="docutils literal notranslate"><span class="pre">log_bf()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.assert_possemdef"><code class="docutils literal notranslate"><span class="pre">assert_possemdef()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.matrix_add"><code class="docutils literal notranslate"><span class="pre">matrix_add()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.matrix_multiply"><code class="docutils literal notranslate"><span class="pre">matrix_multiply()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.matrix_invert"><code class="docutils literal notranslate"><span class="pre">matrix_invert()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.matrix_det"><code class="docutils literal notranslate"><span class="pre">matrix_det()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.apply_vector_right"><code class="docutils literal notranslate"><span class="pre">apply_vector_right()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.apply_vector_left"><code class="docutils literal notranslate"><span class="pre">apply_vector_left()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.vector_multiply"><code class="docutils literal notranslate"><span class="pre">vector_multiply()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.vector_normalised"><code class="docutils literal notranslate"><span class="pre">vector_normalised()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.apply_vABv"><code class="docutils literal notranslate"><span class="pre">apply_vABv()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.make_covmatrix"><code class="docutils literal notranslate"><span class="pre">make_covmatrix()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.make_invcovmatrix"><code class="docutils literal notranslate"><span class="pre">make_invcovmatrix()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.convert_from_ellipse"><code class="docutils literal notranslate"><span class="pre">convert_from_ellipse()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_bf_elliptical"><code class="docutils literal notranslate"><span class="pre">log_bf_elliptical()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.checkupdates">nwaylib.checkupdates module</a><ul>
+<li><a class="reference internal" href="#nwaylib.checkupdates.checkupdates"><code class="docutils literal notranslate"><span class="pre">checkupdates()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.fastskymatch">nwaylib.fastskymatch module</a><ul>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.dist"><code class="docutils literal notranslate"><span class="pre">dist()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.dist3d"><code class="docutils literal notranslate"><span class="pre">dist3d()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.get_tablekeys"><code class="docutils literal notranslate"><span class="pre">get_tablekeys()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.get_healpix_resolution_degrees"><code class="docutils literal notranslate"><span class="pre">get_healpix_resolution_degrees()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.match_multiple"><code class="docutils literal notranslate"><span class="pre">match_multiple()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.wraptable2fits"><code class="docutils literal notranslate"><span class="pre">wraptable2fits()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.array2fits"><code class="docutils literal notranslate"><span class="pre">array2fits()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.logger">nwaylib.logger module</a><ul>
+<li><a class="reference internal" href="#nwaylib.logger.FakeProgressBar"><code class="docutils literal notranslate"><span class="pre">FakeProgressBar</span></code></a><ul>
+<li><a class="reference internal" href="#nwaylib.logger.FakeProgressBar.start"><code class="docutils literal notranslate"><span class="pre">FakeProgressBar.start()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.FakeProgressBar.increment"><code class="docutils literal notranslate"><span class="pre">FakeProgressBar.increment()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.FakeProgressBar.finish"><code class="docutils literal notranslate"><span class="pre">FakeProgressBar.finish()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nwaylib.logger.NullOutputLogger"><code class="docutils literal notranslate"><span class="pre">NullOutputLogger</span></code></a><ul>
+<li><a class="reference internal" href="#nwaylib.logger.NullOutputLogger.log"><code class="docutils literal notranslate"><span class="pre">NullOutputLogger.log()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.NullOutputLogger.warn"><code class="docutils literal notranslate"><span class="pre">NullOutputLogger.warn()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.NullOutputLogger.progress"><code class="docutils literal notranslate"><span class="pre">NullOutputLogger.progress()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nwaylib.logger.NormalLogger"><code class="docutils literal notranslate"><span class="pre">NormalLogger</span></code></a><ul>
+<li><a class="reference internal" href="#nwaylib.logger.NormalLogger.log"><code class="docutils literal notranslate"><span class="pre">NormalLogger.log()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.NormalLogger.warn"><code class="docutils literal notranslate"><span class="pre">NormalLogger.warn()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.NormalLogger.progress"><code class="docutils literal notranslate"><span class="pre">NormalLogger.progress()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.magnitudeweights">nwaylib.magnitudeweights module</a><ul>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.ratio"><code class="docutils literal notranslate"><span class="pre">ratio()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.fraction"><code class="docutils literal notranslate"><span class="pre">fraction()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.plot_fit"><code class="docutils literal notranslate"><span class="pre">plot_fit()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.fitfunc_histogram"><code class="docutils literal notranslate"><span class="pre">fitfunc_histogram()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.adaptive_histograms"><code class="docutils literal notranslate"><span class="pre">adaptive_histograms()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.progress">nwaylib.progress module</a><ul>
+<li><a class="reference internal" href="#nwaylib.progress.bar"><code class="docutils literal notranslate"><span class="pre">bar()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib">Module contents</a><ul>
+<li><a class="reference internal" href="#nwaylib.UndersampledException"><code class="docutils literal notranslate"><span class="pre">UndersampledException</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.EmptyResultException"><code class="docutils literal notranslate"><span class="pre">EmptyResultException</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.nway_match"><code class="docutils literal notranslate"><span class="pre">nway_match()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="modules.html" title="Previous Chapter: API"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; API</span>
+    </a>
+  </li>
+  <li>
+    <a href="contributing.html" title="Next Chapter: Contributing"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Contributing &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">nwaylib package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-nwaylib.bayesdistance">nwaylib.bayesdistance module</a><ul>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_posterior"><code class="docutils literal notranslate"><span class="pre">log_posterior()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.posterior"><code class="docutils literal notranslate"><span class="pre">posterior()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.unnormalised_log_posterior"><code class="docutils literal notranslate"><span class="pre">unnormalised_log_posterior()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_bf2"><code class="docutils literal notranslate"><span class="pre">log_bf2()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_bf3"><code class="docutils literal notranslate"><span class="pre">log_bf3()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_bf"><code class="docutils literal notranslate"><span class="pre">log_bf()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.assert_possemdef"><code class="docutils literal notranslate"><span class="pre">assert_possemdef()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.matrix_add"><code class="docutils literal notranslate"><span class="pre">matrix_add()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.matrix_multiply"><code class="docutils literal notranslate"><span class="pre">matrix_multiply()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.matrix_invert"><code class="docutils literal notranslate"><span class="pre">matrix_invert()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.matrix_det"><code class="docutils literal notranslate"><span class="pre">matrix_det()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.apply_vector_right"><code class="docutils literal notranslate"><span class="pre">apply_vector_right()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.apply_vector_left"><code class="docutils literal notranslate"><span class="pre">apply_vector_left()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.vector_multiply"><code class="docutils literal notranslate"><span class="pre">vector_multiply()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.vector_normalised"><code class="docutils literal notranslate"><span class="pre">vector_normalised()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.apply_vABv"><code class="docutils literal notranslate"><span class="pre">apply_vABv()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.make_covmatrix"><code class="docutils literal notranslate"><span class="pre">make_covmatrix()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.make_invcovmatrix"><code class="docutils literal notranslate"><span class="pre">make_invcovmatrix()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.convert_from_ellipse"><code class="docutils literal notranslate"><span class="pre">convert_from_ellipse()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.bayesdistance.log_bf_elliptical"><code class="docutils literal notranslate"><span class="pre">log_bf_elliptical()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.checkupdates">nwaylib.checkupdates module</a><ul>
+<li><a class="reference internal" href="#nwaylib.checkupdates.checkupdates"><code class="docutils literal notranslate"><span class="pre">checkupdates()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.fastskymatch">nwaylib.fastskymatch module</a><ul>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.dist"><code class="docutils literal notranslate"><span class="pre">dist()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.dist3d"><code class="docutils literal notranslate"><span class="pre">dist3d()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.get_tablekeys"><code class="docutils literal notranslate"><span class="pre">get_tablekeys()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.get_healpix_resolution_degrees"><code class="docutils literal notranslate"><span class="pre">get_healpix_resolution_degrees()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.match_multiple"><code class="docutils literal notranslate"><span class="pre">match_multiple()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.wraptable2fits"><code class="docutils literal notranslate"><span class="pre">wraptable2fits()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.fastskymatch.array2fits"><code class="docutils literal notranslate"><span class="pre">array2fits()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.logger">nwaylib.logger module</a><ul>
+<li><a class="reference internal" href="#nwaylib.logger.FakeProgressBar"><code class="docutils literal notranslate"><span class="pre">FakeProgressBar</span></code></a><ul>
+<li><a class="reference internal" href="#nwaylib.logger.FakeProgressBar.start"><code class="docutils literal notranslate"><span class="pre">FakeProgressBar.start()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.FakeProgressBar.increment"><code class="docutils literal notranslate"><span class="pre">FakeProgressBar.increment()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.FakeProgressBar.finish"><code class="docutils literal notranslate"><span class="pre">FakeProgressBar.finish()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nwaylib.logger.NullOutputLogger"><code class="docutils literal notranslate"><span class="pre">NullOutputLogger</span></code></a><ul>
+<li><a class="reference internal" href="#nwaylib.logger.NullOutputLogger.log"><code class="docutils literal notranslate"><span class="pre">NullOutputLogger.log()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.NullOutputLogger.warn"><code class="docutils literal notranslate"><span class="pre">NullOutputLogger.warn()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.NullOutputLogger.progress"><code class="docutils literal notranslate"><span class="pre">NullOutputLogger.progress()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#nwaylib.logger.NormalLogger"><code class="docutils literal notranslate"><span class="pre">NormalLogger</span></code></a><ul>
+<li><a class="reference internal" href="#nwaylib.logger.NormalLogger.log"><code class="docutils literal notranslate"><span class="pre">NormalLogger.log()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.NormalLogger.warn"><code class="docutils literal notranslate"><span class="pre">NormalLogger.warn()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.logger.NormalLogger.progress"><code class="docutils literal notranslate"><span class="pre">NormalLogger.progress()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.magnitudeweights">nwaylib.magnitudeweights module</a><ul>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.ratio"><code class="docutils literal notranslate"><span class="pre">ratio()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.fraction"><code class="docutils literal notranslate"><span class="pre">fraction()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.plot_fit"><code class="docutils literal notranslate"><span class="pre">plot_fit()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.fitfunc_histogram"><code class="docutils literal notranslate"><span class="pre">fitfunc_histogram()</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.magnitudeweights.adaptive_histograms"><code class="docutils literal notranslate"><span class="pre">adaptive_histograms()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib.progress">nwaylib.progress module</a><ul>
+<li><a class="reference internal" href="#nwaylib.progress.bar"><code class="docutils literal notranslate"><span class="pre">bar()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nwaylib">Module contents</a><ul>
+<li><a class="reference internal" href="#nwaylib.UndersampledException"><code class="docutils literal notranslate"><span class="pre">UndersampledException</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.EmptyResultException"><code class="docutils literal notranslate"><span class="pre">EmptyResultException</span></code></a></li>
+<li><a class="reference internal" href="#nwaylib.nway_match"><code class="docutils literal notranslate"><span class="pre">nway_match()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <li>
+    <a href="modules.html" title="Previous Chapter: API"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; API</span>
+    </a>
+  </li>
+  <li>
+    <a href="contributing.html" title="Next Chapter: Contributing"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Contributing &raquo;</span>
+    </a>
+  </li>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <section id="nwaylib-package">
+<h1>nwaylib package<a class="headerlink" href="#nwaylib-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-nwaylib.bayesdistance">
+<span id="nwaylib-bayesdistance-module"></span><h2>nwaylib.bayesdistance module<a class="headerlink" href="#module-nwaylib.bayesdistance" title="Link to this heading"></a></h2>
+<p>Probabilistic Cross-Identification of Astronomical Sources</p>
+<p>Reference: Budavari &amp; Szalay (2008), ApJ, 679:301-309
+Authors: Johannes Buchner (C) 2013-2020
+Authors: Tamas Budavari (C) 2012</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.log_posterior">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">log_posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_bf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#log_posterior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.log_posterior" title="Link to this definition"></a></dt>
+<dd><p>Returns log10 posterior probability normalised against alternative hypothesis
+that the sources are unrelated (Budavari+08)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.posterior">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_bf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#posterior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.posterior" title="Link to this definition"></a></dt>
+<dd><p>Returns posterior probability normalised against alternative hypothesis
+that the sources are unrelated (Budavari+08)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.unnormalised_log_posterior">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">unnormalised_log_posterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_bf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#unnormalised_log_posterior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.unnormalised_log_posterior" title="Link to this definition"></a></dt>
+<dd><p>Returns posterior probability (without normalisation against alternatives)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.log_bf2">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">log_bf2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#log_bf2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.log_bf2" title="Link to this definition"></a></dt>
+<dd><p>log10 of the 2-way Bayes factor, see eq.(16)
+psi separation
+s1 and s2=accuracy of coordinates</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.log_bf3">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">log_bf3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p23</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p31</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#log_bf3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.log_bf3" title="Link to this definition"></a></dt>
+<dd><p>log10 of the 3-way Bayes factor, see eq.(17)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.log_bf">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">log_bf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#log_bf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.log_bf" title="Link to this definition"></a></dt>
+<dd><p>log10 of the multi-way Bayes factor, see eq.(18)</p>
+<p>p: separations matrix (NxN matrix of arrays)
+s: errors (list of N arrays)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.assert_possemdef">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">assert_possemdef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#assert_possemdef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.assert_possemdef" title="Link to this definition"></a></dt>
+<dd><p>Check that the 2x2 matrix M is positive semi-definite, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.matrix_add">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">matrix_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#matrix_add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.matrix_add" title="Link to this definition"></a></dt>
+<dd><p>2D matrix addition, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.matrix_multiply">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">matrix_multiply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#matrix_multiply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.matrix_multiply" title="Link to this definition"></a></dt>
+<dd><p>2D matrix multiplication, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.matrix_invert">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">matrix_invert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#matrix_invert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.matrix_invert" title="Link to this definition"></a></dt>
+<dd><p>invert a matrix A, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.matrix_det">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">matrix_det</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#matrix_det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.matrix_det" title="Link to this definition"></a></dt>
+<dd><p>2D matrix determinant, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.apply_vector_right">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">apply_vector_right</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#apply_vector_right"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.apply_vector_right" title="Link to this definition"></a></dt>
+<dd><p>multiply 2D vector with 2D matrix, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.apply_vector_left">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">apply_vector_left</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#apply_vector_left"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.apply_vector_left" title="Link to this definition"></a></dt>
+<dd><p>multiply 2D matrix with 2D vector, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.vector_multiply">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">vector_multiply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#vector_multiply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.vector_multiply" title="Link to this definition"></a></dt>
+<dd><p>multiply two vectors, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.vector_normalised">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">vector_normalised</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#vector_normalised"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.vector_normalised" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.apply_vABv">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">apply_vABv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#apply_vABv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.apply_vABv" title="Link to this definition"></a></dt>
+<dd><p>compute v^T A B v, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.make_covmatrix">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">make_covmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#make_covmatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.make_covmatrix" title="Link to this definition"></a></dt>
+<dd><p>create covariance matrix from given standard deviations and normalised correlation rho, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.make_invcovmatrix">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">make_invcovmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#make_invcovmatrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.make_invcovmatrix" title="Link to this definition"></a></dt>
+<dd><p>create inverse covariance matrix from given standard deviations and normalised correlation rho, vectorized</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.convert_from_ellipse">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">convert_from_ellipse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#convert_from_ellipse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.convert_from_ellipse" title="Link to this definition"></a></dt>
+<dd><p>create covariance parameters from ellipse major axis a, minor axis b and angle phi; vectorized</p>
+<p>as in Pineau+16, eq 8-10, for example.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.bayesdistance.log_bf_elliptical">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.bayesdistance.</span></span><span class="sig-name descname"><span class="pre">log_bf_elliptical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">separations_ra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separations_dec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_errors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/bayesdistance.html#log_bf_elliptical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.bayesdistance.log_bf_elliptical" title="Link to this definition"></a></dt>
+<dd><p>log10 of the multi-way Bayes factor, see eq.(18)</p>
+<p>separations_ra: RA separations matrix (NxN matrix of arrays)
+separations_dec: DEC separations matrix (NxN matrix of arrays)
+pos_errors: errors (list of (N,3) arrays) giving sigma_RA, sigma_DEC, rho</p>
+</dd></dl>
+
+</section>
+<section id="module-nwaylib.checkupdates">
+<span id="nwaylib-checkupdates-module"></span><h2>nwaylib.checkupdates module<a class="headerlink" href="#module-nwaylib.checkupdates" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.checkupdates.checkupdates">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.checkupdates.</span></span><span class="sig-name descname"><span class="pre">checkupdates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/checkupdates.html#checkupdates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.checkupdates.checkupdates" title="Link to this definition"></a></dt>
+<dd><p>Check for program updates on PyPI</p>
+<p>If you want to disable this, create a file
+I_will_check_for_NWAY_updates_myself_thank_you
+in your working directory.</p>
+</dd></dl>
+
+</section>
+<section id="module-nwaylib.fastskymatch">
+<span id="nwaylib-fastskymatch-module"></span><h2>nwaylib.fastskymatch module<a class="headerlink" href="#module-nwaylib.fastskymatch" title="Link to this heading"></a></h2>
+<p>Functions for finding pairs within a certain search distance “err”.</p>
+<p>Very fast method based on hashing.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.fastskymatch.dist">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.fastskymatch.</span></span><span class="sig-name descname"><span class="pre">dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">apos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bpos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/fastskymatch.html#dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.fastskymatch.dist" title="Link to this definition"></a></dt>
+<dd><p>Angular separation (in degrees) between two points on a sphere.
+<a class="reference external" href="http://en.wikipedia.org/wiki/Great-circle_distance">http://en.wikipedia.org/wiki/Great-circle_distance</a></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.fastskymatch.dist3d">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.fastskymatch.</span></span><span class="sig-name descname"><span class="pre">dist3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">apos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bpos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/fastskymatch.html#dist3d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.fastskymatch.dist3d" title="Link to this definition"></a></dt>
+<dd><p>Angular separation in ra &amp; dec between two points on a sphere.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.fastskymatch.get_tablekeys">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.fastskymatch.</span></span><span class="sig-name descname"><span class="pre">get_tablekeys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tablename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/fastskymatch.html#get_tablekeys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.fastskymatch.get_tablekeys" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.fastskymatch.get_healpix_resolution_degrees">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.fastskymatch.</span></span><span class="sig-name descname"><span class="pre">get_healpix_resolution_degrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nside</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/fastskymatch.html#get_healpix_resolution_degrees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.fastskymatch.get_healpix_resolution_degrees" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.fastskymatch.match_multiple">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.fastskymatch.</span></span><span class="sig-name descname"><span class="pre">match_multiple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fits_formats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pairwise_errs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/fastskymatch.html#match_multiple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.fastskymatch.match_multiple" title="Link to this definition"></a></dt>
+<dd><p>computes the cartesian product of all possible matches,
+limited to a maximum distance of err (in degrees).</p>
+<p>tables: input FITS table
+table_names: names of the tables
+fits_formats: FITS data type of the columns of each table</p>
+<p>returns
+results: cartesian product of all possible matches (smaller than err)
+cat_columns: table with separation distances in arcsec
+header: which columns were used in each table for RA/DEC</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.fastskymatch.wraptable2fits">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.fastskymatch.</span></span><span class="sig-name descname"><span class="pre">wraptable2fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cat_columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/fastskymatch.html#wraptable2fits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.fastskymatch.wraptable2fits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.fastskymatch.array2fits">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.fastskymatch.</span></span><span class="sig-name descname"><span class="pre">array2fits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/fastskymatch.html#array2fits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.fastskymatch.array2fits" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-nwaylib.logger">
+<span id="nwaylib-logger-module"></span><h2>nwaylib.logger module<a class="headerlink" href="#module-nwaylib.logger" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="nwaylib.logger.FakeProgressBar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nwaylib.logger.</span></span><span class="sig-name descname"><span class="pre">FakeProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#FakeProgressBar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.FakeProgressBar" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.FakeProgressBar.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#FakeProgressBar.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.FakeProgressBar.start" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.FakeProgressBar.increment">
+<span class="sig-name descname"><span class="pre">increment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#FakeProgressBar.increment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.FakeProgressBar.increment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.FakeProgressBar.finish">
+<span class="sig-name descname"><span class="pre">finish</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#FakeProgressBar.finish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.FakeProgressBar.finish" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nwaylib.logger.NullOutputLogger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nwaylib.logger.</span></span><span class="sig-name descname"><span class="pre">NullOutputLogger</span></span><a class="reference internal" href="_modules/nwaylib/logger.html#NullOutputLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.NullOutputLogger" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.NullOutputLogger.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#NullOutputLogger.log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.NullOutputLogger.log" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.NullOutputLogger.warn">
+<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#NullOutputLogger.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.NullOutputLogger.warn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.NullOutputLogger.progress">
+<span class="sig-name descname"><span class="pre">progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#NullOutputLogger.progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.NullOutputLogger.progress" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nwaylib.logger.NormalLogger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nwaylib.logger.</span></span><span class="sig-name descname"><span class="pre">NormalLogger</span></span><a class="reference internal" href="_modules/nwaylib/logger.html#NormalLogger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.NormalLogger" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.NormalLogger.log">
+<span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#NormalLogger.log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.NormalLogger.log" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.NormalLogger.warn">
+<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#NormalLogger.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.NormalLogger.warn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nwaylib.logger.NormalLogger.progress">
+<span class="sig-name descname"><span class="pre">progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndigits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/logger.html#NormalLogger.progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.logger.NormalLogger.progress" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-nwaylib.magnitudeweights">
+<span id="nwaylib-magnitudeweights-module"></span><h2>nwaylib.magnitudeweights module<a class="headerlink" href="#module-nwaylib.magnitudeweights" title="Link to this heading"></a></h2>
+<p>Computes adaptively binned histograms of two distributions.</p>
+<p>Provides smooth biasing functions and plots them.</p>
+<p>This is not specific for magnitudes, it can be any provided property.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.magnitudeweights.ratio">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.magnitudeweights.</span></span><span class="sig-name descname"><span class="pre">ratio</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hist_sel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_all</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/magnitudeweights.html#ratio"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.magnitudeweights.ratio" title="Link to this definition"></a></dt>
+<dd><p>ratio between the two histograms. Minor offsets to avoid zero and inf.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.magnitudeweights.fraction">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.magnitudeweights.</span></span><span class="sig-name descname"><span class="pre">fraction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_sel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_all</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/magnitudeweights.html#fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.magnitudeweights.fraction" title="Link to this definition"></a></dt>
+<dd><p>fraction of selected</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.magnitudeweights.plot_fit">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.magnitudeweights.</span></span><span class="sig-name descname"><span class="pre">plot_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_sel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_all</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/magnitudeweights.html#plot_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.magnitudeweights.plot_fit" title="Link to this definition"></a></dt>
+<dd><p>Plotting</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.magnitudeweights.fitfunc_histogram">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.magnitudeweights.</span></span><span class="sig-name descname"><span class="pre">fitfunc_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_sel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hist_all</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/magnitudeweights.html#fitfunc_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.magnitudeweights.fitfunc_histogram" title="Link to this definition"></a></dt>
+<dd><p>creates the biasing functions</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.magnitudeweights.adaptive_histograms">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.magnitudeweights.</span></span><span class="sig-name descname"><span class="pre">adaptive_histograms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag_all</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_sel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/magnitudeweights.html#adaptive_histograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.magnitudeweights.adaptive_histograms" title="Link to this definition"></a></dt>
+<dd><p>creates the histograms for the two columns in an adaptive way (based on mag_sel)
+with the same binning.</p>
+</dd></dl>
+
+</section>
+<section id="module-nwaylib.progress">
+<span id="nwaylib-progress-module"></span><h2>nwaylib.progress module<a class="headerlink" href="#module-nwaylib.progress" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.progress.bar">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.progress.</span></span><span class="sig-name descname"><span class="pre">bar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib/progress.html#bar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.progress.bar" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-nwaylib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nwaylib" title="Link to this heading"></a></h2>
+<p>Multiway association between astrometric catalogues</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="nwaylib.UndersampledException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nwaylib.</span></span><span class="sig-name descname"><span class="pre">UndersampledException</span></span><a class="reference internal" href="_modules/nwaylib.html#UndersampledException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.UndersampledException" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="nwaylib.EmptyResultException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nwaylib.</span></span><span class="sig-name descname"><span class="pre">EmptyResultException</span></span><a class="reference internal" href="_modules/nwaylib.html#EmptyResultException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.EmptyResultException" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nwaylib.nway_match">
+<span class="sig-prename descclassname"><span class="pre">nwaylib.</span></span><span class="sig-name descname"><span class="pre">nway_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match_tables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_completeness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_include_radius=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_exclude_radius=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magauto_post_single_minvalue=0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_ratio_secondary=0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_prob=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consider_unrelated_associations=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_mag_hists=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger=&lt;nwaylib.logger.NormalLogger</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib.html#nway_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.nway_match" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>match_tables: list of catalogues, each a dict with entries:</dt><dd><ul class="simple">
+<li><p>name (short catalog name, no spaces, used in output columns)</p></li>
+<li><p>ra (RA in degrees)</p></li>
+<li><p>dec (dec in degrees)</p></li>
+<li><p>error (positional error in arcsec)</p></li>
+<li><p>area (sky area covered by the catalogue in square degrees)</p></li>
+<li><p>mags (list of additional columns to consider as priors)</p></li>
+<li><p>magnames (short name for each entry in mags, used in output columns)</p></li>
+<li><p>maghists (list of prior information for each entry in mags)
+use None to automatically build a histogram of target/non-target sources.
+Otherwise, supply the histogram manually: bins_lo, bins_hi, hist_sel, hist_all.</p></li>
+</ul>
+</dd>
+<dt>match_radius: maximum radius in arcsec to consider.</dt><dd><p>More distant counterparts are cut off.
+Set to a very large value, e.g. 5 times the largest positional error.
+Setting to larger values does not change the result, but
+setting to smaller values improves performance.</p>
+</dd>
+<dt>prior_completeness: expected fraction of sources in the primary catalogue</dt><dd><p>that are expected to have a counterpart (e.g., 90%).
+If an array is passed, completeness for each catalog. First
+entry has to be 1.</p>
+</dd>
+<dt>mag_include_radius:</dt><dd><p>search radius for building the magnitude histogram of target sources. If None (default), the Bayesian posterior is used</p>
+</dd>
+<dt>mag_exclude_radius:</dt><dd><p>exclusion radius for building the magnitude histogram of field sources. If None (default), mag_include_radius is used</p>
+</dd>
+<dt>magauto_post_single_minvalue:</dt><dd><p>minimum posterior probability (default: 0.9) for the magnitude histogram of secure target sources. Used in the Bayesian procedure.</p>
+</dd>
+</dl>
+<p>prob_ratio_secondary: for each primary catalogue entry, the most probable associations is marked with match_flag=1. Comparably good solutions receive match_flag=2 (all others are match_flag=0). The prob_ratio_secondary parameter controls the lowest probability ratio p(secondary)/p(primary) still considered comparable.</p>
+<dl class="simple">
+<dt>min_prob: Minimum probability for truncating the output table.</dt><dd><p>default: 0 (no truncation)</p>
+</dd>
+<dt>consider_unrelated_associations: Correction for missing sources in</dt><dd><p>partial assocations. Keep to True.</p>
+</dd>
+</dl>
+<p>store_mag_hists: Write constructed mag hists to file (filename based on table name and mags).</p>
+<p>logger: NormalLogger for stderr output and progress bars, NullOutputLogger if silent</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

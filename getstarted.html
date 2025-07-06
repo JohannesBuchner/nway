@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Getting started &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/getstarted.html" />
+    <link rel="icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="nway" href="readme.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">nway</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#terminology">Terminology</a><ul>
+<li><a class="reference internal" href="#source">Source</a></li>
+<li><a class="reference internal" href="#counterpart">Counterpart</a></li>
+<li><a class="reference internal" href="#association">Association</a></li>
+<li><a class="reference internal" href="#match">Match</a></li>
+<li><a class="reference internal" href="#object">Object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="readme.html" title="Previous Chapter: nway"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; nway</span>
+    </a>
+  </li>
+  <li>
+    <a href="installation.html" title="Next Chapter: Installation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Installation &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#terminology">Terminology</a><ul>
+<li><a class="reference internal" href="#source">Source</a></li>
+<li><a class="reference internal" href="#counterpart">Counterpart</a></li>
+<li><a class="reference internal" href="#association">Association</a></li>
+<li><a class="reference internal" href="#match">Match</a></li>
+<li><a class="reference internal" href="#object">Object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <li>
+    <a href="readme.html" title="Previous Chapter: nway"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; nway</span>
+    </a>
+  </li>
+  <li>
+    <a href="installation.html" title="Next Chapter: Installation"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Installation &raquo;</span>
+    </a>
+  </li>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <section id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>This documentation walks you through the installation and usage. It is best to
+try out the examples as you read, because they illustrate how Nway
+works.</p>
+<p>Code boxes indicate text about the illustrative examples and their
+explanations.</p>
+<div class="docutils container">
+<p>Useful explanation for users on how to prepare files or how to run
+Nway  are found in blue boxes.</p>
+<p>Sometimes there are <code class="docutils literal notranslate"><span class="pre">commands</span></code> you can copy-paste.</p>
+</div>
+<ul class="simple">
+<li><p>start by <a class="reference external" href="install">installing nway</a>. Do not forget to download the example data files so you can follow the tutorial!</p></li>
+<li><p>Learn basic to advanced use in the <a class="reference external" href="matching">User guide: Matching catalogs</a>.</p></li>
+<li><p>Questions, missing documentation, bugs? Learn how to start <a class="reference external" href="contributing">contributing</a></p></li>
+<li><p>Get different results in different version? Check what changed in the <a class="reference external" href="history">release history</a>.</p></li>
+<li><p>Want to use Python API instead of the command line? <a class="reference external" href="nwaylib">API reference</a></p></li>
+<li><p>If you are interested in the rigorous background, head to <a class="reference external" href="math">mathematical details</a>.</p></li>
+</ul>
+<section id="terminology">
+<h2>Terminology<a class="headerlink" href="#terminology" title="Link to this heading"></a></h2>
+<section id="source">
+<h3>Source<a class="headerlink" href="#source" title="Link to this heading"></a></h3>
+<p>A detection in a certain wavelength significant enough to be recorded in
+a catalogue with sky position.</p>
+</section>
+<section id="counterpart">
+<h3>Counterpart<a class="headerlink" href="#counterpart" title="Link to this heading"></a></h3>
+<p>The corresponding source in another catalogue.</p>
+</section>
+<section id="association">
+<h3>Association<a class="headerlink" href="#association" title="Link to this heading"></a></h3>
+<p>A specific combination of entries from the various catalogues, i.e. a
+tuple of detections associated with each other.</p>
+</section>
+<section id="match">
+<h3>Match<a class="headerlink" href="#match" title="Link to this heading"></a></h3>
+<p>Same as association, used interchangeably.</p>
+</section>
+<section id="object">
+<h3>Object<a class="headerlink" href="#object" title="Link to this heading"></a></h3>
+<p>A physical entity in the real universe, emitting radiation.</p>
+</section>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

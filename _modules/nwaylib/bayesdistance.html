@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nwaylib.bayesdistance &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/_modules/nwaylib/bayesdistance.html" />
+    <link rel="icon" href="../../_static/icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+<form action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <h1>Source code for nwaylib.bayesdistance</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Probabilistic Cross-Identification of Astronomical Sources</span>
+
+<span class="sd">Reference: Budavari &amp; Szalay (2008), ApJ, 679:301-309</span>
+<span class="sd">Authors: Johannes Buchner (C) 2013-2020</span>
+<span class="sd">Authors: Tamas Budavari (C) 2012</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">e</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">log10</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="c1"># use base 10 everywhere</span>
+
+<span class="n">log_arcsec2rad</span> <span class="o">=</span> <span class="n">log</span><span class="p">(</span><span class="mi">3600</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="log_posterior">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.log_posterior">[docs]</a>
+<span class="k">def</span> <span class="nf">log_posterior</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns log10 posterior probability normalised against alternative hypothesis</span>
+<span class="sd">	that the sources are unrelated (Budavari+08)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="o">-</span><span class="n">log10</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">prior</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">log_bf</span> <span class="o">-</span> <span class="n">log10</span><span class="p">(</span><span class="n">prior</span><span class="p">)))</span></div>
+
+
+
+<div class="viewcode-block" id="posterior">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.posterior">[docs]</a>
+<span class="k">def</span> <span class="nf">posterior</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns posterior probability normalised against alternative hypothesis</span>
+<span class="sd">	that the sources are unrelated (Budavari+08)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">with</span> <span class="n">numpy</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">over</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+		<span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">prior</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">log_bf</span> <span class="o">-</span> <span class="n">log10</span><span class="p">(</span><span class="n">prior</span><span class="p">)))</span></div>
+
+
+
+<div class="viewcode-block" id="unnormalised_log_posterior">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.unnormalised_log_posterior">[docs]</a>
+<span class="k">def</span> <span class="nf">unnormalised_log_posterior</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span><span class="p">,</span> <span class="n">ncat</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns posterior probability (without normalisation against alternatives)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="n">log_bf</span> <span class="o">+</span> <span class="n">log10</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="log_bf2">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.log_bf2">[docs]</a>
+<span class="k">def</span> <span class="nf">log_bf2</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	log10 of the 2-way Bayes factor, see eq.(16)</span>
+<span class="sd">	psi separation</span>
+<span class="sd">	s1 and s2=accuracy of coordinates</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">s</span> <span class="o">=</span> <span class="n">s1</span> <span class="o">*</span> <span class="n">s1</span> <span class="o">+</span> <span class="n">s2</span> <span class="o">*</span> <span class="n">s2</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">log_arcsec2rad</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="n">psi</span> <span class="o">*</span> <span class="n">psi</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">log10</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="log_bf3">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.log_bf3">[docs]</a>
+<span class="k">def</span> <span class="nf">log_bf3</span><span class="p">(</span><span class="n">p12</span><span class="p">,</span><span class="n">p23</span><span class="p">,</span><span class="n">p31</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span><span class="n">s2</span><span class="p">,</span><span class="n">s3</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	log10 of the 3-way Bayes factor, see eq.(17)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">ss1</span> <span class="o">=</span> <span class="n">s1</span><span class="o">*</span><span class="n">s1</span>
+	<span class="n">ss2</span> <span class="o">=</span> <span class="n">s2</span><span class="o">*</span><span class="n">s2</span>
+	<span class="n">ss3</span> <span class="o">=</span> <span class="n">s3</span><span class="o">*</span><span class="n">s3</span>
+	<span class="n">s</span> <span class="o">=</span> <span class="n">ss1</span><span class="o">*</span><span class="n">ss2</span> <span class="o">+</span> <span class="n">ss2</span><span class="o">*</span><span class="n">ss3</span> <span class="o">+</span> <span class="n">ss3</span><span class="o">*</span><span class="n">ss1</span>
+	<span class="n">q</span> <span class="o">=</span> <span class="n">ss3</span> <span class="o">*</span> <span class="n">p12</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ss1</span> <span class="o">*</span> <span class="n">p23</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ss2</span> <span class="o">*</span> <span class="n">p31</span><span class="o">**</span><span class="mi">2</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">log_arcsec2rad</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="n">q</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">log10</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="log_bf">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.log_bf">[docs]</a>
+<span class="k">def</span> <span class="nf">log_bf</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	log10 of the multi-way Bayes factor, see eq.(18)</span>
+
+<span class="sd">	p: separations matrix (NxN matrix of arrays)</span>
+<span class="sd">	s: errors (list of N arrays)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+	<span class="c1"># precision parameter w = 1/sigma^2</span>
+	<span class="n">w</span> <span class="o">=</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">si</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">**-</span><span class="mf">2.</span> <span class="k">for</span> <span class="n">si</span> <span class="ow">in</span> <span class="n">s</span><span class="p">]</span>
+	<span class="n">norm</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">log_arcsec2rad</span>
+	<span class="k">del</span> <span class="n">s</span>
+
+	<span class="n">wsum</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="n">slog</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">wsum</span><span class="p">)</span>
+	<span class="n">q</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">wi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">wj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+				<span class="n">q</span> <span class="o">+=</span> <span class="n">wi</span> <span class="o">*</span> <span class="n">wj</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+	<span class="n">exponent</span> <span class="o">=</span> <span class="o">-</span> <span class="n">q</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">wsum</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">norm</span> <span class="o">+</span> <span class="n">slog</span> <span class="o">+</span> <span class="n">exponent</span><span class="p">)</span> <span class="o">*</span> <span class="n">log10</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<span class="c1"># vectorized in the following means that many 2D matrices/vectors are going to be handled.</span>
+<span class="c1"># i.e., each entry in the matrix or vector, is a vector of numbers.</span>
+
+
+<div class="viewcode-block" id="assert_possemdef">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.assert_possemdef">[docs]</a>
+<span class="k">def</span> <span class="nf">assert_possemdef</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;Check that the 2x2 matrix M is positive semi-definite, vectorized&quot;&quot;&quot;</span>
+	<span class="n">tr</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">det</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">mask</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">tr</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">det</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">mask</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+		<span class="k">return</span>
+	<span class="c1"># bad square root:</span>
+	<span class="n">mask_badsqrt</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="n">tr</span><span class="o">**</span><span class="mi">2</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">det</span><span class="p">)</span>
+	<span class="k">assert</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_badsqrt</span><span class="p">),</span> <span class="p">(</span><span class="n">tr</span><span class="p">[</span><span class="n">mask_badsqrt</span><span class="p">],</span> <span class="n">det</span><span class="p">[</span><span class="n">mask_badsqrt</span><span class="p">],</span> <span class="n">M</span><span class="p">)</span>
+
+	<span class="n">ev1</span> <span class="o">=</span> <span class="p">(</span><span class="n">tr</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">tr</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">det</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+	<span class="n">ev2</span> <span class="o">=</span> <span class="p">(</span><span class="n">tr</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">tr</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">det</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">])</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+	<span class="k">assert</span> <span class="p">(</span><span class="n">ev1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;EV1:&quot;</span><span class="p">,</span> <span class="n">ev1</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">ev1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">tr</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">][</span><span class="o">~</span><span class="p">(</span><span class="n">ev1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">det</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">][</span><span class="o">~</span><span class="p">(</span><span class="n">ev1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">M</span><span class="p">)</span>
+	<span class="k">assert</span> <span class="p">(</span><span class="n">ev2</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="p">(</span><span class="s2">&quot;EV2:&quot;</span><span class="p">,</span> <span class="n">ev2</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">ev2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">tr</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">][</span><span class="o">~</span><span class="p">(</span><span class="n">ev2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">det</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">][</span><span class="o">~</span><span class="p">(</span><span class="n">ev2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)],</span> <span class="n">M</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="matrix_add">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.matrix_add">[docs]</a>
+<span class="k">def</span> <span class="nf">matrix_add</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; 2D matrix addition, vectorized &quot;&quot;&quot;</span>
+	<span class="c1"># assert_possemdef(A)</span>
+	<span class="c1"># assert_possemdef(B)</span>
+	<span class="p">(</span><span class="n">a11</span><span class="p">,</span> <span class="n">a12</span><span class="p">),</span> <span class="p">(</span><span class="n">a21</span><span class="p">,</span> <span class="n">a22</span><span class="p">)</span> <span class="o">=</span> <span class="n">A</span>
+	<span class="p">(</span><span class="n">b11</span><span class="p">,</span> <span class="n">b12</span><span class="p">),</span> <span class="p">(</span><span class="n">b21</span><span class="p">,</span> <span class="n">b22</span><span class="p">)</span> <span class="o">=</span> <span class="n">B</span>
+	<span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="n">a11</span> <span class="o">+</span> <span class="n">b11</span><span class="p">,</span> <span class="n">a12</span> <span class="o">+</span> <span class="n">b12</span><span class="p">),</span> <span class="p">(</span><span class="n">a21</span> <span class="o">+</span> <span class="n">b21</span><span class="p">,</span> <span class="n">a22</span> <span class="o">+</span> <span class="n">b22</span><span class="p">)</span>
+	<span class="c1"># assert_possemdef(M)</span>
+	<span class="k">return</span> <span class="n">M</span></div>
+
+
+
+<div class="viewcode-block" id="matrix_multiply">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.matrix_multiply">[docs]</a>
+<span class="k">def</span> <span class="nf">matrix_multiply</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; 2D matrix multiplication, vectorized &quot;&quot;&quot;</span>
+	<span class="p">(</span><span class="n">a11</span><span class="p">,</span> <span class="n">a12</span><span class="p">),</span> <span class="p">(</span><span class="n">a21</span><span class="p">,</span> <span class="n">a22</span><span class="p">)</span> <span class="o">=</span> <span class="n">A</span>
+	<span class="p">(</span><span class="n">b11</span><span class="p">,</span> <span class="n">b12</span><span class="p">),</span> <span class="p">(</span><span class="n">b21</span><span class="p">,</span> <span class="n">b22</span><span class="p">)</span> <span class="o">=</span> <span class="n">B</span>
+	<span class="n">M</span> <span class="o">=</span> <span class="p">(</span><span class="n">a11</span><span class="o">*</span><span class="n">b11</span><span class="o">+</span><span class="n">a12</span><span class="o">*</span><span class="n">b21</span><span class="p">,</span> <span class="n">a11</span><span class="o">*</span><span class="n">b12</span><span class="o">+</span><span class="n">a12</span><span class="o">*</span><span class="n">b22</span><span class="p">),</span> <span class="p">(</span><span class="n">a21</span><span class="o">*</span><span class="n">b11</span><span class="o">+</span><span class="n">a22</span><span class="o">*</span><span class="n">b21</span><span class="p">,</span> <span class="n">a21</span><span class="o">*</span><span class="n">b12</span><span class="o">+</span><span class="n">a22</span><span class="o">*</span><span class="n">b22</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">M</span></div>
+
+
+
+<div class="viewcode-block" id="matrix_invert">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.matrix_invert">[docs]</a>
+<span class="k">def</span> <span class="nf">matrix_invert</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; invert a matrix A, vectorized &quot;&quot;&quot;</span>
+	<span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">A</span>
+	<span class="n">F</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">d</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span>
+	<span class="k">assert</span> <span class="p">(</span><span class="n">F</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">F</span> <span class="o">*</span> <span class="n">d</span><span class="p">,</span> <span class="o">-</span><span class="n">F</span> <span class="o">*</span> <span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="n">F</span> <span class="o">*</span> <span class="n">c</span><span class="p">,</span> <span class="n">F</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="matrix_det">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.matrix_det">[docs]</a>
+<span class="k">def</span> <span class="nf">matrix_det</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; 2D matrix determinant, vectorized &quot;&quot;&quot;</span>
+	<span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">=</span> <span class="n">A</span>
+	<span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">d</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">c</span></div>
+
+
+
+<div class="viewcode-block" id="apply_vector_right">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.apply_vector_right">[docs]</a>
+<span class="k">def</span> <span class="nf">apply_vector_right</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; multiply 2D vector with 2D matrix, vectorized &quot;&quot;&quot;</span>
+	<span class="p">(</span><span class="n">a11</span><span class="p">,</span> <span class="n">a12</span><span class="p">),</span> <span class="p">(</span><span class="n">a21</span><span class="p">,</span> <span class="n">a22</span><span class="p">)</span> <span class="o">=</span> <span class="n">A</span>
+	<span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">)</span> <span class="o">=</span> <span class="n">b</span>
+	<span class="k">return</span> <span class="n">a11</span><span class="o">*</span><span class="n">b1</span><span class="o">+</span><span class="n">a12</span><span class="o">*</span><span class="n">b2</span><span class="p">,</span> <span class="n">a21</span><span class="o">*</span><span class="n">b1</span><span class="o">+</span><span class="n">a22</span><span class="o">*</span><span class="n">b2</span></div>
+
+
+
+<div class="viewcode-block" id="apply_vector_left">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.apply_vector_left">[docs]</a>
+<span class="k">def</span> <span class="nf">apply_vector_left</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; multiply 2D matrix with 2D vector, vectorized &quot;&quot;&quot;</span>
+	<span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">a</span>
+	<span class="p">(</span><span class="n">b11</span><span class="p">,</span> <span class="n">b12</span><span class="p">),</span> <span class="p">(</span><span class="n">b21</span><span class="p">,</span> <span class="n">b22</span><span class="p">)</span> <span class="o">=</span> <span class="n">B</span>
+	<span class="k">return</span> <span class="n">a1</span><span class="o">*</span><span class="n">b11</span><span class="o">+</span><span class="n">a2</span><span class="o">*</span><span class="n">b21</span><span class="p">,</span> <span class="n">a1</span><span class="o">*</span><span class="n">b12</span><span class="o">+</span><span class="n">a2</span><span class="o">*</span><span class="n">b22</span></div>
+
+
+
+<div class="viewcode-block" id="vector_multiply">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.vector_multiply">[docs]</a>
+<span class="k">def</span> <span class="nf">vector_multiply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; multiply two vectors, vectorized &quot;&quot;&quot;</span>
+	<span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">a</span>
+	<span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">b</span>
+	<span class="k">return</span> <span class="n">a1</span><span class="o">*</span><span class="n">b1</span><span class="o">+</span><span class="n">a2</span><span class="o">*</span><span class="n">b2</span></div>
+
+
+
+<div class="viewcode-block" id="vector_normalised">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.vector_normalised">[docs]</a>
+<span class="k">def</span> <span class="nf">vector_normalised</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+	<span class="n">vnorm</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+	<span class="k">return</span> <span class="p">(</span>
+		<span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">vnorm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">vnorm</span> <span class="o">+</span> <span class="mf">1e-300</span><span class="p">)),</span>
+		<span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">vnorm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">**-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="n">vnorm</span> <span class="o">+</span> <span class="mf">1e-300</span><span class="p">)),</span>
+	<span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="apply_vABv">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.apply_vABv">[docs]</a>
+<span class="k">def</span> <span class="nf">apply_vABv</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; compute v^T A B v, vectorized &quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="n">vector_multiply</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">apply_vector_right</span><span class="p">(</span><span class="n">matrix_add</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">),</span> <span class="n">v</span><span class="p">))</span></div>
+
+	<span class="c1">#return vector_multiply(apply_vector_left(v, A), apply_vector_right(B, v))</span>
+
+
+<div class="viewcode-block" id="make_covmatrix">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.make_covmatrix">[docs]</a>
+<span class="k">def</span> <span class="nf">make_covmatrix</span><span class="p">(</span><span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; create covariance matrix from given standard deviations and normalised correlation rho, vectorized &quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">sigma_x</span> <span class="o">*</span> <span class="n">sigma_y</span><span class="p">),</span> <span class="p">(</span><span class="n">rho</span> <span class="o">*</span> <span class="n">sigma_x</span> <span class="o">*</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">sigma_y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="make_invcovmatrix">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.make_invcovmatrix">[docs]</a>
+<span class="k">def</span> <span class="nf">make_invcovmatrix</span><span class="p">(</span><span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; create inverse covariance matrix from given standard deviations and normalised correlation rho, vectorized &quot;&quot;&quot;</span>
+	<span class="n">F</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma_y</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rho</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">F</span> <span class="o">*</span> <span class="n">sigma_y</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">F</span> <span class="o">*</span> <span class="o">-</span><span class="n">rho</span> <span class="o">*</span> <span class="n">sigma_x</span> <span class="o">*</span> <span class="n">sigma_y</span><span class="p">),</span> \
+		<span class="p">(</span><span class="n">F</span> <span class="o">*</span> <span class="o">-</span><span class="n">rho</span> <span class="o">*</span> <span class="n">sigma_x</span> <span class="o">*</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">F</span> <span class="o">*</span> <span class="n">sigma_x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="convert_from_ellipse">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.convert_from_ellipse">[docs]</a>
+<span class="k">def</span> <span class="nf">convert_from_ellipse</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot; create covariance parameters from ellipse major axis a, minor axis b and angle phi; vectorized</span>
+
+<span class="sd">	as in Pineau+16, eq 8-10, for example.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">a2</span> <span class="o">=</span> <span class="n">a</span><span class="o">**</span><span class="mi">2</span>
+	<span class="n">b2</span> <span class="o">=</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span>
+	<span class="n">s</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+	<span class="n">c</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+	<span class="n">s2</span> <span class="o">=</span> <span class="n">s</span><span class="o">**</span><span class="mi">2</span>
+	<span class="n">c2</span> <span class="o">=</span> <span class="n">c</span><span class="o">**</span><span class="mi">2</span>
+	<span class="n">sigma_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">a2</span> <span class="o">*</span> <span class="n">s2</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">c2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+	<span class="n">sigma_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">a2</span> <span class="o">*</span> <span class="n">c2</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">s2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+	<span class="n">rho</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">s</span> <span class="o">*</span> <span class="p">(</span><span class="n">a2</span> <span class="o">-</span> <span class="n">b2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sigma_x</span> <span class="o">*</span> <span class="n">sigma_y</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">sigma_x</span><span class="p">,</span> <span class="n">sigma_y</span><span class="p">,</span> <span class="n">rho</span></div>
+
+
+
+<div class="viewcode-block" id="log_bf_elliptical">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.bayesdistance.log_bf_elliptical">[docs]</a>
+<span class="k">def</span> <span class="nf">log_bf_elliptical</span><span class="p">(</span><span class="n">separations_ra</span><span class="p">,</span> <span class="n">separations_dec</span><span class="p">,</span> <span class="n">pos_errors</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	log10 of the multi-way Bayes factor, see eq.(18)</span>
+
+<span class="sd">	separations_ra: RA separations matrix (NxN matrix of arrays)</span>
+<span class="sd">	separations_dec: DEC separations matrix (NxN matrix of arrays)</span>
+<span class="sd">	pos_errors: errors (list of (N,3) arrays) giving sigma_RA, sigma_DEC, rho</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">error_matrices</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_invcovmatrix</span><span class="p">(</span><span class="n">si</span><span class="p">,</span> <span class="n">sj</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">si</span><span class="p">,</span> <span class="n">sj</span><span class="p">,</span> <span class="n">rho</span> <span class="ow">in</span> <span class="n">pos_errors</span><span class="p">]</span>
+
+	<span class="n">circ_pos_errors</span> <span class="o">=</span> <span class="p">[((</span><span class="n">si</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">sj</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span> <span class="k">for</span> <span class="n">si</span><span class="p">,</span> <span class="n">sj</span><span class="p">,</span> <span class="n">rho</span> <span class="ow">in</span> <span class="n">pos_errors</span><span class="p">]</span>
+
+	<span class="n">new_separations</span> <span class="o">=</span> <span class="p">[[</span><span class="kc">None</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">error_matrices</span><span class="p">))]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">error_matrices</span><span class="p">))]</span>
+
+	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">Mi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">error_matrices</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">Mj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">error_matrices</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+				<span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">separations_ra</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">],</span> <span class="n">separations_dec</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+				<span class="c1"># get separation length</span>
+				<span class="n">d2</span> <span class="o">=</span> <span class="n">vector_multiply</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+				<span class="n">d</span> <span class="o">=</span> <span class="n">d2</span><span class="o">**</span><span class="mf">0.5</span>
+				<span class="c1"># get error in direction of separation</span>
+				<span class="n">vnormed</span> <span class="o">=</span> <span class="n">vector_normalised</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+				<span class="n">wi</span> <span class="o">=</span> <span class="n">vector_multiply</span><span class="p">(</span><span class="n">apply_vector_left</span><span class="p">(</span><span class="n">vnormed</span><span class="p">,</span> <span class="n">Mi</span><span class="p">),</span> <span class="n">vnormed</span><span class="p">)</span>
+				<span class="n">wj</span> <span class="o">=</span> <span class="n">vector_multiply</span><span class="p">(</span><span class="n">apply_vector_left</span><span class="p">(</span><span class="n">vnormed</span><span class="p">,</span> <span class="n">Mj</span><span class="p">),</span> <span class="n">vnormed</span><span class="p">)</span>
+				<span class="c1"># ratio of circular error to directional error:</span>
+				<span class="c1"># combine the uncertainties by adding the variances</span>
+				<span class="n">dist_ratio</span> <span class="o">=</span> <span class="p">(</span><span class="n">circ_pos_errors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">circ_pos_errors</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">wi</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="n">wj</span><span class="p">)</span>
+				<span class="c1"># provide new separation</span>
+				<span class="n">new_separations</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">dist_ratio</span><span class="o">**-</span><span class="mf">0.5</span>
+
+	<span class="k">return</span> <span class="n">log_bf</span><span class="p">(</span><span class="n">new_separations</span><span class="p">,</span> <span class="n">circ_pos_errors</span><span class="p">)</span></div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

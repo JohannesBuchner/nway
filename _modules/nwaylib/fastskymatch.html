@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nwaylib.fastskymatch &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/_modules/nwaylib/fastskymatch.html" />
+    <link rel="icon" href="../../_static/icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+<form action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <h1>Source code for nwaylib.fastskymatch</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Functions for finding pairs within a certain search distance &quot;err&quot;.</span>
+
+<span class="sd">Very fast method based on hashing.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">pyfits</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">healpy</span>
+<span class="kn">import</span> <span class="nn">joblib</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">tqdm</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span><span class="p">,</span> <span class="n">SkyOffsetFrame</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">arccos</span><span class="p">,</span> <span class="n">arcsin</span><span class="p">,</span> <span class="n">arctan2</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">hypot</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span>
+
+<span class="n">cachedir</span> <span class="o">=</span> <span class="s1">&#39;cache&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">mem</span> <span class="o">=</span> <span class="n">joblib</span><span class="o">.</span><span class="n">Memory</span><span class="p">(</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="dist">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.dist">[docs]</a>
+<span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="n">apos</span><span class="p">,</span> <span class="n">bpos</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Angular separation (in degrees) between two points on a sphere.</span>
+<span class="sd">	http://en.wikipedia.org/wiki/Great-circle_distance</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="p">(</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">a_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">b_ra</span><span class="p">,</span> <span class="n">b_dec</span><span class="p">)</span> <span class="o">=</span> <span class="n">apos</span><span class="p">,</span> <span class="n">bpos</span>
+	<span class="n">lon1</span> <span class="o">=</span> <span class="n">a_ra</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">pi</span>
+	<span class="n">lat1</span> <span class="o">=</span> <span class="n">a_dec</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">pi</span>
+	<span class="n">lon2</span> <span class="o">=</span> <span class="n">b_ra</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">pi</span>
+	<span class="n">lat2</span> <span class="o">=</span> <span class="n">b_dec</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">pi</span>
+	<span class="n">sdlon</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span>
+	<span class="n">cdlon</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span>
+	<span class="n">slat1</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span>
+	<span class="n">slat2</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span>
+	<span class="n">clat1</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span>
+	<span class="n">clat2</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span>
+
+	<span class="n">num1</span> <span class="o">=</span> <span class="n">clat2</span> <span class="o">*</span> <span class="n">sdlon</span>
+	<span class="n">num2</span> <span class="o">=</span> <span class="n">clat1</span> <span class="o">*</span> <span class="n">slat2</span> <span class="o">-</span> <span class="n">slat1</span> <span class="o">*</span> <span class="n">clat2</span> <span class="o">*</span> <span class="n">cdlon</span>
+	<span class="n">denominator</span> <span class="o">=</span> <span class="n">slat1</span> <span class="o">*</span> <span class="n">slat2</span> <span class="o">+</span> <span class="n">clat1</span> <span class="o">*</span> <span class="n">clat2</span> <span class="o">*</span> <span class="n">cdlon</span>
+
+	<span class="k">return</span> <span class="n">arctan2</span><span class="p">(</span><span class="n">hypot</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">),</span> <span class="n">denominator</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">pi</span></div>
+
+
+
+<div class="viewcode-block" id="dist3d">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.dist3d">[docs]</a>
+<span class="k">def</span> <span class="nf">dist3d</span><span class="p">(</span><span class="n">apos</span><span class="p">,</span> <span class="n">bpos</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Angular separation in ra &amp; dec between two points on a sphere.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="p">(</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">a_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">b_ra</span><span class="p">,</span> <span class="n">b_dec</span><span class="p">)</span> <span class="o">=</span> <span class="n">apos</span><span class="p">,</span> <span class="n">bpos</span>
+	<span class="n">a_ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">a_ra</span><span class="p">)</span>
+	<span class="n">a_dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a_dec</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">a_dec</span><span class="p">)</span>
+	<span class="n">b_ra</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">b_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">b_ra</span><span class="p">)</span>
+	<span class="n">b_dec</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">b_dec</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">b_dec</span><span class="p">)</span>
+	<span class="k">with</span> <span class="n">numpy</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+		<span class="n">a</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">a_dec</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+		<span class="n">b</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="n">b_ra</span><span class="p">,</span> <span class="n">b_dec</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;deg&quot;</span><span class="p">)</span>
+
+		<span class="n">localframe</span> <span class="o">=</span> <span class="n">SkyOffsetFrame</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+		<span class="n">na</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">localframe</span><span class="p">)</span>
+		<span class="n">nb</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">localframe</span><span class="p">)</span>
+		<span class="n">dra</span> <span class="o">=</span> <span class="n">na</span><span class="o">.</span><span class="n">lon</span> <span class="o">-</span> <span class="n">nb</span><span class="o">.</span><span class="n">lon</span>
+		<span class="n">ddec</span> <span class="o">=</span> <span class="n">na</span><span class="o">.</span><span class="n">lat</span> <span class="o">-</span> <span class="n">nb</span><span class="o">.</span><span class="n">lat</span>
+
+		<span class="n">separation</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">separation</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">degree</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
+		<span class="n">dra</span> <span class="o">=</span> <span class="n">dra</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">degree</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+		<span class="n">ddec</span> <span class="o">=</span> <span class="n">ddec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">degree</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+
+		<span class="k">return</span> <span class="n">separation</span><span class="p">,</span> <span class="n">dra</span><span class="p">,</span> <span class="n">ddec</span></div>
+
+
+
+<div class="viewcode-block" id="get_tablekeys">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.get_tablekeys">[docs]</a>
+<span class="k">def</span> <span class="nf">get_tablekeys</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+	<span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">name</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">else</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="s1">&#39;ERROR: No &quot;</span><span class="si">%s</span><span class="s1">&quot; column found in input catalogue &quot;</span><span class="si">%s</span><span class="s1">&quot;. Only have: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tablename</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">))</span>
+	<span class="k">return</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_healpix_resolution_degrees">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.get_healpix_resolution_degrees">[docs]</a>
+<span class="k">def</span> <span class="nf">get_healpix_resolution_degrees</span><span class="p">(</span><span class="n">nside</span><span class="p">):</span>
+	<span class="n">resol</span> <span class="o">=</span> <span class="n">healpy</span><span class="o">.</span><span class="n">pixelfunc</span><span class="o">.</span><span class="n">nside2resol</span><span class="p">(</span><span class="n">nside</span><span class="p">)</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span>
+	<span class="c1"># according to monte carlo simulations, distances up to this factor</span>
+	<span class="c1"># are completely contained within the pixel and its neighbors</span>
+	<span class="n">resfactor</span> <span class="o">=</span> <span class="mf">0.7</span>
+	<span class="k">return</span> <span class="n">resfactor</span> <span class="o">*</span> <span class="n">resol</span></div>
+
+
+
+<span class="nd">@mem</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;logger&#39;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">crossproduct</span><span class="p">(</span><span class="n">radectables</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">pairwise_errs</span><span class="o">=</span><span class="p">[]):</span>
+	<span class="c1"># check if away from the poles and RA=0</span>
+	<span class="n">use_flat_bins</span> <span class="o">=</span> <span class="kc">True</span>
+	<span class="k">for</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="ow">in</span> <span class="n">radectables</span><span class="p">:</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">err</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ra</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">err</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ra</span> <span class="o">&lt;</span> <span class="mi">360</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">err</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">45</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()):</span>
+			<span class="n">use_flat_bins</span> <span class="o">=</span> <span class="kc">False</span>
+			<span class="k">break</span>
+
+	<span class="k">if</span> <span class="n">use_flat_bins</span><span class="p">:</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching: using fast flat-sky approximation for this match&#39;</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="c1"># choose appropriate nside for err (in deg)</span>
+		<span class="n">nside</span> <span class="o">=</span> <span class="mi">1</span>
+		<span class="k">for</span> <span class="n">nside_next</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+			<span class="c1"># largest distance still contained within pixels</span>
+			<span class="n">dist_neighbors_complete</span> <span class="o">=</span> <span class="n">get_healpix_resolution_degrees</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">nside_next</span><span class="p">)</span>
+			<span class="c1"># we are looking for a pixel size which ensures bigger distances than the error radius</span>
+			<span class="c1"># but we want the smallest pixels possible, to reduce the cartesian product</span>
+			<span class="k">if</span> <span class="n">dist_neighbors_complete</span> <span class="o">&lt;</span> <span class="n">err</span><span class="p">:</span>
+				<span class="c1"># too small, do not accept</span>
+				<span class="c1"># sources within err will be outside the neighbor pixels</span>
+				<span class="k">break</span>
+			<span class="n">nside</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">nside_next</span>
+		<span class="n">resol</span> <span class="o">=</span> <span class="n">get_healpix_resolution_degrees</span><span class="p">(</span><span class="n">nside</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>
+		<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching: healpix hashing on pixel resolution ~ </span><span class="si">%f</span><span class="s1"> arcsec (nside=</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">resol</span><span class="p">,</span> <span class="n">nside</span><span class="p">))</span>
+
+	<span class="n">buckets</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span> <span class="p">:</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">radectables</span><span class="p">))])</span>
+	<span class="n">primary_cat_keys</span> <span class="o">=</span> <span class="kc">None</span>
+
+	<span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">radectables</span><span class="p">]))</span>
+	<span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="p">(</span><span class="n">ra_table</span><span class="p">,</span> <span class="n">dec_table</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">radectables</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">use_flat_bins</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">ei</span><span class="p">,</span> <span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ra_table</span><span class="p">,</span> <span class="n">dec_table</span><span class="p">)):</span>
+				<span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ra</span> <span class="o">/</span> <span class="n">err</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dec</span> <span class="o">/</span> <span class="n">err</span><span class="p">)</span>
+
+				<span class="c1"># put in bucket, and neighbors</span>
+				<span class="k">for</span> <span class="n">jj</span><span class="p">,</span> <span class="n">ii</span> <span class="ow">in</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="p">),</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="p">),</span> <span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+					<span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">)</span>
+					<span class="c1"># only primary catalogue is allowed to define new buckets</span>
+					<span class="k">if</span> <span class="n">ti</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">buckets</span><span class="p">:</span>
+						<span class="n">buckets</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">ti</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ei</span><span class="p">)</span>
+				<span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c1"># get healpixels</span>
+			<span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">ra_table</span><span class="p">,</span> <span class="n">dec_table</span>
+			<span class="n">phi</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">pi</span>
+			<span class="n">theta</span> <span class="o">=</span> <span class="n">dec</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">+</span> <span class="n">pi</span><span class="o">/</span><span class="mf">2.</span>
+			<span class="n">i</span> <span class="o">=</span> <span class="n">healpy</span><span class="o">.</span><span class="n">pixelfunc</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">nest</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">j</span> <span class="o">=</span> <span class="n">healpy</span><span class="o">.</span><span class="n">pixelfunc</span><span class="o">.</span><span class="n">get_all_neighbours</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="n">phi</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">nest</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="c1"># only consider four neighbours in one direction (N)</span>
+			<span class="c1"># does not work, sometimes A is south of B, but B is east of A</span>
+			<span class="c1"># so need to consider all neighbors, and deduplicate later</span>
+			<span class="n">neighbors</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">i</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)),</span> <span class="n">j</span><span class="o">.</span><span class="n">transpose</span><span class="p">()))</span>
+
+			<span class="c1"># put in bucket, and neighbors</span>
+			<span class="k">if</span> <span class="n">ti</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="c1"># only primary catalogue is allowed to define new buckets</span>
+				<span class="k">for</span> <span class="n">ei</span><span class="p">,</span> <span class="n">keys</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">neighbors</span><span class="p">):</span>
+					<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+						<span class="n">buckets</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">ti</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ei</span><span class="p">)</span>
+					<span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">for</span> <span class="n">ei</span><span class="p">,</span> <span class="n">keys</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">neighbors</span><span class="p">):</span>
+					<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+						<span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">primary_cat_keys</span><span class="p">:</span>
+							<span class="n">buckets</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="n">ti</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ei</span><span class="p">)</span>
+					<span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">ti</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="n">primary_cat_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">buckets</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+	<span class="n">pbar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+	<span class="c1"># add no-counterpart options</span>
+	<span class="n">results</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+	<span class="c1"># now combine within buckets</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching: collecting from </span><span class="si">%d</span><span class="s1"> buckets, creating cartesian products ...&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">buckets</span><span class="p">))</span>
+	<span class="c1">#print(&#39;matching: %6d matches expected after hashing&#39; % numpy.sum([</span>
+	<span class="c1">#	len(lists[0]) * numpy.product([len(li) + 1 for li in lists[1:]])</span>
+	<span class="c1">#		for lists in buckets.values()]))</span>
+
+	<span class="c1">#pbar = logger.progress(ndigits=5, maxval=len(buckets)).start()</span>
+	<span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">buckets</span><span class="p">))</span>
+	<span class="k">while</span> <span class="n">buckets</span><span class="p">:</span>
+		<span class="n">k</span><span class="p">,</span> <span class="n">lists</span> <span class="o">=</span> <span class="n">buckets</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+		<span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+		<span class="c1"># add for secondary catalogues the option of missing source</span>
+		<span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+			<span class="n">li</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="c1"># create the cartesian product</span>
+		<span class="n">local_results</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">sorted</span><span class="p">(</span><span class="n">li</span><span class="p">)</span> <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">])</span>
+
+		<span class="c1"># if pairwise filtering is requested, use it to trim down solutions</span>
+		<span class="k">if</span> <span class="n">pairwise_errs</span><span class="p">:</span>
+			<span class="n">local_results</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">local_results</span><span class="p">))</span>
+			<span class="c1">#nstart = len(local_results)</span>
+			<span class="k">for</span> <span class="n">tablei</span><span class="p">,</span> <span class="n">tablej</span><span class="p">,</span> <span class="n">errij</span> <span class="ow">in</span> <span class="n">pairwise_errs</span><span class="p">:</span>
+				<span class="n">indicesi</span> <span class="o">=</span> <span class="n">local_results</span><span class="p">[:,</span><span class="n">tablei</span><span class="p">]</span>
+				<span class="n">indicesj</span> <span class="o">=</span> <span class="n">local_results</span><span class="p">[:,</span><span class="n">tablej</span><span class="p">]</span>
+				<span class="c1"># first find entries that actually have both entries</span>
+				<span class="n">mask_both</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">indicesi</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">indicesj</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+				<span class="c1">#if not mask_both.any():</span>
+				<span class="c1">#	continue</span>
+				<span class="c1"># get the RA/Dec</span>
+				<span class="n">rai</span><span class="p">,</span> <span class="n">deci</span> <span class="o">=</span> <span class="n">radectables</span><span class="p">[</span><span class="n">tablei</span><span class="p">]</span>
+				<span class="n">raj</span><span class="p">,</span> <span class="n">decj</span> <span class="o">=</span> <span class="n">radectables</span><span class="p">[</span><span class="n">tablej</span><span class="p">]</span>
+				<span class="n">rai</span><span class="p">,</span> <span class="n">deci</span> <span class="o">=</span> <span class="n">rai</span><span class="p">[</span><span class="n">indicesi</span><span class="p">[</span><span class="n">mask_both</span><span class="p">]],</span> <span class="n">deci</span><span class="p">[</span><span class="n">indicesi</span><span class="p">[</span><span class="n">mask_both</span><span class="p">]]</span>
+				<span class="n">raj</span><span class="p">,</span> <span class="n">decj</span> <span class="o">=</span> <span class="n">raj</span><span class="p">[</span><span class="n">indicesj</span><span class="p">[</span><span class="n">mask_both</span><span class="p">]],</span> <span class="n">decj</span><span class="p">[</span><span class="n">indicesj</span><span class="p">[</span><span class="n">mask_both</span><span class="p">]]</span>
+				<span class="c1"># compute distances</span>
+				<span class="n">mask_good</span> <span class="o">=</span> <span class="n">dist</span><span class="p">((</span><span class="n">rai</span><span class="p">,</span> <span class="n">deci</span><span class="p">),</span> <span class="p">(</span><span class="n">raj</span><span class="p">,</span> <span class="n">decj</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">errij</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>
+				<span class="c1"># select the ones where one is missing, or those within errij</span>
+				<span class="n">mask_good2</span> <span class="o">=</span> <span class="o">~</span><span class="n">mask_both</span>
+				<span class="n">mask_good2</span><span class="p">[</span><span class="n">mask_both</span><span class="p">][</span><span class="n">mask_good</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+				<span class="c1">#print(mask_good2.sum(), mask_both.shape, mask_both.sum(), mask_good.sum())</span>
+				<span class="n">local_results</span> <span class="o">=</span> <span class="n">local_results</span><span class="p">[</span><span class="n">mask_good2</span><span class="p">,:]</span>
+
+			<span class="c1"># print(&quot;compression:%d/%d&quot; % (len(local_results), nstart))</span>
+			<span class="n">results</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="nb">tuple</span><span class="p">(</span><span class="n">li</span><span class="p">)</span> <span class="k">for</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">local_results</span><span class="p">])</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">results</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">local_results</span><span class="p">)</span>
+		<span class="k">del</span> <span class="n">local_results</span>
+	<span class="n">pbar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+	<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching: </span><span class="si">%6d</span><span class="s1"> unique matches from cartesian product. sorting ...&#39;</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
+	<span class="c1"># now make results unique by sorting</span>
+	<span class="n">results</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+	<span class="k">return</span> <span class="n">results</span>
+
+
+<span class="c1"># use preferred newer astropy command if available</span>
+<span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">BinTableHDU</span><span class="p">,</span> <span class="s1">&#39;from_columns&#39;</span><span class="p">):</span>
+	<span class="n">fits_from_columns</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">BinTableHDU</span><span class="o">.</span><span class="n">from_columns</span>
+<span class="k">else</span><span class="p">:</span>
+	<span class="n">fits_from_columns</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">new_table</span>
+
+
+<div class="viewcode-block" id="match_multiple">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.match_multiple">[docs]</a>
+<span class="k">def</span> <span class="nf">match_multiple</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">table_names</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">fits_formats</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pairwise_errs</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	computes the cartesian product of all possible matches,</span>
+<span class="sd">	limited to a maximum distance of err (in degrees).</span>
+
+<span class="sd">	tables: input FITS table</span>
+<span class="sd">	table_names: names of the tables</span>
+<span class="sd">	fits_formats: FITS data type of the columns of each table</span>
+
+<span class="sd">	returns</span>
+<span class="sd">	results: cartesian product of all possible matches (smaller than err)</span>
+<span class="sd">	cat_columns: table with separation distances in arcsec</span>
+<span class="sd">	header: which columns were used in each table for RA/DEC</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching with </span><span class="si">%f</span><span class="s1"> arcsec radius&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">err</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">))</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching: </span><span class="si">%6d</span><span class="s1"> naive possibilities&#39;</span> <span class="o">%</span> <span class="n">numpy</span><span class="o">.</span><span class="n">prod</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">]))</span>
+
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching: hashing&#39;</span><span class="p">)</span>
+
+	<span class="n">ra_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_tablekeys</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;RA&#39;</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="n">tablename</span><span class="p">)</span> <span class="k">for</span> <span class="n">table</span><span class="p">,</span> <span class="n">tablename</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">table_names</span><span class="p">)]</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    using RA  columns: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ra_keys</span><span class="p">))</span>
+	<span class="n">dec_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_tablekeys</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s1">&#39;DEC&#39;</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="n">tablename</span><span class="p">)</span> <span class="k">for</span> <span class="n">table</span><span class="p">,</span> <span class="n">tablename</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">table_names</span><span class="p">)]</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    using DEC columns: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dec_keys</span><span class="p">))</span>
+
+	<span class="n">ratables</span> <span class="o">=</span> <span class="p">[(</span><span class="n">t</span><span class="p">[</span><span class="n">ra_key</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="n">dec_key</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">ra_key</span><span class="p">,</span> <span class="n">dec_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">ra_keys</span><span class="p">,</span> <span class="n">dec_keys</span><span class="p">)]</span>
+	<span class="n">resultstable</span> <span class="o">=</span> <span class="n">crossproduct</span><span class="p">(</span><span class="n">ratables</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="n">pairwise_errs</span><span class="o">=</span><span class="n">pairwise_errs</span><span class="p">)</span>
+	<span class="n">results</span> <span class="o">=</span> <span class="n">resultstable</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="p">[(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">resultstable</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">table_name</span> <span class="ow">in</span> <span class="n">table_names</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+
+	<span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">table</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">table_names</span><span class="p">,</span> <span class="n">tables</span><span class="p">):</span>
+		<span class="n">keys</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">]</span>
+
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;merging in </span><span class="si">%d</span><span class="s1"> columns from input catalogues ...&#39;</span> <span class="o">%</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">]))</span>
+	<span class="n">cat_columns</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">)</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">tables</span><span class="p">]))</span>
+	<span class="k">for</span> <span class="n">table</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">fits_format</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">table_names</span><span class="p">,</span> <span class="n">fits_formats</span><span class="p">):</span>
+		<span class="n">tbl</span> <span class="o">=</span> <span class="n">table</span><span class="p">[</span><span class="n">results</span><span class="p">[</span><span class="n">table_name</span><span class="p">]]</span>
+		<span class="c1"># set missing to nan</span>
+		<span class="n">mask_missing</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">table_name</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span>
+
+		<span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+		<span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="nb">format</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">fits_format</span><span class="p">):</span>
+			<span class="n">k</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+			<span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+			<span class="n">col</span> <span class="o">=</span> <span class="n">tbl</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+			<span class="c1">#print(&#39;   setting &quot;%s&quot; to -99 (%d affected; column format &quot;%s&quot;)&#39; % (k, mask_missing.sum(), format))</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">col</span><span class="p">[</span><span class="n">mask_missing</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99</span>
+			<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+				<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;   setting &quot;</span><span class="si">%s</span><span class="s1">&quot; to -99 failed (</span><span class="si">%d</span><span class="s1"> affected; column format &quot;</span><span class="si">%s</span><span class="s1">&quot;): </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">mask_missing</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="nb">format</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+
+			<span class="n">fitscol</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="n">col</span><span class="p">)</span>
+			<span class="n">cat_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitscol</span><span class="p">)</span>
+			<span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+	<span class="n">pbar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+	<span class="n">tbhdu</span> <span class="o">=</span> <span class="n">fits_from_columns</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">ColDefs</span><span class="p">(</span><span class="n">cat_columns</span><span class="p">))</span>
+	<span class="n">header</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+		<span class="n">COLS_RA</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="n">ra_key</span><span class="p">)</span> <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">ra_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">table_names</span><span class="p">,</span> <span class="n">ra_keys</span><span class="p">)]),</span>
+		<span class="n">COLS_DEC</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ti</span><span class="p">,</span> <span class="n">dec_key</span><span class="p">)</span> <span class="k">for</span> <span class="n">ti</span><span class="p">,</span> <span class="n">dec_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">table_names</span><span class="p">,</span> <span class="n">dec_keys</span><span class="p">)])</span>
+	<span class="p">)</span>
+
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    adding angular separation columns&#39;</span><span class="p">)</span>
+	<span class="n">max_separation</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tables</span><span class="p">)):</span>
+		<span class="n">a_ra</span> <span class="o">=</span> <span class="n">tbhdu</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ra_keys</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>
+		<span class="n">a_dec</span> <span class="o">=</span> <span class="n">tbhdu</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">dec_keys</span><span class="p">[</span><span class="n">i</span><span class="p">])]</span>
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+			<span class="n">k</span> <span class="o">=</span> <span class="s2">&quot;Separation_</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">table_names</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+			<span class="n">k1</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="s2">&quot;_ra&quot;</span>
+			<span class="n">k2</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="s2">&quot;_dec&quot;</span>
+			<span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+				<span class="n">keys</span> <span class="o">+=</span> <span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">]</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">keys</span> <span class="o">+=</span> <span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+			<span class="n">b_ra</span> <span class="o">=</span> <span class="n">tbhdu</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_names</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">ra_keys</span><span class="p">[</span><span class="n">j</span><span class="p">])]</span>
+			<span class="n">b_dec</span> <span class="o">=</span> <span class="n">tbhdu</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">table_names</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">dec_keys</span><span class="p">[</span><span class="n">j</span><span class="p">])]</span>
+
+			<span class="k">if</span> <span class="n">circular</span><span class="p">:</span>
+				<span class="n">col</span> <span class="o">=</span> <span class="n">dist</span><span class="p">((</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">a_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">b_ra</span><span class="p">,</span> <span class="n">b_dec</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">col</span><span class="p">,</span> <span class="n">col_ra</span><span class="p">,</span> <span class="n">col_dec</span> <span class="o">=</span> <span class="n">dist3d</span><span class="p">((</span><span class="n">a_ra</span><span class="p">,</span> <span class="n">a_dec</span><span class="p">),</span> <span class="p">(</span><span class="n">b_ra</span><span class="p">,</span> <span class="n">b_dec</span><span class="p">))</span>
+
+			<span class="n">valid_input</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">a_ra</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">99</span><span class="p">,</span> <span class="n">b_ra</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">99</span><span class="p">)</span>
+			<span class="k">assert</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">valid_input</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">(),</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> distances are nan&#39;</span> <span class="o">%</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">valid_input</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+				<span class="n">a_ra</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)],</span> <span class="n">a_dec</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)],</span>
+				<span class="n">b_ra</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)],</span> <span class="n">b_dec</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">col</span><span class="p">)]]</span>
+
+			<span class="n">col</span><span class="p">[</span><span class="n">a_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+			<span class="n">col</span><span class="p">[</span><span class="n">b_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">circular</span><span class="p">:</span>
+				<span class="n">col_ra</span><span class="p">[</span><span class="n">a_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+				<span class="n">col_ra</span><span class="p">[</span><span class="n">b_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+				<span class="n">col_dec</span><span class="p">[</span><span class="n">a_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+				<span class="n">col_dec</span><span class="p">[</span><span class="n">b_ra</span> <span class="o">==</span> <span class="o">-</span><span class="mi">99</span><span class="p">]</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nan</span>
+			<span class="n">max_separation</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nanmax</span><span class="p">([</span><span class="n">col</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span> <span class="n">max_separation</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+			<span class="c1"># store distance in arcsec</span>
+			<span class="n">cat_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="n">col</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">))</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">circular</span><span class="p">:</span>
+				<span class="n">cat_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">k1</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="n">col_ra</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">))</span>
+				<span class="n">cat_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">k2</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="n">col_dec</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">))</span>
+
+	<span class="n">cat_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Separation_max&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="n">max_separation</span><span class="p">))</span>
+	<span class="n">cat_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;ncat&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">array</span><span class="o">=</span><span class="p">(</span><span class="n">resultstable</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+	<span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Separation_max&quot;</span><span class="p">)</span>
+	<span class="n">mask</span> <span class="o">=</span> <span class="n">max_separation</span> <span class="o">&lt;</span> <span class="n">err</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span>
+	<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cat_columns</span><span class="p">:</span>
+		<span class="n">c</span><span class="o">.</span><span class="n">array</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">array</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;matching: </span><span class="si">%6d</span><span class="s1"> matches after filtering by search radius&#39;</span> <span class="o">%</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">cat_columns</span><span class="p">,</span> <span class="n">header</span></div>
+
+
+
+<div class="viewcode-block" id="wraptable2fits">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.wraptable2fits">[docs]</a>
+<span class="k">def</span> <span class="nf">wraptable2fits</span><span class="p">(</span><span class="n">cat_columns</span><span class="p">,</span> <span class="n">extname</span><span class="p">):</span>
+	<span class="n">tbhdu</span> <span class="o">=</span> <span class="n">fits_from_columns</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">ColDefs</span><span class="p">(</span><span class="n">cat_columns</span><span class="p">))</span>
+	<span class="n">hdu</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">PrimaryHDU</span><span class="p">()</span>
+	<span class="kn">import</span> <span class="nn">datetime</span>
+	<span class="kn">import</span> <span class="nn">time</span>
+	<span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+	<span class="n">nowstr</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+	<span class="n">nowstr</span> <span class="o">=</span> <span class="n">nowstr</span><span class="p">[:</span><span class="n">nowstr</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)]</span>
+	<span class="n">hdu</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;DATE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nowstr</span>
+	<span class="n">hdu</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;ANALYSIS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;NWAY matching&#39;</span>
+	<span class="n">tbhdu</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;EXTNAME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extname</span>
+	<span class="n">hdulist</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">HDUList</span><span class="p">([</span><span class="n">hdu</span><span class="p">,</span> <span class="n">tbhdu</span><span class="p">])</span>
+	<span class="k">return</span> <span class="n">hdulist</span></div>
+
+
+
+<div class="viewcode-block" id="array2fits">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.array2fits">[docs]</a>
+<span class="k">def</span> <span class="nf">array2fits</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">extname</span><span class="p">):</span>
+	<span class="n">cat_columns</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">ColDefs</span><span class="p">([</span><span class="n">pyfits</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">array</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+		<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">])</span>
+	<span class="k">return</span> <span class="n">wraptable2fits</span><span class="p">(</span><span class="n">cat_columns</span><span class="p">,</span> <span class="n">extname</span><span class="p">)</span></div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

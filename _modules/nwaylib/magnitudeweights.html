@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nwaylib.magnitudeweights &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/_modules/nwaylib/magnitudeweights.html" />
+    <link rel="icon" href="../../_static/icon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../../_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../../index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"></ul>
+</li>
+              
+            
+            
+              
+                
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary">
+<form action="../../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <h1>Source code for nwaylib.magnitudeweights</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Computes adaptively binned histograms of two distributions.</span>
+
+<span class="sd">Provides smooth biasing functions and plots them.</span>
+
+<span class="sd">This is not specific for magnitudes, it can be any provided property.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">scipy.integrate</span>
+<span class="kn">import</span> <span class="nn">scipy.interpolate</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">exp</span><span class="p">,</span> <span class="n">log10</span><span class="p">,</span> <span class="n">logical_and</span><span class="p">,</span> <span class="n">pi</span>
+
+
+<div class="viewcode-block" id="ratio">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.ratio">[docs]</a>
+<span class="k">def</span> <span class="nf">ratio</span><span class="p">(</span><span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	ratio between the two histograms. Minor offsets to avoid zero and inf.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">with</span> <span class="n">numpy</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+		<span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">hist_all</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">hist_sel</span> <span class="o">/</span> <span class="n">hist_all</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="fraction">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.fraction">[docs]</a>
+<span class="k">def</span> <span class="nf">fraction</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	fraction of selected</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># need a re-normalisation so that unknown values can be set to prob=1</span>
+	<span class="n">m</span> <span class="o">=</span> <span class="n">hist_all</span> <span class="o">&gt;</span> <span class="mi">0</span>
+	<span class="n">hist_sel_m</span> <span class="o">=</span> <span class="n">hist_sel</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+	<span class="n">hist_all_m</span> <span class="o">=</span> <span class="n">hist_all</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
+	<span class="n">ratio</span> <span class="o">=</span> <span class="n">hist_sel_m</span> <span class="o">/</span> <span class="n">hist_all_m</span>
+	<span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_mag</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">bin_mag</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="n">m</span><span class="p">]</span>
+	<span class="n">avg</span> <span class="o">=</span> <span class="p">(</span><span class="n">ratio</span> <span class="o">*</span> <span class="n">hist_all_m</span> <span class="o">*</span> <span class="n">delta</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">delta</span> <span class="o">*</span> <span class="n">hist_all_m</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+	<span class="k">assert</span> <span class="n">avg</span> <span class="o">!=</span> <span class="mi">0</span>
+
+	<span class="n">r</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hist_all</span><span class="p">))</span>
+	<span class="n">r</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">hist_sel_m</span> <span class="o">/</span> <span class="n">hist_all_m</span> <span class="o">/</span> <span class="n">avg</span>
+	<span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">r</span><span class="p">[</span><span class="o">~</span><span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">r</span><span class="p">)]</span>
+	<span class="k">assert</span> <span class="p">(</span><span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">r</span><span class="p">[</span><span class="o">~</span><span class="p">(</span><span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)]</span>
+	<span class="k">return</span> <span class="n">r</span></div>
+
+
+
+<div class="viewcode-block" id="plot_fit">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.plot_fit">[docs]</a>
+<span class="k">def</span> <span class="nf">plot_fit</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Plotting</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">mags</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">bin_mag</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">bin_mag</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">400</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="n">hist_n</span> <span class="o">=</span> <span class="n">ratio</span><span class="p">(</span><span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">hist_all</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+		<span class="n">drawstyle</span><span class="o">=</span><span class="s1">&#39;steps-post&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+		<span class="n">drawstyle</span><span class="o">=</span><span class="s1">&#39;steps-post&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;selected&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;normalized weight&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">mags</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">mags</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">hist_n</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+		<span class="n">drawstyle</span><span class="o">=</span><span class="s1">&#39;steps-post&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ratio&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mags</span><span class="p">,</span> <span class="n">func</span><span class="p">(</span><span class="n">mags</span><span class="p">),</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;fit&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;normalized weight&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="n">mags</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">mags</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_fit.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="fitfunc_histogram">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.fitfunc_histogram">[docs]</a>
+<span class="k">def</span> <span class="nf">fitfunc_histogram</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	creates the biasing functions</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">bin_n</span> <span class="o">=</span> <span class="n">ratio</span><span class="p">(</span><span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">)</span>
+	<span class="c1"># w = scipy.signal.gaussian(5, 1)</span>
+	<span class="c1"># w /= w.sum()</span>
+	<span class="c1"># bin_n_smooth = scipy.signal.convolve(bin_n, w, mode=&#39;same&#39;)</span>
+	<span class="c1"># no smoothing</span>
+	<span class="n">bin_n_smooth</span> <span class="o">=</span> <span class="n">bin_n</span>
+	<span class="n">interpfunc</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span>
+		<span class="nb">list</span><span class="p">(</span><span class="n">bin_n_smooth</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">bin_n_smooth</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+		<span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;zero&#39;</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">interpfunc</span></div>
+
+
+
+<div class="viewcode-block" id="adaptive_histograms">
+<a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.adaptive_histograms">[docs]</a>
+<span class="k">def</span> <span class="nf">adaptive_histograms</span><span class="p">(</span><span class="n">mag_all</span><span class="p">,</span> <span class="n">mag_sel</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	creates the histograms for the two columns in an adaptive way (based on mag_sel)</span>
+<span class="sd">	with the same binning.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="n">weights</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mag_sel</span><span class="p">))</span>
+	<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">mag_sel</span><span class="p">),</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">mag_sel</span><span class="p">))</span>
+	<span class="n">mag_sel_idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">mag_sel</span><span class="p">)</span>
+	<span class="n">mag_sel_sorted</span> <span class="o">=</span> <span class="n">mag_sel</span><span class="p">[</span><span class="n">mag_sel_idx</span><span class="p">]</span>
+	<span class="n">weight_axis</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">mag_sel_idx</span><span class="p">])</span> <span class="o">/</span> <span class="n">numpy</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+	<span class="n">weight_axis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">weight_axis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="c1"># weight_axis = numpy.linspace(0, 1, len(mag_sel_sorted))</span>
+
+	<span class="n">func_sel</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">weight_axis</span><span class="p">,</span> <span class="n">mag_sel_sorted</span><span class="p">)</span>
+	<span class="c1"># choose bin borders based on cumulative distribution, using 15 points</span>
+	<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">func_sel</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">15</span><span class="p">)))</span>
+	<span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nanmin</span><span class="p">(</span><span class="n">mag_all</span><span class="p">),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">mag_all</span><span class="p">)</span>
+	<span class="c1"># extend to make sure ratios are well-defined</span>
+	<span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="p">:</span>
+		<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">hi</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+	<span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">lo</span><span class="p">:</span>
+		<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">lo</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+	<span class="c1"># linear histogram (for no adaptiveness):</span>
+	<span class="c1"># x = numpy.linspace(mag_all.min(), mag_all.max(), 20)</span>
+	<span class="n">hist_sel</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">mag_sel</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">x</span><span class="p">,</span>    <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+	<span class="n">hist_all</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">mag_all</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">bins</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span></div>
+
+</pre></div>
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

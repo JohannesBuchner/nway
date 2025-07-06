@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Mathematical details and Implementation &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/math.html" />
+    <link rel="icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Frequently Asked Questions" href="issues.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Mathematical details and Implementation</a><ul>
+<li><a class="reference internal" href="#distance-based-matching">Distance-based matching</a></li>
+<li><a class="reference internal" href="#magnitudes-colors-and-other-additional-information">Magnitudes, Colors and other additional information</a></li>
+<li><a class="reference internal" href="#auto-calibration">Auto-calibration</a></li>
+<li><a class="reference internal" href="#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="issues.html" title="Previous Chapter: Frequently Asked Questions"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Frequently As...</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">Mathematical details and Implementation</a><ul>
+<li><a class="reference internal" href="#distance-based-matching">Distance-based matching</a></li>
+<li><a class="reference internal" href="#magnitudes-colors-and-other-additional-information">Magnitudes, Colors and other additional information</a></li>
+<li><a class="reference internal" href="#auto-calibration">Auto-calibration</a></li>
+<li><a class="reference internal" href="#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+
+  <li>
+    <a href="issues.html" title="Previous Chapter: Frequently Asked Questions"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Frequently As...</span>
+    </a>
+  </li>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <section id="mathematical-details-and-implementation">
+<span id="chap-math"></span><h1>Mathematical details and Implementation<a class="headerlink" href="#mathematical-details-and-implementation" title="Link to this heading"></a></h1>
+<section id="distance-based-matching">
+<span id="sec-math"></span><h2>Distance-based matching<a class="headerlink" href="#distance-based-matching" title="Link to this heading"></a></h2>
+<p>Lets consider the problem of finding counterparts to a primary catalogue
+(<span class="math notranslate nohighlight">\(i=1\)</span>), in our example for the X-ray source position catalogue.
+Let each <span class="math notranslate nohighlight">\(N_{i}\)</span> denote the number of entries for the catalogues
+used, and <span class="math notranslate nohighlight">\(\nu_{i}=N_{i}/\Omega_{i}\)</span> denote their source surface
+density on the sky.</p>
+<p>If a counterpart is required to exist in each of the <span class="math notranslate nohighlight">\(k\)</span>
+catalogues, there are <span class="math notranslate nohighlight">\(\prod_{i=1}^{k}N_{i}\)</span> possible
+associations. If we assume that a counterpart might be missing in each
+of the matching catalogues, there are
+<span class="math notranslate nohighlight">\(N_{1}\cdot\prod_{i=2}^{k}(N_{i}+1)\)</span> possible associations. This
+minor modification, negligible for <span class="math notranslate nohighlight">\(N_{i}\gg1\)</span>, is ignored in the
+following for simplicity, but handled in the code.</p>
+<p>If each catalogue covers the same area with some respective, homogeneous
+source density <span class="math notranslate nohighlight">\(\nu_{i}\)</span>, the probability of a chance alignment on
+the sky of physically unrelated objects can then be written
+(<span id="id1">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>, eq. 25), as</p>
+<div class="math notranslate nohighlight">
+\[P(H)=N_{1}/\prod_{i=1}^{k}N_{i}=1/\prod_{i=2}^{k}N_{i}=1/\prod_{i=2}^{k}\nu_{i}\Omega_{i}.\]</div>
+<p>Thus <span class="math notranslate nohighlight">\(P(H)\)</span> is the prior probability of an association. The
+posterior should strongly exceed this prior probability, to avoid false
+positives.</p>
+<p>To account for non-uniform coverage, <span class="math notranslate nohighlight">\(P(H)\)</span> is modified by a
+“prior completeness factor” <span class="math notranslate nohighlight">\(c\)</span>, which gives the expected fraction
+of sources with reliable counterpart (due to only partial coverage of
+the matching catalogues <span class="math notranslate nohighlight">\(\Omega_{i&gt;1}\neq\Omega_{1}\)</span>, depth of the
+catalogues and/or systematic errors in the coordinates). Our prior can
+thus be written as</p>
+<div class="math notranslate nohighlight" id="eq-prior">
+\[P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.\label{eq:prior}\]</div>
+<p>Bayes’ theorem connects the prior probability <span class="math notranslate nohighlight">\(P(H)\)</span> to the
+posterior probability <span class="math notranslate nohighlight">\(P(H|D)\)</span>, by incorporating information
+gained from the observation data <span class="math notranslate nohighlight">\(D\)</span> via</p>
+<div class="math notranslate nohighlight" id="eq-bayes">
+\[P(H|D)\propto P(H)\times P(D|H).\label{eq:bayes}\]</div>
+<p>We now extend the approach of <span id="id2">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>, to
+allow matches where some catalogues do not participate in a match.
+Comparing A12 and A14 in <span id="id3">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>, assuming
+that positions lie on the celestial sphere and adopting the expansions
+developed in their Appendix B, we can write down likelihoods. For a
+counterpart across <span class="math notranslate nohighlight">\(k\)</span> catalogues, we obtain:</p>
+<div class="math notranslate nohighlight" id="eq-nwaylikelihood">
+\[P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-2}}{\sum\sigma_{i}^{-2}}\exp\left\{ -\frac{\sum_{i&lt;j}\psi_{ij}^{2}\sigma_{j}^{-2}\sigma_{i}^{-2}}{2\sum\sigma_{i}^{-2}}\right\} \label{eq:nwaylikelihood}\]</div>
+<p>For a given association with participating members from <span class="math notranslate nohighlight">\(k\)</span>
+catalogues, the pairwise angular separation, <span class="math notranslate nohighlight">\(\psi_{ij}\)</span>, between
+catalogue <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> is judged with the relevant position
+uncertainties <span class="math notranslate nohighlight">\(\sigma\)</span>. The likelihood for the hypothesis where
+some catalogues do not participate in the association has the
+appropriate terms in the products and sums removed. Therefore, the
+likelihood is unity for the hypothesis that there is no counterpart in
+any of the catalogues.</p>
+<p>In comparison to our method, the method of
+<span id="id4">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span> only compares two hypotheses for a
+association: either all sources belong to the same object
+(<span class="math notranslate nohighlight">\(H_{1}\)</span>), or they are coincidentally aligned (<span class="math notranslate nohighlight">\(H_{0}\)</span>). In
+this computation each hypothesis test is run in isolation, and relative
+match probabilities for a given source are not considered. For
+completeness, we also compute the posterior of this simpler model
+comparison:</p>
+<div class="math notranslate nohighlight" id="eq-assocpost">
+\[\begin{split}\begin{aligned}
+\frac{P(H_{1}|D)}{P(H_{0}|D)} &amp; \propto &amp; \frac{P(H_{1})}{P(H_{0})}\times\frac{P(D|H_{1})}{P(D|H_{0})}\\
+B &amp; = &amp; \frac{P(D|H_{1})}{P(D|H_{0})}\\
+P(H_{1}|D) &amp; = &amp; \left[1+\frac{1-P(H_{1})}{B\cdot P(H_{1})}\right]^{-1}\label{eq:assocPost}
+\end{aligned}\end{split}\]</div>
+<p>The output column <code class="docutils literal notranslate"><span class="pre">dist_bayesfactor</span></code> stores <span class="math notranslate nohighlight">\(\log B\)</span>, while the
+output column <code class="docutils literal notranslate"><span class="pre">dist_post</span></code> is the result of equation
+<a class="reference external" href="eq:assocPost">[eq:assocPost]</a>. The output column <code class="docutils literal notranslate"><span class="pre">p_single</span></code> gives
+<code class="docutils literal notranslate"><span class="pre">dist_post</span></code> but modified if any additional information is specified
+(see Section <a class="reference external" href="sec:mag-priors">5.2</a>). As mentioned several times in
+the literature, the <span id="id6">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span> approach does not
+include sources absent in some of the catalogues, while the formulae we
+develop below incorporate absent sources. This is similar in spirit to
+<span id="id7">[<a class="reference internal" href="matching.html#id18" title="F.-X. Pineau, S. Derriere, C. Motch, F. J. Carrera, F. Genova, L. Michel, B. Mingo, A. Mints, A. Nebot Gómez-Morán, S. R. Rosen, and A. Ruiz Camuñas. Probabilistic multi-catalogue positional cross-match. ArXiv e-prints, September 2016. arXiv:1609.00818.">PineauDerriereMotch+16</a>]</span>, although the statistical approach is
+different. We now go further and develop counterpart probabilities.</p>
+<p>The first step in catalogue inference is whether the source has any
+counterpart (<span class="math notranslate nohighlight">\(p_{\mathrm{any}}\)</span>). The posterior probabilities
+<span class="math notranslate nohighlight">\(P(H|D)\)</span> are computed using Bayes theorem (eq.
+<a class="reference external" href="eq:bayes">[eq:bayes]</a>) with the likelihood (eq.
+<a class="reference external" href="eq:nwaylikelihood">[eq:nwaylikelihood]</a>) and prior (eq.
+<a class="reference external" href="eq:prior">[eq:prior]</a>) appropriately adopted for the number of
+catalogues the particular association draws from. For each entry in the
+primary catalogue, the posteriors of all possible associations are
+normalised to unity, and <span class="math notranslate nohighlight">\(P(H_{0}|D)\)</span>, the posterior probability
+of the no-counterpart hypothesis, i.e., no catalogue participates,
+computed. From this we compute:</p>
+<div class="math notranslate nohighlight" id="eq-post-any">
+\[p_{\mathrm{any}}=1-P(H_{0}|D)/\sum_{i}P(H_{i}|D)\label{eq:post-any}\]</div>
+<p>If <span class="math notranslate nohighlight">\(p_{\mathrm{any}}\)</span> is low, this indicates that there is little
+evidence for any of the considered, combinatorically possible
+associations, except for the no-association case. The output column
+<code class="docutils literal notranslate"><span class="pre">p_any</span></code> is the result of equation <a class="reference external" href="eq:post-any">[eq:post-any]</a>.</p>
+<p>If <span class="math notranslate nohighlight">\(p_{\mathrm{any}}\approx1\)</span>, there is strong evidence for at
+least one of the associations to another catalogue. To compute the
+relative posterior probabilities of the options, we re-normalize with
+the no-counterpart hypothesis, <span class="math notranslate nohighlight">\(H_{0}\)</span>, excluded:</p>
+<div class="math notranslate nohighlight" id="eq-post-assoc">
+\[p_{i}=P(H_{i}|D)/\sum_{i&gt;0}P(H_{i}|D)\label{eq:post-assoc}\]</div>
+<p>If a particular association has a high <span class="math notranslate nohighlight">\(p_{i}\)</span>, there is strong
+evidence that it is the true one, out of all present options. The output
+column <code class="docutils literal notranslate"><span class="pre">p_i</span></code> is the result of equation
+<a class="reference external" href="eq:post-assoc">[eq:post-assoc]</a>.</p>
+<p>A “very secure” counterpart could be defined by the requirement
+<span class="math notranslate nohighlight">\(p_{any}&gt;95\%\)</span> and <span class="math notranslate nohighlight">\(p_{i}&gt;95\%\)</span>, for example. However, it is
+useful to run simulations to understand the rate of false positives.
+Typically, much lower thresholds are acceptable.</p>
+</section>
+<section id="magnitudes-colors-and-other-additional-information">
+<span id="sec-mag-priors"></span><h2>Magnitudes, Colors and other additional information<a class="headerlink" href="#magnitudes-colors-and-other-additional-information" title="Link to this heading"></a></h2>
+<p>Astronomical objects of various classes often show distinct color and
+magnitude distributions. Because most bright X-ray point-sources in deep
+images are also optically bright compared to generic sources, this
+information can be exploited. Previous works
+(e.g., <span id="id11">Brusa <em>et al.</em> [<a class="reference internal" href="matching.html#id11" title="M. Brusa, A. Comastri, E. Daddi, L. Pozzetti, G. Zamorani, C. Vignali, A. Cimatti, F. Fiore, M. Mignoli, P. Ciliegi, and H. J. A. Röttgering. XMM-Newton observations of Extremely Red Objects and the link with luminous, X-ray obscured quasars. \aap , 432:69-81, March 2005. arXiv:arXiv:astro-ph/0409257, doi:10.1051/0004-6361:20041468.">BrusaComastriDaddi+05</a>]</span>, ,:cite:t:<cite>Brusa2007</cite>) have modified the
+likelihood ratio coming from the angular distance <span class="math notranslate nohighlight">\(f(r)\)</span>
+information (likelihood ratio method,
+<span id="id12">Sutherland and Saunders [<a class="reference internal" href="matching.html#id21" title="W. Sutherland and W. Saunders. On the likelihood ratio for source identification. \mnras , 259:413-420, December 1992. URL: http://adsabs.harvard.edu/cgi-bin/nph-data_query?bibcode=1992MNRAS.259..413S&amp;link_type=ARTICLE&amp;db_key=AST&amp;high=.">SutherlandSaunders92</a>]</span>) by a factor:</p>
+<div class="math notranslate nohighlight">
+\[LR=\frac{q(m)}{n(m)}\times f(r)\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(q(m)\)</span> and <span class="math notranslate nohighlight">\(n(m)\)</span> are associated with the magnitude
+distributions of source (e.g. X-ray sources) and background objects
+(e.g. stars, passive galaxies) respectively, but additionally contain
+sky density contributions.</p>
+<p>This idea can be put on solid footing within the Bayesian framework.
+Here, two likelihoods are combined, by simply considering two
+independent observations, namely one for the positions,
+<span class="math notranslate nohighlight">\(D_{\phi}\)</span>, and one for the magnitudes <span class="math notranslate nohighlight">\(D_{m}\)</span>. The
+likelihood thus becomes</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+P(D|H) &amp; = &amp; P(D_{\phi}|H)\times P(D_{m}|H)\\
+ &amp; = &amp; P(D_{\phi}|H)\times\frac{\bar{q}(m)}{\bar{n}(m)},
+\end{aligned}\end{split}\]</div>
+<p>with <span class="math notranslate nohighlight">\(\bar{q}(m)\)</span> and <span class="math notranslate nohighlight">\(\bar{n}(m)\)</span> being the probability
+that a X-ray (target) source or a generic (field) source has magnitude
+<span class="math notranslate nohighlight">\(m\)</span> respectively. Nwaystores the modifying factor,
+<span class="math notranslate nohighlight">\(P(D_{m}|H)\)</span>, in <code class="docutils literal notranslate"><span class="pre">bias_</span></code><code class="docutils literal notranslate"><span class="pre">*</span></code> output columns, one for each
+column giving a magnitude, color, or other distribution. This modifying
+factor is however renormalized so that
+<span class="math notranslate nohighlight">\(P(D_{m}|H)=\frac{\bar{q}(m)}{\bar{n}(m)}/\int\frac{\bar{q}(m')}{\bar{n}(m')}\bar{n}(m')dm'\)</span>,
+which makes <span class="math notranslate nohighlight">\(P(D|H)=P(D_{\phi}|H)\)</span> when <span class="math notranslate nohighlight">\(m\)</span> is unknown. In
+that case, <span class="math notranslate nohighlight">\(m\)</span> is marginalised over its distribution in the
+general population, i.e. <span class="math notranslate nohighlight">\(\int P(D_{m}|H)\,\bar{n}(m')\,dm\)</span>. This
+has the benefit that when m is unknown, the modifying factor is unity
+and the probabilities remain unmodified.</p>
+<p>For completeness, I mention the fully generalized case. This is attained
+when an arbitrary number of photometry bands are considered, each
+consisting of a magnitude measurement <span class="math notranslate nohighlight">\(m\)</span> and measurement
+uncertainty <span class="math notranslate nohighlight">\(\sigma_{m}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[P(D_{m}|H)=\prod\frac{\int_{m}\bar{q}(m)\,p(m|D_{m})\,dm}{\int_{m}\bar{n}(m)\,p(m|D_{m})\,dm}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(p(m|D_{m})\)</span> would refer to a Gaussian error distribution
+with mean <span class="math notranslate nohighlight">\(m\)</span> and standard deviation <span class="math notranslate nohighlight">\(\sigma_{m}\)</span>. This is
+convolved with the distribution properties. Alternatively,
+<span class="math notranslate nohighlight">\(p(m|D_{m})\)</span> can also consider upper limits. However, such options
+are not yet implemented in Nway. Instead, we recommend removing
+magnitude values with large uncertainties (setting them to -99).</p>
+</section>
+<section id="auto-calibration">
+<span id="sec-auto-calibration"></span><h2>Auto-calibration<a class="headerlink" href="#auto-calibration" title="Link to this heading"></a></h2>
+<p>The probability distributions <span class="math notranslate nohighlight">\(\bar{n}(m)\)</span> and <span class="math notranslate nohighlight">\(\bar{q}(m)\)</span>
+can be taken from other observations by computing the magnitude
+histograms of the overall population and the target sub-population (e.g.
+X-ray sources).</p>
+<p>Under certain approximations and assumptions, these histograms can also
+be computed during the catalogue matching procedure while also being
+used for the weighting. One could perform the distance-based matching
+procedure laid out above, and compute a magnitude histogram of the
+secure counterparts as an approximation for <span class="math notranslate nohighlight">\(\bar{q}(m)\)</span> and a
+histogram of ruled out counterparts for <span class="math notranslate nohighlight">\(\bar{n}(m)\)</span>. While the
+weights <span class="math notranslate nohighlight">\(\bar{q}(m)/\bar{n}(m)\)</span> may strongly influence the
+probabilities of the associations for a single object, the bulk of the
+associations will be dominated by distance-weighting. One may thus
+assume that the <span class="math notranslate nohighlight">\(\bar{q}(m)\)</span> and <span class="math notranslate nohighlight">\(\bar{n}(m)\)</span> are computed
+with and without applying the magnitude weighting are the same, which is
+true in practice. When differences are noticed, they will only
+strengthen <span class="math notranslate nohighlight">\(\bar{q}(m)\)</span>, and the procedure may be iterated.</p>
+</section>
+<section id="implementation">
+<span id="sec-implementation"></span><h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h2>
+<p>This section gives some details connecting the math above to
+a concrete and efficient implementation on a computer.</p>
+<p>The implementation for matching <span class="math notranslate nohighlight">\(n\)</span> catalogues is a Python program
+called nway. The input catalogues have to be in FITS format. Information
+about the (shared) sky coverage has to be provided to the program as
+well. The program proceeds in four steps.</p>
+<p>First, possible associations are found. It is unfeasible and unnecessary
+to consider all theoretical possibilities (complexity
+<span class="math notranslate nohighlight">\(O(\prod_{i=1}^{k}N_{i})\)</span>), so the sky is split first to cluster
+nearby objects. For this, a hashing procedure puts each object into
+HEALPix bins <span id="id13">[<a class="reference internal" href="matching.html#id14" title="K. M. Górski, E. Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelmann. HEALPix: A Framework for High-Resolution Discretization and Fast Analysis of Data Distributed on the Sphere. \apj , 622:759-771, April 2005. arXiv:arXiv:astro-ph/0409513, doi:10.1086/427976.">GorskiHivonBanday+05</a>]</span>. The bin width <span class="math notranslate nohighlight">\(w\)</span> is
+chosen so that any association of distance <span class="math notranslate nohighlight">\(w\)</span> are improbable and
+negligible in practice, i.e. much larger than the largest positional
+error. An object with coordinates <span class="math notranslate nohighlight">\(\phi,\,\theta\)</span> is placed in the
+bin corresponding to its coordinate, but also into its neighboring bins
+to avoid boundary effects. This is done for each catalogue separately.
+Then, in each bin, the Cartesian product across catalogues (every
+possible combination of sources) is computed. All associations are
+collected across the bins and filtered to be unique. The hashing
+procedure adds very low effort <span class="math notranslate nohighlight">\(O(\sum_{i=1}^{k}N_{i})\)</span> while the
+Cartesian product is reduced drastically to
+<span class="math notranslate nohighlight">\(O(N_{\text{bins}}\cdot\prod_{i=1}^{k}\frac{N_{i}}{N_{bins}})\)</span>.
+All primary objects that have no associations past this step have
+<span class="math notranslate nohighlight">\(P(\text{&quot;any real association&quot;}|D)=0\)</span>.</p>
+<p>The second step is the computation of posteriors using the angular
+distances between counterparts. The prior is also evaluated from the
+size of the catalogue and the effective coverage, as well as the
+user-supplied prior incompleteness factor. The posterior for each
+association based on the distances only is calculated. These posteriors
+have to be modified (“correcting for unrelated associations”), to
+consider associations unrelated to primary catalogue sources (described
+in the paper, <span id="id14">Salvato <em>et al.</em> [<a class="reference internal" href="matching.html#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span>, in the appendix
+section “Computing all possible matches”).</p>
+<p>In the third step the magnitudes are considered, and the posteriors
+modified. An arbitrary number of magnitude columns in the input
+catalogues can be specified. It is possible to use external magnitude
+histograms (e.g. for sparse matching with few objects) as well as
+computing the histograms from the data itself (see Section
+<a class="reference external" href="subsec:Auto-calibration">[subsec:Auto-calibration]</a>). The breaks of
+the histogram bins are computed adaptively based on the empirical
+cumulative distribution found. Because the histogram bins are usually
+larger than the magnitude measurement uncertainty, the latter is
+currently not considered. The adaptive binning creates bin edges based
+on the number of objects, and is thus independent of the chosen scale
+(magnitudes, flux). Thus the method is not limited to magnitudes, but
+can be used for virtually any other known object property (colours,
+morphology, variability, etc.).</p>
+<p>In the final step, associations are grouped by the object from the
+primary catalogue (here: X-ray source catalogue). The posteriors
+<span class="math notranslate nohighlight">\(p_{\mathrm{any}}\)</span> and <span class="math notranslate nohighlight">\(p_{i}\)</span> are computed. For the output
+catalogue a cut on the posterior probability (e.g. above 80%) can be
+applied, and all associations with their posterior probability are
+written to the output fits catalogue file.</p>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

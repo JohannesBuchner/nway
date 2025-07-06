@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>NWAY - The versatile catalogue matching tool &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/index.html" />
+    <link rel="icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="nway" href="readme.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">NWAY - The versatile catalogue matching tool</a></li>
+<li><a class="reference internal" href="#nway">nway</a><ul>
+<li><a class="reference internal" href="#why-nway">Why nway?</a></li>
+<li><a class="reference internal" href="#contributors">Contributors</a></li>
+<li><a class="reference internal" href="#citing-nway-correctly">Citing nway correctly</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#development-questions-and-issues">Development, questions and issues</a></li>
+<li><a class="reference internal" href="#licence">Licence</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="readme.html" title="Next Chapter: nway"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">nway &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">NWAY - The versatile catalogue matching tool</a></li>
+<li><a class="reference internal" href="#nway">nway</a><ul>
+<li><a class="reference internal" href="#why-nway">Why nway?</a></li>
+<li><a class="reference internal" href="#contributors">Contributors</a></li>
+<li><a class="reference internal" href="#citing-nway-correctly">Citing nway correctly</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#development-questions-and-issues">Development, questions and issues</a></li>
+<li><a class="reference internal" href="#licence">Licence</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <li>
+    <a href="readme.html" title="Next Chapter: nway"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">nway &raquo;</span>
+    </a>
+  </li>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <section id="nway-the-versatile-catalogue-matching-tool">
+<h1>NWAY - The versatile catalogue matching tool<a class="headerlink" href="#nway-the-versatile-catalogue-matching-tool" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="matching.html">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Mathematical details and Implementation</a></li>
+</ul>
+</div>
+</section>
+<section id="nway">
+<h1>nway<a class="headerlink" href="#nway" title="Link to this heading"></a></h1>
+<p>nway is a source cross-matching tool for arbitrarily many astronomical catalogues.</p>
+<section id="why-nway">
+<h2>Why nway?<a class="headerlink" href="#why-nway" title="Link to this heading"></a></h2>
+<p>In astrophysics, a common task is to assemble multi-wavelength
+information about individual sources. This is done by taking the
+detections of sources in the sky (positions, errors, and
+fluxes/magnitudes) from a catalogue of one wavelength and matching it to
+another from another wavelength, or multiple such catalogues. Care has
+to be taken to consider all possible matches and also the possibility
+that the source does not have a counterpart in a catalogue of a given
+depth. For many classes of sources, the Spectral Energy Distribution
+(SED) provides additional hints, which associations are likely real. For
+instance, the color distribution of stars in the WISE bands is different
+than that of quasars or galaxies.</p>
+<p>nway is a generic solution to these tasks:</p>
+<ol class="arabic simple">
+<li><p>Matching of N catalogues simultaneously.</p></li>
+<li><p>Consideration of all combinatorically possible matches.</p></li>
+<li><p>Consideration of partial matches across catalogues, i.e. the absence
+of counterparts in some catalogues.</p></li>
+<li><p>Taking into account the positional uncertainty of each source.</p></li>
+<li><p>Computation of a probability for each possible match.</p></li>
+<li><p>Computation of a probability that there is no match.</p></li>
+<li><p>Incorporating additional prior information about the sources, such as
+magnitude, color, etc, to refine the match probabilities.</p></li>
+<li><p>Accurate and fast for both small survey areas and all-sky catalogues</p></li>
+</ol>
+</section>
+<section id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Mara Salvato – idea and leading the science case.</p></li>
+<li><p>Tamás Budavári – shared basic implementation of his formulae.</p></li>
+<li><p>Sotiria Fotopoulou – initial implementation for matching three
+catalogues.</p></li>
+<li><p>Johannes Buchner – complete code rewrite for the general case,
+documentation, manual and adding features.</p></li>
+</ul>
+<p>The code is the results of many discussion among colleagues and friends.
+We thank in particular: Tamás Budavári, Sotiria Fotopoulou, Fabrizia
+Guglielmetti, Arne Rau, Tom Dwelly, Andrea Merloni and Kirpal Nandra.</p>
+</section>
+<section id="citing-nway-correctly">
+<h2>Citing nway correctly<a class="headerlink" href="#citing-nway-correctly" title="Link to this heading"></a></h2>
+<p>Please cite Salvato et al., MNRAS, 2018 (ArXiV:
+<a class="reference external" href="https://arxiv.org/abs/1705.10711">https://arxiv.org/abs/1705.10711</a>, ADS:
+<a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2018MNRAS.473.4937S/abstract">https://ui.adsabs.harvard.edu/abs/2018MNRAS.473.4937S/abstract</a>).</p>
+<p>and add a footnote with the URL to this repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>\<span class="n">footnote</span><span class="p">{</span>\<span class="n">url</span><span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">JohannesBuchner</span><span class="o">/</span><span class="n">nway</span><span class="o">/</span><span class="p">}}</span>
+</pre></div>
+</div>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h2>
+<p>The documentation can be found at: <a class="reference external" href="https://johannesbuchner.github.io/BXA/">https://johannesbuchner.github.io/BXA/</a></p>
+<p>The older manual is in the doc/ folder, <a class="reference external" href="https://github.com/JohannesBuchner/nway/raw/master/doc/nway-manual.pdf">https://github.com/JohannesBuchner/nway/raw/master/doc/nway-manual.pdf</a></p>
+<p>A full worked example with demo catalogues is included.</p>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>The easiest way to install nway is with pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install nway
+</pre></div>
+</div>
+<p>Add –user if you do not have admin privileges. Alternatively,
+download the source code and run “python setup.py install”.</p>
+<p>nway uses the following python packages:</p>
+<ul class="simple">
+<li><p>numpy, scipy, matplotlib</p></li>
+<li><p>astropy</p></li>
+<li><p>tqdm</p></li>
+<li><p>joblib</p></li>
+<li><p>healpy</p></li>
+<li><p>pandas</p></li>
+</ul>
+<p>nway works with both Python 3 and Python 2 and various astropy versions.</p>
+<a class="reference external image-reference" href="https://codecov.io/gh/JohannesBuchner/nway"><img alt="https://codecov.io/gh/JohannesBuchner/nway/branch/master/graph/badge.svg" src="https://codecov.io/gh/JohannesBuchner/nway/branch/master/graph/badge.svg" /></a>
+<a class="reference external image-reference" href="https://github.com/JohannesBuchner/nway/actions/workflows/tests.yml"><img alt="https://github.com/JohannesBuchner/nway/actions/workflows/tests.yml/badge.svg" src="https://github.com/JohannesBuchner/nway/actions/workflows/tests.yml/badge.svg" /></a>
+</section>
+<section id="development-questions-and-issues">
+<h2>Development, questions and issues<a class="headerlink" href="#development-questions-and-issues" title="Link to this heading"></a></h2>
+<p>Please let us know if you have comments about this manual or problems
+running/installing nway.</p>
+<p>For reporting bugs or requesting features, nway’s issue tracker is at:
+<a class="reference external" href="https://github.com/JohannesBuchner/nway/issues/">https://github.com/JohannesBuchner/nway/issues/</a></p>
+<p>nway is a small but powerful tool. Most questions or apparent issues
+arise to understand which information lead to a counterpart being
+preferred, and therefore understanding the input data well. The manual
+will guide you through the computation and the pieces of information
+added together.
+If you encounter issues, try simplifying.</p>
+</section>
+<section id="licence">
+<h2>Licence<a class="headerlink" href="#licence" title="Link to this heading"></a></h2>
+<p>This program is free and open-source software,
+licensed under AGPLv3 (see LICENSE and COPYING files).
+Written by Johannes Buchner (C) 2013-2025</p>
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

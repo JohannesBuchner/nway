@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>User guide: Matching catalogs &#8212; nway 4.7.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css?v=4468db6d" />
+    <script src="_static/jquery.js?v=5d32c60e"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="_static/documentation_options.js?v=bd5f082a"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="canonical" href="https://johannesbuchner.github.io/nway/matching.html" />
+    <link rel="icon" href="_static/icon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Machine learning" href="nwayml.html" />
+    <link rel="prev" title="Installation" href="installation.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">
+          nway</a>
+        <span class="navbar-text navbar-version pull-left"><b>4.7.0</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">nway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getstarted.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User guide: Matching catalogs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nwayml.html">Machine learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="synopsis.html">Command line arguments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="issues.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Mathematical details and Implementation</a></li>
+</ul>
+</ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">User guide: Matching catalogs</a><ul>
+<li><a class="reference internal" href="#simple-distance-based-matching">Simple distance-based matching</a></li>
+<li><a class="reference internal" href="#matching-with-additional-information">Matching with additional information</a><ul>
+<li><a class="reference internal" href="#multiple-priors">Multiple priors</a></li>
+<li><a class="reference internal" href="#providing-a-prior-as-a-file">Providing a prior as a file</a></li>
+<li><a class="reference internal" href="#a-general-approach">A general approach</a></li>
+<li><a class="reference internal" href="#discovering-a-prior-from-distance-matching">Discovering a prior from distance matching</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+              
+                
+  <li>
+    <a href="installation.html" title="Previous Chapter: Installation"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Installation</span>
+    </a>
+  </li>
+  <li>
+    <a href="nwayml.html" title="Next Chapter: Machine learning"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Machine learning &raquo;</span>
+    </a>
+  </li>
+              
+            
+            
+            
+            
+              <li class="hidden-sm"></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+      <div class="col-md-3">
+        <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
+<li><a class="reference internal" href="#">User guide: Matching catalogs</a><ul>
+<li><a class="reference internal" href="#simple-distance-based-matching">Simple distance-based matching</a></li>
+<li><a class="reference internal" href="#matching-with-additional-information">Matching with additional information</a><ul>
+<li><a class="reference internal" href="#multiple-priors">Multiple priors</a></li>
+<li><a class="reference internal" href="#providing-a-prior-as-a-file">Providing a prior as a file</a></li>
+<li><a class="reference internal" href="#a-general-approach">A general approach</a></li>
+<li><a class="reference internal" href="#discovering-a-prior-from-distance-matching">Discovering a prior from distance matching</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <li>
+    <a href="installation.html" title="Previous Chapter: Installation"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm hidden-tablet">&laquo; Installation</span>
+    </a>
+  </li>
+  <li>
+    <a href="nwayml.html" title="Next Chapter: Machine learning"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm hidden-tablet">Machine learning &raquo;</span>
+    </a>
+  </li>
+<form action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+        </div>
+      </div>
+    <div class="body col-md-9 content" role="main">
+      
+  <section id="user-guide-matching-catalogs">
+<h1>User guide: Matching catalogs<a class="headerlink" href="#user-guide-matching-catalogs" title="Link to this heading"></a></h1>
+<p>To achieve reliable results, we recommend that you run matching with
+increasing amount of information (first <cite>distance-based matching &lt;chap:distance-based-matching&gt;</cite>)
+then <a class="reference external" href="chap:additional-priors">adding priors on source properties</a>
+and understand how each influences
+the results.</p>
+<p>Typically, the goal is a compilation of “best matches”, i.e. choosing
+one reliable counterpart for each source. Whatever method used, there
+are always false selection fractions and false non-selection fractions
+in play, which should be characterized. To this end, we recommend to
+shift the source catalogues by a distance much larger than the
+positional errors to simulate the results for chance alignment. This
+fake catalogue should not coincide with original positions (tool
+<code class="docutils literal notranslate"><span class="pre">nway-create-fake-catalogue.py</span></code> may help). For the matching run with
+this fake catalogue, use Nway  with the same settings and from the
+output, choose cut-off limits (<code class="docutils literal notranslate"><span class="pre">p_any</span></code>) that correspond to the desired
+false selection fraction (tool <code class="docutils literal notranslate"><span class="pre">nway-calibrate-cutoff.py</span></code> may help).
+The output of your first Nway  run advises how to use these tools to
+characterise false selection rates and to find an appropriate <code class="docutils literal notranslate"><span class="pre">p_any</span></code>
+threshold.</p>
+<p>Then the Nway  output on the real data can be truncated based on this
+criterion (<code class="docutils literal notranslate"><span class="pre">p_any&gt;cutoff</span></code>), and made into a best match catalogue
+(<code class="docutils literal notranslate"><span class="pre">match_flag==1</span></code>). It may be worth noting ambiguous cases with
+multiple solutions and to store these secondary solutions with similar
+probabilities in another catalogue (<code class="docutils literal notranslate"><span class="pre">match_flag==2</span></code>).</p>
+<section id="simple-distance-based-matching">
+<span id="chap-distance-based-matching"></span><h2>Simple distance-based matching<a class="headerlink" href="#simple-distance-based-matching" title="Link to this heading"></a></h2>
+<p>Before exploring the full power of Nway, we consider a simple,
+illustrative case. We have three catalogues, provided as FITS files:</p>
+<div class="float docutils container">
+<p><em>Input:</em></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>1-1 Primary Catalogue</p></th>
+<th class="head"><p>2nd Catalogue</p></th>
+<th class="head"><p>3rd Catalogue</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1-1 A</p></td>
+<td><p><span class="math notranslate nohighlight">\(\alpha\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{A}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p>B</p></td>
+<td><p><span class="math notranslate nohighlight">\(\beta\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{B}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+<p><em>Output:</em></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Primary
+Catalogue
+Entry</p></th>
+<th class="head"><p>2nd
+Catalogue
+Entry</p></th>
+<th class="head"><p>3rd
+Catalogue
+Entry</p></th>
+<th class="head"><p>Probability</p></th>
+<th class="head"><p>Group</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>A</p></td>
+<td><p><span class="math notranslate nohighlight">\(\alpha\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{A}\)</span></p></td>
+<td><p>…</p></td>
+<td><p>A group</p></td>
+</tr>
+<tr class="row-odd"><td><p>A</p></td>
+<td><p><span class="math notranslate nohighlight">\(\alpha\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{B}\)</span></p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>A</p></td>
+<td><p><span class="math notranslate nohighlight">\(\alpha\)</span></p></td>
+<td><p>(none)</p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>A</p></td>
+<td><p><span class="math notranslate nohighlight">\(\beta\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{A}\)</span></p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>A</p></td>
+<td><p><span class="math notranslate nohighlight">\(\beta\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{B}\)</span></p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>A</p></td>
+<td><p><span class="math notranslate nohighlight">\(\beta\)</span></p></td>
+<td><p>(none)</p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>A</p></td>
+<td><p>(none)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{A}\)</span></p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>A</p></td>
+<td><p>(none)</p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathbb{B}\)</span></p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>A</p></td>
+<td><p>(none)</p></td>
+<td><p>(none)</p></td>
+<td><p>…</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>B</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>…</p></td>
+<td><p>B group</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>In Nway, only the first catalogue (<strong>the primary catalogue</strong>) plays a
+special role. For each entry of it, counterparts are sought from the
+other catalogues.</p>
+<div class="docutils container">
+<p class="rubric" id="example-preparing-input-files">Example - Preparing input files</p>
+<p>Note these points about preparing a catalogue input file:</p>
+<ol class="arabic">
+<li><div class="line-block">
+<div class="line">Each catalogue needs to be a FITS file. The second extension
+should be the table (first extension is a header). TOPCAT writes
+files in this way.</div>
+</div>
+<div class="docutils container">
+<p>Three example catalogues are provided for you in the <code class="docutils literal notranslate"><span class="pre">doc/</span></code>
+directory: <strong>COSMOS_IRAC.fits, COSMOS_OPTICAL.fits and
+COSMOS_XMM.fits</strong>. These are the same files as in Appendix B of
+<span id="id1">Salvato <em>et al.</em> [<a class="reference internal" href="#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span>, extracted from
+<span id="id2">Sanders <em>et al.</em> [<a class="reference internal" href="#id20" title="D. B. Sanders, M. Salvato, H. Aussel, O. Ilbert, N. Scoville, J. A. Surace, D. T. Frayer, K. Sheth, G. Helou, T. Brooke, B. Bhattacharya, L. Yan, J. S. Kartaltepe, J. E. Barnes, A. W. Blain, D. Calzetti, P. Capak, C. Carilli, C. M. Carollo, A. Comastri, E. Daddi, R. S. Ellis, M. Elvis, S. M. Fall, A. Franceschini, M. Giavalisco, G. Hasinger, C. Impey, A. Koekemoer, O. Le Fèvre, S. Lilly, M. C. Liu, H. J. McCracken, B. Mobasher, A. Renzini, M. Rich, E. Schinnerer, P. L. Shopbell, Y. Taniguchi, D. J. Thompson, C. M. Urry, and J. P. Williams. S-COSMOS: The Spitzer Legacy Survey of the Hubble Space Telescope ACS 2 deg$^2$ COSMOS Field I: Survey Strategy and First Analysis. \apjs , 172:86-98, September 2007. arXiv:astro-ph/0701318, doi:10.1086/517885.">SandersSalvatoAussel+07</a>]</span>/<span id="id3">McCracken <em>et al.</em> [<a class="reference internal" href="#id17" title="H. J. McCracken, J. A. Peacock, L. Guzzo, P. Capak, C. Porciani, N. Scoville, H. Aussel, A. Finoguenov, J. B. James, M. G. Kitzbichler, A. Koekemoer, A. Leauthaud, O. Le Fèvre, R. Massey, Y. Mellier, B. Mobasher, P. Norberg, J. Rhodes, D. B. Sanders, S. S. Sasaki, Y. Taniguchi, D. J. Thompson, S. D. M. White, and A. El-Zant. The Angular Correlations of Galaxies in the COSMOS Field. \apjs , 172:314-319, September 2007. arXiv:0704.2545, doi:10.1086/518693.">McCrackenPeacockGuzzo+07</a>]</span>,
+<span id="id4">Ilbert <em>et al.</em> [<a class="reference internal" href="#id16" title="O. Ilbert, M. Salvato, E. Le Floc'h, H. Aussel, P. Capak, H. J. McCracken, B. Mobasher, J. Kartaltepe, N. Scoville, D. B. Sanders, S. Arnouts, K. Bundy, P. Cassata, J.-P. Kneib, A. Koekemoer, O. Le Fèvre, S. Lilly, J. Surace, Y. Taniguchi, L. Tasca, D. Thompson, L. Tresse, M. Zamojski, G. Zamorani, and E. Zucca. Galaxy Stellar Mass Assembly Between 0.2 &lt; z &lt; 2 from the S-COSMOS Survey. \apj , 709:644-663, February 2010. arXiv:0903.0102, doi:10.1088/0004-637X/709/2/644.">IlbertSalvatoLeFloch+10</a>]</span> and
+<span id="id5">Brusa <em>et al.</em> [<a class="reference internal" href="#id10" title="M. Brusa, F. Civano, A. Comastri, T. Miyaji, M. Salvato, G. Zamorani, N. Cappelluti, F. Fiore, G. Hasinger, V. Mainieri, A. Merloni, A. Bongiorno, P. Capak, M. Elvis, R. Gilli, H. Hao, K. Jahnke, A. M. Koekemoer, O. Ilbert, E. Le Floc'h, E. Lusso, M. Mignoli, E. Schinnerer, J. D. Silverman, E. Treister, J. D. Trump, C. Vignali, M. Zamojski, T. Aldcroft, H. Aussel, S. Bardelli, M. Bolzonella, A. Cappi, K. Caputi, T. Contini, A. Finoguenov, A. Fruscione, B. Garilli, C. D. Impey, A. Iovino, K. Iwasawa, P. Kampczyk, J. Kartaltepe, J. P. Kneib, C. Knobel, K. Kovac, F. Lamareille, J.-F. Leborgne, V. Le Brun, O. Le Fevre, S. J. Lilly, C. Maier, H. J. McCracken, R. Pello, Y.-J. Peng, E. Perez-Montero, L. de Ravel, D. Sanders, M. Scodeggio, N. Z. Scoville, M. Tanaka, Y. Taniguchi, L. Tasca, S. de la Torre, L. Tresse, D. Vergani, and E. Zucca. The XMM-Newton Wide-field Survey in the Cosmos Field (XMM-COSMOS): Demography and Multiwavelength Properties of Obscured and Unobscured Luminous Active Galactic Nuclei. \apj , 716:348-369, June 2010. arXiv:1004.2790, doi:10.1088/0004-637X/716/1/348.">BrusaCivanoComastri+10</a>]</span> respectively.</p>
+</div>
+</li>
+<li><div class="line-block">
+<div class="line">The data table needs to have a extension name and the keyword
+SKYAREA. The extension name is used as a prefix as all columns
+are copied to the output catalogue. The SKYAREA keyword tells
+the area on the sky in <strong>square degrees</strong> covered by the
+catalogue. This is important for estimating the chance of random
+alignments. You can use the tool
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">nway-write-header.py</span> <span class="pre">mycat.fits</span> <span class="pre">mytablename</span> <span class="pre">myskyarea</span></code>
+to set the fits header.</div>
+</div>
+<div class="docutils container">
+<div class="line-block">
+<div class="line">For our example files we have a optical, IRAC and XMM
+catalogue covering 2 square degrees:</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">nway-write-header.py</span> <span class="pre">COSMOS_OPTICAL.fits</span> <span class="pre">OPT</span> <span class="pre">2</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">nway-write-header.py</span> <span class="pre">COSMOS_IRAC.fits</span> <span class="pre">IRAC</span> <span class="pre">2</span></code></div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">nway-write-header.py</span> <span class="pre">COSMOS_XMM.fits</span> <span class="pre">XMM</span> <span class="pre">2</span></code></div>
+</div>
+</div>
+</li>
+<li><p>Each catalogue needs to have a column RA and DEC providing the
+coordinates in <strong>degrees</strong>. To make your life easier, Nway  tries
+to be a bit fuzzy and detect the columns named RA_something etc.
+It will print out which columns it found and used.</p></li>
+<li><p>The primary catalogue needs to have a ID column. In our example
+this is the X-ray catalogue. To make your life easier, Nwaytries
+to be a bit fuzzy and detect the columns named ID_something etc.
+It will print out which columns it found and used.</p></li>
+<li><p>Otherwise the file can have arbitrary columns which are copied
+over to the output file.</p></li>
+</ol>
+</div>
+<p>Every possible combination of association is considered. However, in
+practice you do not want an extremely large output catalogue with
+extremely distant, unlikely to be physically associated. You can set the
+largest distance in degrees to consider by setting <code class="docutils literal notranslate"><span class="pre">--radius</span></code>. This
+speeds up the computation. But use a value that is much larger than the
+largest positional error.</p>
+<div class="docutils container">
+<p class="rubric" id="example-matching-two-catalogues">Example - Matching two catalogues</p>
+<p>Lets try the simplest example and match the XMM X-ray catalogue to an
+optical catalogue. The XMM catalogue has a pos_err column with the
+positional error in arcseconds. For the optical catalogue we will
+assume a fixed error of 0.1 arcseconds.</p>
+<div class="docutils container">
+<p>Run this command in the doc/ folder:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">../nway.py</span> <span class="pre">COSMOS_XMM.fits</span> <span class="pre">:pos_err</span> <span class="pre">COSMOS_OPTICAL.fits</span> <span class="pre">0.1</span> <span class="pre">--out=example1.fits</span> <span class="pre">--radius</span> <span class="pre">15</span> <span class="pre">--prior-completeness</span> <span class="pre">0.9</span></code></p>
+</div>
+<p>Lets understand what we put in:</p>
+<ol class="arabic simple">
+<li><p>We passed two catalogue files: COSMOS_XMM.fits and
+COSMOS_OPTICAL.fits. For the first one, we told Nwayto use the
+column (“:”) <code class="docutils literal notranslate"><span class="pre">pos_err</span></code> in that catalogue for the positional
+error (<strong>always in arcsec</strong>). For the second one we specified a
+fixed error of 0.1 arcsec.</p></li>
+<li><p>We specified where the output should be written (<code class="docutils literal notranslate"><span class="pre">--out</span></code>).</p></li>
+<li><p>The largest XMM error is 7.3 arcsec, so we adopt a cropping radius
+of 15 arcsec to speed up the matching (<code class="docutils literal notranslate"><span class="pre">--radius</span> <span class="pre">15</span></code>). A larger
+radius produces a more complete catalogue. For dense catalogues
+larger radii can be much slower to compute, as the number of
+combinations to consider rises exponentially.</p></li>
+<li><p>The parameter <code class="docutils literal notranslate"><span class="pre">--prior-completeness</span> <span class="pre">0.9</span></code> is mentioned below.</p></li>
+</ol>
+</div>
+<div class="float docutils container">
+<div class="docutils container">
+<p>Lets understand what Nway  did:</p>
+</div>
+<ol class="arabic">
+<li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NWAY</span> <span class="n">arguments</span><span class="p">:</span>
+    <span class="n">catalogues</span><span class="p">:</span>  <span class="n">COSMOS_XMM</span><span class="o">.</span><span class="n">fits</span><span class="p">,</span> <span class="n">COSMOS_OPTICAL</span><span class="o">.</span><span class="n">fits</span>
+    <span class="n">position</span> <span class="n">errors</span><span class="o">/</span><span class="n">columns</span><span class="p">:</span>  <span class="p">:</span><span class="n">pos_err</span><span class="p">,</span> <span class="mf">0.1</span>
+      <span class="kn">from</span> <span class="nn">catalogue</span> <span class="s2">&quot;XMM&quot;</span> <span class="p">(</span><span class="mi">1797</span><span class="p">),</span> <span class="n">density</span> <span class="ow">is</span> <span class="mf">3.706579e+07</span>
+      <span class="kn">from</span> <span class="nn">catalogue</span> <span class="s2">&quot;OPT&quot;</span> <span class="p">(</span><span class="mi">560536</span><span class="p">),</span> <span class="n">density</span> <span class="ow">is</span> <span class="mf">1.156188e+10</span>
+    <span class="n">magnitude</span> <span class="n">columns</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>It reads the catalogues and looks at their densities.</p>
+</li>
+<li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">matching</span> <span class="k">with</span> <span class="mf">15.000000</span> <span class="n">arcsec</span> <span class="n">radius</span>
+<span class="n">matching</span><span class="p">:</span> <span class="mi">1007283192</span> <span class="n">naive</span> <span class="n">possibilities</span>
+<span class="n">matching</span><span class="p">:</span> <span class="n">hashing</span>
+    <span class="n">using</span> <span class="n">RA</span>  <span class="n">columns</span><span class="p">:</span> <span class="n">RA</span><span class="p">,</span> <span class="n">RA</span>
+    <span class="n">using</span> <span class="n">DEC</span> <span class="n">columns</span><span class="p">:</span> <span class="n">DEC</span><span class="p">,</span> <span class="n">DEC</span>
+<span class="n">matching</span><span class="p">:</span> <span class="n">healpix</span> <span class="n">hashing</span> <span class="n">on</span> <span class="n">pixel</span> <span class="n">resolution</span> <span class="o">~</span> <span class="mf">18.036304</span> <span class="n">arcsec</span> <span class="p">(</span><span class="n">nside</span><span class="o">=</span><span class="mi">8192</span><span class="p">)</span>
+<span class="mi">100</span><span class="o">%</span> <span class="o">|</span> <span class="mi">562333</span><span class="o">|</span><span class="c1">############################################|Time: 0:00:13</span>
+<span class="n">matching</span><span class="p">:</span> <span class="n">collecting</span> <span class="kn">from</span> <span class="mi">61787</span> <span class="n">buckets</span><span class="p">,</span> <span class="n">creating</span> <span class="n">cartesian</span> <span class="n">products</span> <span class="o">...</span>
+<span class="mi">100</span><span class="o">%|</span><span class="mi">61787</span><span class="o">|</span><span class="c1">###############################################|Time: 0:00:02</span>
+<span class="n">matching</span><span class="p">:</span> <span class="mi">462267</span> <span class="n">unique</span> <span class="n">matches</span> <span class="kn">from</span> <span class="nn">cartesian</span> <span class="n">product</span><span class="o">.</span> <span class="n">sorting</span> <span class="o">...</span>
+<span class="n">merging</span> <span class="ow">in</span> <span class="mi">10</span> <span class="n">columns</span> <span class="kn">from</span> <span class="nn">input</span> <span class="n">catalogues</span> <span class="o">...</span>
+<span class="mi">100</span><span class="o">%</span> <span class="mi">10</span><span class="o">|</span><span class="c1">##################################################|Time: 0:00:00</span>
+    <span class="n">adding</span> <span class="n">angular</span> <span class="n">separation</span> <span class="n">columns</span>
+<span class="n">matching</span><span class="p">:</span>  <span class="mi">22435</span> <span class="n">matches</span> <span class="n">after</span> <span class="n">filtering</span> <span class="n">by</span> <span class="n">search</span> <span class="n">radius</span>
+</pre></div>
+</div>
+<p>Within 20 seconds it created a cross-match of remotely possible
+associations (1,007,283,192 in principle, 22,435 within 15
+arcseconds).</p>
+</li>
+<li><p>It found ID, RA, DEC, and positional error columns.</p></li>
+<li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Computing</span> <span class="n">distance</span><span class="o">-</span><span class="n">based</span> <span class="n">probabilities</span> <span class="o">...</span>
+  <span class="n">finding</span> <span class="n">position</span> <span class="n">error</span> <span class="n">columns</span> <span class="o">...</span>
+    <span class="n">Position</span> <span class="n">error</span> <span class="k">for</span> <span class="s2">&quot;XMM&quot;</span><span class="p">:</span> <span class="n">found</span> <span class="n">column</span> <span class="n">XMM_pos_err</span><span class="p">:</span> <span class="n">Values</span> <span class="n">are</span> <span class="p">[</span><span class="mf">0.109000</span><span class="o">.</span><span class="mf">.7.301000</span><span class="p">]</span>
+    <span class="n">Position</span> <span class="n">error</span> <span class="k">for</span> <span class="s2">&quot;OPT&quot;</span><span class="p">:</span> <span class="n">using</span> <span class="n">fixed</span> <span class="n">value</span> <span class="mf">0.100000</span>
+  <span class="n">finding</span> <span class="n">position</span> <span class="n">columns</span> <span class="o">...</span>
+  <span class="n">building</span> <span class="n">primary_id</span> <span class="n">index</span> <span class="o">...</span>
+  <span class="n">computing</span> <span class="n">probabilities</span> <span class="o">...</span>
+      <span class="n">correcting</span> <span class="k">for</span> <span class="n">unrelated</span> <span class="n">associations</span> <span class="o">...</span> <span class="ow">not</span> <span class="n">necessary</span>
+
+<span class="n">Computing</span> <span class="n">final</span> <span class="n">probabilities</span> <span class="o">...</span>
+    <span class="n">grouping</span> <span class="n">by</span> <span class="n">column</span> <span class="s2">&quot;XMM_ID&quot;</span> <span class="ow">and</span> <span class="n">flagging</span> <span class="o">...</span>
+<span class="mi">100</span><span class="o">%|</span>  <span class="mi">1797</span><span class="o">|</span><span class="c1">###################################|Time: 0:00:00</span>
+</pre></div>
+</div>
+<p>It computed the probability of each association.</p>
+</li>
+<li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">creating</span> <span class="n">output</span> <span class="n">FITS</span> <span class="n">file</span> <span class="o">...</span>
+    <span class="n">writing</span> <span class="s2">&quot;example1.fits&quot;</span> <span class="p">(</span><span class="mi">37836</span> <span class="n">rows</span><span class="p">,</span> <span class="mi">17</span> <span class="n">columns</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It wrote the output file <code class="docutils literal notranslate"><span class="pre">example1.fits</span></code>. This file contains all
+columns from the input catalogues and the computed probabilities
+(see below for their meaning).</p>
+</li>
+</ol>
+</div>
+<p>So how does Nway  deal with a particular, possible association and
+compute its probability?</p>
+<p>The probability of a given association is computed by comparing the
+probability of a random chance alignment of unrelated sources (prior) to
+the likelihood that the source is the same. The gory mathematical
+details are laid out in ‘Mathematical details &lt;math&gt;`_, but from a user
+point of view the following is important:</p>
+<ol class="arabic simple">
+<li><p>The chance of a random alignment depends on the source sky density of
+the various catalogues. <strong>So each catalogue needs to have a FITS
+header entry</strong> <strong>``SKYAREA``</strong> <strong>which tells the area covered by the
+catalogue in square degrees.</strong> The source density on the sky is then
+computed by the number of entries divided by that area. You can use
+the tool
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">nway-write-header.py</span> <span class="pre">mycat.fits</span> <span class="pre">mytablename</span> <span class="pre">myskyarea</span></code> to
+set the fits header.</p></li>
+<li><p>Varying depths between the catalogues and different coverage can
+further reduce the fraction of expected matches. This can be adjusted
+by setting <code class="docutils literal notranslate"><span class="pre">--prior-completeness=0.9</span></code>, if previous experience is
+that only 90% of sources have a match with the given inputs.</p></li>
+</ol>
+<p>The outputs catalogue then contains six important new columns along with
+all columns of the input catalogues:</p>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">dist_bayesfactor</span></code>: logarithm of ratio between prior and posterior
+from distance matching</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dist_post</span></code>: Distance posterior probability comparing this
+association vs. no association, as in
+<span id="id6">Budavári and Szalay [<a class="reference internal" href="#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_single</span></code>: Same as <code class="docutils literal notranslate"><span class="pre">dist_post</span></code> unless additional information was
+added, see Section 2.6.</p></li>
+<li><p><strong>``p_any``</strong>: For each entry in the primary catalogue (e.g. A) the
+probability that one of the association is the correct one is
+computed. Because every catalogue is limited by its depth, it is
+possible that the true counterpart has not been found yet. Our
+testing suggest that the <strong>threshold for a secure catalogue depends
+on the application.</strong>
+Section [sec:Best-practice-matching]
+explains how to calibrate a threshold.</p></li>
+<li><div class="line-block">
+<div class="line"><strong>``p_i``</strong>: For each possible association for each entry in the
+primary catalogue (e.g. A), the relative probability is computed.
+Our testing suggest that secure, pure catalogue <strong>should keep only
+associations where ``p_i&gt;=0.1``. Secondary solutions down to 0.1
+may be interesting. These thresholds may depend on the application
+– please report what your testing gives.</strong></div>
+</div>
+<div class="docutils container">
+<p>Low <code class="docutils literal notranslate"><span class="pre">p_any</span></code> and <code class="docutils literal notranslate"><span class="pre">p_i</span></code> values by themselves do not necessarily
+mean that the counterpart is ruled out. It can also mean that
+there is not enough evidence/information to declare it a
+counterpart.</p>
+</div>
+</li>
+<li><p><strong>``match_flag``</strong>: The most probable match is indicated with <code class="docutils literal notranslate"><span class="pre">1</span></code>
+for each primary catalogue entry. Secondary, almost as good solutions
+are marked with <code class="docutils literal notranslate"><span class="pre">2</span></code>. By default, the maximum allowed ratio is at
+most 0.5, but the user can modify this threshold via the
+<code class="docutils literal notranslate"><span class="pre">--acceptable-prob</span></code> parameter. All other associations are marked
+with <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+</ol>
+<p>Use the last three columns to identify sources with one solution,
+possible secondary solutions, and to build final catalogues.
+‘Mathematical details &lt;math&gt;`_ explains how these quantities are computed. To
+filter out low-probability associations (low <code class="docutils literal notranslate"><span class="pre">p_i</span></code>) from the output
+catalogue, the <code class="docutils literal notranslate"><span class="pre">--min-prob</span></code> parameter can be used.</p>
+<div class="docutils container">
+<p class="rubric" id="example-output-of-matching-two-catalogues">Example - Output of matching two catalogues</p>
+<p>Lets understand the output fits file and the associations found for a
+particular X-ray source.</p>
+<div class="docutils container">
+<p>Open the fits file and find XMM_ID=60388. As you can see from the
+<code class="docutils literal notranslate"><span class="pre">p_i</span></code> column, this is a ambiguous case, where more than one
+optical counterpart is possible.</p>
+</div>
+<p>Below is an illustration of this ambiguous case (produced with
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">../nway-explain.py</span> <span class="pre">example1.fits</span> <span class="pre">60388</span></code>).</p>
+<p>Two sources are at a similar distance from the X-ray source (blue,
+with error circle). Therefore their association probability (<code class="docutils literal notranslate"><span class="pre">p_i</span></code>)
+is similar. The slightly higher one is marked as match_flag=1
+(orange), the other with 2 (yellow).</p>
+<p><a class="reference external" href="chap:additional-priors">The next section</a> solves this by adding more
+information (the magnitude distribution). But we can also solve this
+another way. We know AGN (the X-ray source) emit in the infrared, so
+you can also match with an IRAC catalogue.</p>
+<div class="docutils container">
+<p>Make a three-way match like so:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">../nway.py</span> <span class="pre">COSMOS_XMM.fits</span> <span class="pre">:pos_err</span> <span class="pre">COSMOS_OPTICAL.fits</span> <span class="pre">0.1</span> <span class="pre">COSMOS_IRAC.fits</span> <span class="pre">0.5</span> <span class="pre">--out=example3.fits</span> <span class="pre">--radius</span> <span class="pre">15</span></code></p>
+</div>
+<p>However, overall we should note that <code class="docutils literal notranslate"><span class="pre">p_any</span></code> is low, indicating
+that probably neither of the two candidates is the counterpart.</p>
+</div>
+<figure class="align-default">
+<img alt="Visualisation of match geometry" src="_images/example1.fits_explain_60388.png" />
+</figure>
+</section>
+<section id="matching-with-additional-information">
+<span id="chap-additional-priors"></span><h2>Matching with additional information<a class="headerlink" href="#matching-with-additional-information" title="Link to this heading"></a></h2>
+<p>For many classes of sources, the Spectral Energy Distribution (SED)
+provides additional hints, which associations are likely real. For
+instance, bright X-ray sources have a different color distribution in
+the WISE bands than non-X-ray emitting objects. A powerful feature of
+Nway  is to take advantage of this additional information to improve the
+matching. Section 5.2 has the mathematical details
+and a comparison to the Likelihood Ratio method.</p>
+<div class="docutils container">
+<p class="rubric" id="example-using-magnitude-information">Example - Using magnitude information</p>
+<p>X-ray sources (which we are looking for in our example) have a
+different optical magnitude distribution than non-X-ray emitting
+objects. Lets take advantage of this information:</p>
+<div class="docutils container">
+<p>Run this command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">../nway.py</span> <span class="pre">COSMOS_XMM.fits</span> <span class="pre">:pos_err</span> <span class="pre">COSMOS_OPTICAL.fits</span> <span class="pre">0.1</span> <span class="pre">--out=example2.fits</span> <span class="pre">--radius</span> <span class="pre">15</span> <span class="pre">--prior-completeness</span> <span class="pre">0.9</span> <span class="pre">--mag</span> <span class="pre">OPT:MAG</span> <span class="pre">auto</span> <span class="pre">--mag-radius</span> <span class="pre">3.5</span></code></p>
+</div>
+<p>The last two parts are new:</p>
+<p><code class="docutils literal notranslate"><span class="pre">--mag</span> <span class="pre">OPT:MAG</span> <span class="pre">auto</span> <span class="pre">--mag-radius</span> <span class="pre">3.5</span></code></p>
+<p>We use the column <code class="docutils literal notranslate"><span class="pre">MAG</span></code> from the catalogue <code class="docutils literal notranslate"><span class="pre">OPT</span></code> (FITS table
+name), therefore <code class="docutils literal notranslate"><span class="pre">--mag</span> <span class="pre">OPT:MAG</span></code>. After this follows that the
+magnitude prior histogram should be generated from the data (mode
+<code class="docutils literal notranslate"><span class="pre">auto</span></code>), by comparing the <code class="docutils literal notranslate"><span class="pre">MAG</span></code> histogram of sources within 3.5
+arcsec of a X-ray source (<code class="docutils literal notranslate"><span class="pre">--mag-radius</span></code>) to that of full
+histogram.</p>
+<p><em>(example continued below)</em></p>
+</div>
+<p>There are three possible ways to specify the prior in Nway: In all cases
+you specify <code class="docutils literal notranslate"><span class="pre">--mag</span> <span class="pre">column-name</span> <span class="pre">[filename|auto]</span></code>. You can use <code class="docutils literal notranslate"><span class="pre">--mag</span></code>
+several times.</p>
+<ol class="arabic simple">
+<li><p>“File-mode”: If we know the magnitude distribution of X-ray detected
+AGN we can provide this prior distribution as a table (histogram).
+This table contains the color histogram of the sources of interest
+(X-ray detected AGN) and a histogram of other, field sources (more
+details below ).</p></li>
+<li><p>“Simple auto-mode”: Specifying <code class="docutils literal notranslate"><span class="pre">auto</span></code> instead of a file name
+derives the two distributions from the data, as we did in our
+example: All sources inside 3.5 arcseconds (<code class="docutils literal notranslate"><span class="pre">--mag-radius</span></code>
+parameter) of a X-ray source are put into one histogram, and all
+others into another histogram.</p></li>
+<li><p>“Bayesian auto-mode”: Bayesian distance probabilities (<code class="docutils literal notranslate"><span class="pre">dist_post</span></code>)
+will be used if you leave out <code class="docutils literal notranslate"><span class="pre">--mag-radius</span></code>. This is in general
+safer and recommended. In small catalogues the histogram may not be
+sufficiently filled, in which case Nway  will give a warning (more
+details below ).</p></li>
+</ol>
+<div class="docutils container">
+<div class="docutils container">
+<p>Lets look at the histograms it computed. Nway  created
+<code class="docutils literal notranslate"><span class="pre">OPT_MAG_fit.pdf</span></code>, and also <code class="docutils literal notranslate"><span class="pre">OPT_MAG_fit.txt</span></code> as a histogram
+file:</p>
+<img alt="histogram of optical magnitudes for target and field population" src="_images/OPT_MAG_fit.png" />
+<p>They are clearly different: Lower magnitude (bright) sources are
+more likely associated to X-ray sources. This will help our
+matching.</p>
+</div>
+<p>As an example, we show below the ambiguous case from before. The
+upper association has been selected because it has a better match by
+magnitude, resolving the ambiguity.</p>
+<img alt="visualisation of match geometry" src="_images/example2.fits_explain_60388.png" />
+</div>
+<section id="multiple-priors">
+<h3>Multiple priors<a class="headerlink" href="#multiple-priors" title="Link to this heading"></a></h3>
+<p>You can specify as many priors as you like, taking advantage of more and
+more information. Just repeat –mag.</p>
+<div class="docutils container">
+<p>The following example uses one prior from the optical catalogue and
+another prior from the IRAC catalogue. A three-way match is
+performed.
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">../nway.py</span> <span class="pre">COSMOS_XMM.fits</span> <span class="pre">:pos_err</span> <span class="pre">COSMOS_OPTICAL.fits</span> <span class="pre">0.1</span> <span class="pre">COSMOS_IRAC.fits</span> <span class="pre">0.5</span> <span class="pre">--out=example3.fits</span> <span class="pre">--radius</span> <span class="pre">20</span> <span class="pre">--prior-completeness</span> <span class="pre">0.9</span> <span class="pre">--mag</span> <span class="pre">OPT:MAG</span> <span class="pre">auto</span> <span class="pre">--mag</span> <span class="pre">IRAC:mag_ch1</span> <span class="pre">auto</span> <span class="pre">--mag-radius</span> <span class="pre">3.5</span></code></p>
+</div>
+</section>
+<section id="providing-a-prior-as-a-file">
+<h3>Providing a prior as a file<a class="headerlink" href="#providing-a-prior-as-a-file" title="Link to this heading"></a></h3>
+<p>In the paper we demonstrate the use of a WISE magnitude of X-ray
+sources. If such prior information comes from previous studies, the
+distributions can be passed to Nway  as a ASCII table histogram. This
+table contains the histogram of the sources of interest (X-ray sources)
+and a histogram of other sources (non-X-ray sources). The file
+<code class="docutils literal notranslate"><span class="pre">OPT_MAG_fit.txt</span></code> is an example of such a input file, and can be used
+via <code class="docutils literal notranslate"><span class="pre">--mag</span> <span class="pre">OPT:MAG</span> <span class="pre">OPT_MAG_fit.txt</span></code>. It contains four columns (lower
+and upper bin edge, density of selected and non-selected) and looks like
+this (# indicates comments):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># OPT_MAG_fit.txt</span>
+<span class="c1"># lo         hi          selected   others</span>
+  <span class="mf">10.76000</span>   <span class="mf">18.98571</span>    <span class="mf">0.00870</span>    <span class="mf">0.00183</span>
+  <span class="mf">18.98571</span>   <span class="mf">20.27286</span>    <span class="mf">0.05562</span>    <span class="mf">0.01448</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
+<div class="docutils container">
+<p>Keep in mind that a prior created from a different data set can only
+be used if it is applicable to the present data set. For example, in
+the introduction of the paper
+<span id="id7">Salvato <em>et al.</em> [<a class="reference internal" href="#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span> we stress that a prior from
+a comparable X-ray exposure depth must be used when deriving color
+distributions.</p>
+</div>
+</section>
+<section id="a-general-approach">
+<h3>A general approach<a class="headerlink" href="#a-general-approach" title="Link to this heading"></a></h3>
+<p>Providing priors is not limited to magnitude distributions, you can use
+colors or any other information you want (e.g. morphology, variability,
+etc.). The approach is very general, Nway  just looks at the
+corresponding bin and reweighs the probabilities. For example, in
+<span id="id8">Salvato <em>et al.</em> [<a class="reference internal" href="#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span>, the counterparts to ROSAT
+sources where found using WISE. The prior was build by using the
+color-magnitude (W1-W2 vs W2) properties of ~3000 secure counterparts to
+the 3XMM-Bright survey cut at the depth reached by ROSAT.</p>
+</section>
+<section id="discovering-a-prior-from-distance-matching">
+<h3>Discovering a prior from distance matching<a class="headerlink" href="#discovering-a-prior-from-distance-matching" title="Link to this heading"></a></h3>
+<p>If you set <code class="docutils literal notranslate"><span class="pre">--mag</span> <span class="pre">OPT:MAG</span> <span class="pre">auto</span></code> and do not set <code class="docutils literal notranslate"><span class="pre">--mag-radius</span></code>, Nway
+uses the Bayesian distance matching for discovering the histogram of
+<code class="docutils literal notranslate"><span class="pre">OPT:MAG</span></code>, as follows:</p>
+<ol class="arabic simple">
+<li><p>Those with <code class="docutils literal notranslate"><span class="pre">dist_post&gt;0.9</span></code> are considered safe matches and are used
+for the “selected” histogram.</p></li>
+<li><p>Those with <code class="docutils literal notranslate"><span class="pre">dist_post&lt;0.01</span></code> are considered safe non-matches and are
+used for the “others” histogram.</p></li>
+<li><p>Entries of -99 are always ignored. It is usually better to assign -99
+where the magnitude error is large, to get cleaner histograms.</p></li>
+</ol>
+<p>This is in general more cautious, and recommended for large catalogues</p>
+<div class="docutils container">
+<p>However, if you only have a small catalogue you may build a poorly
+sampled histogram, potentially leading to biases. Nway  will warn you
+when only few sources were selected.</p>
+</div>
+<div class="docutils container" id="id9">
+<div role="list" class="citation-list">
+<div class="citation" id="id10" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">BrusaCivanoComastri+10</a><span class="fn-bracket">]</span></span>
+<p>M. Brusa, F. Civano, A. Comastri, T. Miyaji, M. Salvato, G. Zamorani, N. Cappelluti, F. Fiore, G. Hasinger, V. Mainieri, A. Merloni, A. Bongiorno, P. Capak, M. Elvis, R. Gilli, H. Hao, K. Jahnke, A. M. Koekemoer, O. Ilbert, E. Le Floc'h, E. Lusso, M. Mignoli, E. Schinnerer, J. D. Silverman, E. Treister, J. D. Trump, C. Vignali, M. Zamojski, T. Aldcroft, H. Aussel, S. Bardelli, M. Bolzonella, A. Cappi, K. Caputi, T. Contini, A. Finoguenov, A. Fruscione, B. Garilli, C. D. Impey, A. Iovino, K. Iwasawa, P. Kampczyk, J. Kartaltepe, J. P. Kneib, C. Knobel, K. Kovac, F. Lamareille, J.-F. Leborgne, V. Le Brun, O. Le Fevre, S. J. Lilly, C. Maier, H. J. McCracken, R. Pello, Y.-J. Peng, E. Perez-Montero, L. de Ravel, D. Sanders, M. Scodeggio, N. Z. Scoville, M. Tanaka, Y. Taniguchi, L. Tasca, S. de la Torre, L. Tresse, D. Vergani, and E. Zucca. The XMM-Newton Wide-field Survey in the Cosmos Field (XMM-COSMOS): Demography and Multiwavelength Properties of Obscured and Unobscured Luminous Active Galactic Nuclei. <em>\apj </em>, 716:348–369, June 2010. <a class="reference external" href="https://arxiv.org/abs/1004.2790">arXiv:1004.2790</a>, <a class="reference external" href="https://doi.org/10.1088/0004-637X/716/1/348">doi:10.1088/0004-637X/716/1/348</a>.</p>
+</div>
+<div class="citation" id="id11" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>BrusaComastriDaddi+05<span class="fn-bracket">]</span></span>
+<p>M. Brusa, A. Comastri, E. Daddi, L. Pozzetti, G. Zamorani, C. Vignali, A. Cimatti, F. Fiore, M. Mignoli, P. Ciliegi, and H. J. A. Röttgering. XMM-Newton observations of Extremely Red Objects and the link with luminous, X-ray obscured quasars. <em>\aap </em>, 432:69–81, March 2005. <a class="reference external" href="https://arxiv.org/abs/arXiv:astro-ph/0409257">arXiv:arXiv:astro-ph/0409257</a>, <a class="reference external" href="https://doi.org/10.1051/0004-6361:20041468">doi:10.1051/0004-6361:20041468</a>.</p>
+</div>
+<div class="citation" id="id13" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">BudavariSzalay08</a><span class="fn-bracket">]</span></span>
+<p>T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. <em>\apj </em>, 679:301–309, May 2008. <a class="reference external" href="https://arxiv.org/abs/0707.1611">arXiv:0707.1611</a>, <a class="reference external" href="https://doi.org/10.1086/587156">doi:10.1086/587156</a>.</p>
+</div>
+<div class="citation" id="id14" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>GorskiHivonBanday+05<span class="fn-bracket">]</span></span>
+<p>K. M. Górski, E. Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelmann. HEALPix: A Framework for High-Resolution Discretization and Fast Analysis of Data Distributed on the Sphere. <em>\apj </em>, 622:759–771, April 2005. <a class="reference external" href="https://arxiv.org/abs/arXiv:astro-ph/0409513">arXiv:arXiv:astro-ph/0409513</a>, <a class="reference external" href="https://doi.org/10.1086/427976">doi:10.1086/427976</a>.</p>
+</div>
+<div class="citation" id="id16" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">IlbertSalvatoLeFloch+10</a><span class="fn-bracket">]</span></span>
+<p>O. Ilbert, M. Salvato, E. Le Floc'h, H. Aussel, P. Capak, H. J. McCracken, B. Mobasher, J. Kartaltepe, N. Scoville, D. B. Sanders, S. Arnouts, K. Bundy, P. Cassata, J.-P. Kneib, A. Koekemoer, O. Le Fèvre, S. Lilly, J. Surace, Y. Taniguchi, L. Tasca, D. Thompson, L. Tresse, M. Zamojski, G. Zamorani, and E. Zucca. Galaxy Stellar Mass Assembly Between 0.2 &lt; z &lt; 2 from the S-COSMOS Survey. <em>\apj </em>, 709:644–663, February 2010. <a class="reference external" href="https://arxiv.org/abs/0903.0102">arXiv:0903.0102</a>, <a class="reference external" href="https://doi.org/10.1088/0004-637X/709/2/644">doi:10.1088/0004-637X/709/2/644</a>.</p>
+</div>
+<div class="citation" id="id17" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">McCrackenPeacockGuzzo+07</a><span class="fn-bracket">]</span></span>
+<p>H. J. McCracken, J. A. Peacock, L. Guzzo, P. Capak, C. Porciani, N. Scoville, H. Aussel, A. Finoguenov, J. B. James, M. G. Kitzbichler, A. Koekemoer, A. Leauthaud, O. Le Fèvre, R. Massey, Y. Mellier, B. Mobasher, P. Norberg, J. Rhodes, D. B. Sanders, S. S. Sasaki, Y. Taniguchi, D. J. Thompson, S. D. M. White, and A. El-Zant. The Angular Correlations of Galaxies in the COSMOS Field. <em>\apjs </em>, 172:314–319, September 2007. <a class="reference external" href="https://arxiv.org/abs/0704.2545">arXiv:0704.2545</a>, <a class="reference external" href="https://doi.org/10.1086/518693">doi:10.1086/518693</a>.</p>
+</div>
+<div class="citation" id="id18" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>PineauDerriereMotch+16<span class="fn-bracket">]</span></span>
+<p>F.-X. Pineau, S. Derriere, C. Motch, F. J. Carrera, F. Genova, L. Michel, B. Mingo, A. Mints, A. Nebot Gómez-Morán, S. R. Rosen, and A. Ruiz Camuñas. Probabilistic multi-catalogue positional cross-match. <em>ArXiv e-prints</em>, September 2016. <a class="reference external" href="https://arxiv.org/abs/1609.00818">arXiv:1609.00818</a>.</p>
+</div>
+<div class="citation" id="id19" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>SalvatoBuchnerBudavari+18<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id7">2</a>,<a role="doc-backlink" href="#id8">3</a>)</span>
+<p>M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. <em>\mnras </em>, 473:4937–4955, February 2018. <a class="reference external" href="https://arxiv.org/abs/1705.10711">arXiv:1705.10711</a>, <a class="reference external" href="https://doi.org/10.1093/mnras/stx2651">doi:10.1093/mnras/stx2651</a>.</p>
+</div>
+<div class="citation" id="id22" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>SalvatoWolfDwelly+22<span class="fn-bracket">]</span></span>
+<p>M. Salvato, J. Wolf, T. Dwelly, A. Georgakakis, M. Brusa, A. Merloni, T. Liu, Y. Toba, K. Nandra, G. Lamer, J. Buchner, C. Schneider, S. Freund, A. Rau, A. Schwope, A. Nishizawa, M. Klein, R. Arcodia, J. Comparat, B. Musiimenta, T. Nagao, H. Brunner, A. Malyali, A. Finoguenov, S. Anderson, Y. Shen, H. Ibarra-Medel, J. Trump, W. N. Brandt, C. M. Urry, C. Rivera, M. Krumpe, T. Urrutia, T. Miyaji, K. Ichikawa, D. P. Schneider, A. Fresco, T. Boller, J. Haase, J. Brownstein, R. R. Lane, D. Bizyaev, and C. Nitschelm. The eROSITA Final Equatorial-Depth Survey (eFEDS). Identification and characterization of the counterparts to point-like sources. <em>\aap </em>, 661:A3, May 2022. <a class="reference external" href="https://arxiv.org/abs/2106.14520">arXiv:2106.14520</a>, <a class="reference external" href="https://doi.org/10.1051/0004-6361/202141631">doi:10.1051/0004-6361/202141631</a>.</p>
+</div>
+<div class="citation" id="id20" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">SandersSalvatoAussel+07</a><span class="fn-bracket">]</span></span>
+<p>D. B. Sanders, M. Salvato, H. Aussel, O. Ilbert, N. Scoville, J. A. Surace, D. T. Frayer, K. Sheth, G. Helou, T. Brooke, B. Bhattacharya, L. Yan, J. S. Kartaltepe, J. E. Barnes, A. W. Blain, D. Calzetti, P. Capak, C. Carilli, C. M. Carollo, A. Comastri, E. Daddi, R. S. Ellis, M. Elvis, S. M. Fall, A. Franceschini, M. Giavalisco, G. Hasinger, C. Impey, A. Koekemoer, O. Le Fèvre, S. Lilly, M. C. Liu, H. J. McCracken, B. Mobasher, A. Renzini, M. Rich, E. Schinnerer, P. L. Shopbell, Y. Taniguchi, D. J. Thompson, C. M. Urry, and J. P. Williams. S-COSMOS: The Spitzer Legacy Survey of the Hubble Space Telescope ACS 2 deg$^2$ COSMOS Field I: Survey Strategy and First Analysis. <em>\apjs </em>, 172:86–98, September 2007. <a class="reference external" href="https://arxiv.org/abs/astro-ph/0701318">arXiv:astro-ph/0701318</a>, <a class="reference external" href="https://doi.org/10.1086/517885">doi:10.1086/517885</a>.</p>
+</div>
+<div class="citation" id="id21" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>SutherlandSaunders92<span class="fn-bracket">]</span></span>
+<p>W. Sutherland and W. Saunders. On the likelihood ratio for source identification. <em>\mnras </em>, 259:413–420, December 1992. URL: <a class="reference external" href="http://adsabs.harvard.edu/cgi-bin/nph-data_query?bibcode=1992MNRAS.259..413S&amp;link_type=ARTICLE&amp;db_key=AST&amp;high=">http://adsabs.harvard.edu/cgi-bin/nph-data_query?bibcode=1992MNRAS.259..413S&amp;link_type=ARTICLE&amp;db_key=AST&amp;high=</a>.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2013-2025, Johannes Buchner.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>
