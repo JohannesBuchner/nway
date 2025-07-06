@@ -41,17 +41,15 @@ the matching catalogues :math:`\Omega_{i>1}\neq\Omega_{1}`, depth of the
 catalogues and/or systematic errors in the coordinates). Our prior can
 thus be written as
 
-.. _`eq:prior`:
-
 .. math:: P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.\label{eq:prior}
+   :label: prior
 
 Bayes’ theorem connects the prior probability :math:`P(H)` to the
 posterior probability :math:`P(H|D)`, by incorporating information
 gained from the observation data :math:`D` via
 
-.. _`eq:bayes`:
-
 .. math:: P(H|D)\propto P(H)\times P(D|H).\label{eq:bayes}
+   :label: bayes
 
 We now extend the approach of :cite:t:`Budavari2008`, to
 allow matches where some catalogues do not participate in a match.
@@ -60,9 +58,9 @@ that positions lie on the celestial sphere and adopting the expansions
 developed in their Appendix B, we can write down likelihoods. For a
 counterpart across :math:`k` catalogues, we obtain:
 
-.. _`eq:nwaylikelihood`:
 
 .. math:: P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-2}}{\sum\sigma_{i}^{-2}}\exp\left\{ -\frac{\sum_{i<j}\psi_{ij}^{2}\sigma_{j}^{-2}\sigma_{i}^{-2}}{2\sum\sigma_{i}^{-2}}\right\} \label{eq:nwaylikelihood}
+   :label: nwaylikelihood
 
 For a given association with participating members from :math:`k`
 catalogues, the pairwise angular separation, :math:`\psi_{ij}`, between
@@ -82,9 +80,8 @@ match probabilities for a given source are not considered. For
 completeness, we also compute the posterior of this simpler model
 comparison:
 
-.. _`eq:assocPost`:
-
 .. math::
+   :label: assocPost
 
    \begin{aligned}
    \frac{P(H_{1}|D)}{P(H_{0}|D)} & \propto & \frac{P(H_{1})}{P(H_{0})}\times\frac{P(D|H_{1})}{P(D|H_{0})}\\
@@ -94,9 +91,9 @@ comparison:
 
 The output column ``dist_bayesfactor`` stores :math:`\log B`, while the
 output column ``dist_post`` is the result of equation
-`[eq:assocPost] <eq:assocPost>`_. The output column ``p_single`` gives
+:eq:`assocPost`. The output column ``p_single`` gives
 ``dist_post`` but modified if any additional information is specified
-(see Section `5.2 <sec:mag-priors>`__). As mentioned several times in
+(see `magnitude prior <sec:mag-priors>`__). As mentioned several times in
 the literature, the :cite:t:`Budavari2008` approach does not
 include sources absent in some of the catalogues, while the formulae we
 develop below incorporate absent sources. This is similar in spirit to
@@ -106,37 +103,35 @@ different. We now go further and develop counterpart probabilities.
 The first step in catalogue inference is whether the source has any
 counterpart (:math:`p_{\mathrm{any}}`). The posterior probabilities
 :math:`P(H|D)` are computed using Bayes theorem (eq.
-`[eq:bayes] <eq:bayes>`_) with the likelihood (eq.
-`[eq:nwaylikelihood] <eq:nwaylikelihood>`_) and prior (eq.
-`[eq:prior] <eq:prior>`_) appropriately adopted for the number of
+:eq:`bayes`) with the likelihood (eq.
+:eq:`nwaylikelihood`) and prior (eq.
+:eq:`prior`) appropriately adopted for the number of
 catalogues the particular association draws from. For each entry in the
 primary catalogue, the posteriors of all possible associations are
 normalised to unity, and :math:`P(H_{0}|D)`, the posterior probability
 of the no-counterpart hypothesis, i.e., no catalogue participates,
 computed. From this we compute:
 
-.. _`eq:post-any`:
-
 .. math:: p_{\mathrm{any}}=1-P(H_{0}|D)/\sum_{i}P(H_{i}|D)\label{eq:post-any}
+   :label: post-any
 
 If :math:`p_{\mathrm{any}}` is low, this indicates that there is little
 evidence for any of the considered, combinatorically possible
 associations, except for the no-association case. The output column
-``p_any`` is the result of equation `[eq:post-any] <eq:post-any>`__.
+``p_any`` is the result of equation :eq:`post-any`.
 
 If :math:`p_{\mathrm{any}}\approx1`, there is strong evidence for at
 least one of the associations to another catalogue. To compute the
 relative posterior probabilities of the options, we re-normalize with
 the no-counterpart hypothesis, :math:`H_{0}`, excluded:
 
-.. _`eq:post-assoc`:
-
 .. math:: p_{i}=P(H_{i}|D)/\sum_{i>0}P(H_{i}|D)\label{eq:post-assoc}
+   :label: post-assoc
 
 If a particular association has a high :math:`p_{i}`, there is strong
 evidence that it is the true one, out of all present options. The output
 column ``p_i`` is the result of equation
-`[eq:post-assoc] <eq:post-assoc>`__.
+:eq:`post-assoc`.
 
 A “very secure” counterpart could be defined by the requirement
 :math:`p_{any}>95\%` and :math:`p_{i}>95\%`, for example. However, it is
