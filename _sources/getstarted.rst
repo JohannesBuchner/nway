@@ -19,17 +19,17 @@ explanations.
 
    Sometimes there are ``commands`` you can copy-paste.
 
-* start by :ref:`installing nway <installation>`_. Do not forget to download the example data files so you can follow the tutorial!
+* start by :ref:`installing nway <installation>`. Do not forget to download the example data files so you can follow the tutorial!
 
-* Learn basic to advanced use in the :ref:`User guide: Matching catalogs <matching>`_.
+* Learn basic to advanced use in the :ref:`User guide: Matching catalogs <matching>`.
 
-* Questions, missing documentation, bugs? Learn how to start :ref:`<contributing>`_
+* Questions, missing documentation, bugs? Learn how to start :ref:`contributing <contributing>`.
 
-* Get different results in different version? Check what changed in the :ref:`release history <history>`_.
+* Get different results in different version? Check what changed in the :ref:`release history <history>`.
 
-* Want to use Python API instead of the command line? :ref:`API reference <nwaylib>`_
+* Want to use Python API instead of the command line? :ref:`API reference <nwaylib>`
 
-* If you are interested in the rigorous background, head to :ref:`mathematical details <math>`_.
+* If you are interested in the rigorous background, head to :ref:`mathematical details <math>`.
 
 
 Terminology
