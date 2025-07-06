@@ -1,0 +1,674 @@
+NWAY results for Source 422:
+
+It is uncertain if this source has a counterpart (p_any=0.41)
+
+Assuming it has a counterpart, we have the following possible associations:
+
+Association 1**[match_flag==1]: probability p_i=0.71 
+     Involved catalogues:  XMM-OPT-IRAC 
+
+Association 2: probability p_i=0.21 
+     Involved catalogues:  XMM 
+
+Association 3: probability p_i=0.04 
+     Involved catalogues:  XMM--IRAC 
+
+Association 4: probability p_i=0.03 
+     Involved catalogues:  XMM-OPT- 
+
+Association 5: probability p_i=0.01 
+     Involved catalogues:  XMM- 
+
+Association 6: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 7: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 8: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 9: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 10: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 11: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 12: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 13: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 14: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 15: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 16: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 17: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 18: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 19: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 20: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 21: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 22: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 23: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 24: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 25: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 26: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 27: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 28: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 29: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 30: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 31: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 32: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 33: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 34: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 35: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 36: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 37: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 38: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 39: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 40: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 41: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 42: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 43: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 44: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 45: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 46: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 47: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 48: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 49: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 50: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 51: probability p_i=0.00 
+     Involved catalogues:  XMM- 
+
+Association 52: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 53: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 54: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 55: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 56: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 57: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 58: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 59: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 60: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 61: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 62: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 63: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 64: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 65: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 66: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 67: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 68: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 69: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 70: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 71: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 72: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 73: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 74: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 75: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 76: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 77: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 78: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 79: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 80: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 81: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 82: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 83: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 84: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 85: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 86: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 87: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 88: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 89: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 90: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 91: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 92: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 93: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 94: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 95: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 96: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 97: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 98: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 99: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 100: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 101: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 102: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 103: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 104: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 105: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 106: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 107: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 108: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 109: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 110: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 111: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 112: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 113: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 114: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 115: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 116: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 117: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 118: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 119: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 120: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 121: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 122: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 123: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 124: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 125: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 126: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 127: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 128: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 129: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 130: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 131: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 132: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 133: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 134: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 135: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 136: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 137: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 138: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 139: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 140: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 141: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 142: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 143: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 144: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 145: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 146: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 147: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 148: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 149: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 150: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 151: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 152: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 153: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 154: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 155: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 156: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 157: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 158: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 159: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 160: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 161: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 162: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 163: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 164: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 165: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 166: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 167: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 168: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 169: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 170: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 171: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 172: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 173: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 174: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 175: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 176: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 177: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 178: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 179: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 180: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 181: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 182: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 183: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 184: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 185: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 186: probability p_i=0.00 
+     Involved catalogues:  XMM-OPT 
+
+Association 187: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 188: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 189: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 190: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 191: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 192: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 193: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 194: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 195: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 196: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 197: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 198: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 199: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 200: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 201: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 202: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 203: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 204: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 205: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 206: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 207: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 208: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 209: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 210: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 211: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 212: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 213: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 214: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 215: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 216: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 217: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 218: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 219: probability p_i=0.00 
+     Involved catalogues:  XMM-IRAC 
+
+Association 220: probability p_i=0.00 
+     Involved catalogues:  XMM 
+
+Association 221: probability p_i=0.00 
+     Involved catalogues:  XMM-- 
+
+plotting to example3.fits_explain_422_options.pdf
+plotting to example3.fits_explain_422.pdf
+
+Disclaimer: These results assume that the input (sky densities, positional errors, and priors) are correct.
+

@@ -1,0 +1,5 @@
+opening COSMOS_XMM.fits
+    using RA  column: RA
+    using DEC column: DEC
+removed 561 sources which collide with original positions
+writing "COSMOS_XMM-shift.fits" (1236 rows)

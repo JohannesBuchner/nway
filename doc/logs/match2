@@ -1,0 +1,30 @@
+NWAY arguments:
+    catalogues:  COSMOS_XMM.fits, COSMOS_OPTICAL.fits
+    position errors/columns:  :pos_err, 0.1
+      from catalogue "XMM" (1797), density gives 3.71e+07 on entire sky
+      from catalogue "OPT" (560536), density gives 1.16e+10 on entire sky
+    magnitude columns:  
+Computing distance-based probabilities ...
+  finding position error columns ...
+    Position error for "XMM": found column pos_err (for ra_error): Values are [0.109000..7.301000]
+    Position error for "OPT": using fixed value 0.100000
+  finding position columns ...
+  building primary_id index ...
+  computing probabilities ...
+      correcting for unrelated associations ... not necessary
+
+Computing final probabilities ...
+    grouping by column "XMM_ID" and flagging ...
+
+
+  You can calibrate a p_any cut-off with the following steps:
+   1) Create a offset catalogue to simulate random sky positions:
+      nway-create-fake-catalogue.py --radius 40 COSMOS_XMM.fits COSMOS_XMM-fake.fits
+   2) Match the offset catalogue in the same way as this run:
+      /home/user/.local/bin//nway.py COSMOS_XMM-fake.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example2.fits-fake.fits --radius 20
+   3) determining the p_any cutoff that corresponds to a false-detection rate
+      nway-calibrate-cutoff.py example2.fits example2.fits-fake.fits
+
+
+creating output FITS file ...
+    writing "example2.fits" (37836 rows, 17 columns) ...
