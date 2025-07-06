@@ -409,13 +409,13 @@ P(H_{1}|D) &amp; = &amp; \left[1+\frac{1-P(H_{1})}{B\cdot P(H_{1})}\right]^{-1}\
 \end{aligned}\end{split}\]</div>
 <p>The output column <code class="docutils literal notranslate"><span class="pre">dist_bayesfactor</span></code> stores <span class="math notranslate nohighlight">\(\log B\)</span>, while the
 output column <code class="docutils literal notranslate"><span class="pre">dist_post</span></code> is the result of equation
-<a class="reference external" href="eq:assocPost">[eq:assocPost]</a>. The output column <code class="docutils literal notranslate"><span class="pre">p_single</span></code> gives
+<span class="xref std std-ref">eq:assocPost</span>. The output column <code class="docutils literal notranslate"><span class="pre">p_single</span></code> gives
 <code class="docutils literal notranslate"><span class="pre">dist_post</span></code> but modified if any additional information is specified
 (see Section <a class="reference external" href="sec:mag-priors">5.2</a>). As mentioned several times in
-the literature, the <span id="id6">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span> approach does not
+the literature, the <span id="id5">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span> approach does not
 include sources absent in some of the catalogues, while the formulae we
 develop below incorporate absent sources. This is similar in spirit to
-<span id="id7">[<a class="reference internal" href="matching.html#id18" title="F.-X. Pineau, S. Derriere, C. Motch, F. J. Carrera, F. Genova, L. Michel, B. Mingo, A. Mints, A. Nebot Gómez-Morán, S. R. Rosen, and A. Ruiz Camuñas. Probabilistic multi-catalogue positional cross-match. ArXiv e-prints, September 2016. arXiv:1609.00818.">PineauDerriereMotch+16</a>]</span>, although the statistical approach is
+<span id="id6">[<a class="reference internal" href="matching.html#id18" title="F.-X. Pineau, S. Derriere, C. Motch, F. J. Carrera, F. Genova, L. Michel, B. Mingo, A. Mints, A. Nebot Gómez-Morán, S. R. Rosen, and A. Ruiz Camuñas. Probabilistic multi-catalogue positional cross-match. ArXiv e-prints, September 2016. arXiv:1609.00818.">PineauDerriereMotch+16</a>]</span>, although the statistical approach is
 different. We now go further and develop counterpart probabilities.</p>
 <p>The first step in catalogue inference is whether the source has any
 counterpart (<span class="math notranslate nohighlight">\(p_{\mathrm{any}}\)</span>). The posterior probabilities
@@ -455,10 +455,10 @@ Typically, much lower thresholds are acceptable.</p>
 magnitude distributions. Because most bright X-ray point-sources in deep
 images are also optically bright compared to generic sources, this
 information can be exploited. Previous works
-(e.g., <span id="id11">Brusa <em>et al.</em> [<a class="reference internal" href="matching.html#id11" title="M. Brusa, A. Comastri, E. Daddi, L. Pozzetti, G. Zamorani, C. Vignali, A. Cimatti, F. Fiore, M. Mignoli, P. Ciliegi, and H. J. A. Röttgering. XMM-Newton observations of Extremely Red Objects and the link with luminous, X-ray obscured quasars. \aap , 432:69-81, March 2005. arXiv:arXiv:astro-ph/0409257, doi:10.1051/0004-6361:20041468.">BrusaComastriDaddi+05</a>]</span>, ,:cite:t:<cite>Brusa2007</cite>) have modified the
+(e.g., <span id="id10">Brusa <em>et al.</em> [<a class="reference internal" href="matching.html#id11" title="M. Brusa, A. Comastri, E. Daddi, L. Pozzetti, G. Zamorani, C. Vignali, A. Cimatti, F. Fiore, M. Mignoli, P. Ciliegi, and H. J. A. Röttgering. XMM-Newton observations of Extremely Red Objects and the link with luminous, X-ray obscured quasars. \aap , 432:69-81, March 2005. arXiv:arXiv:astro-ph/0409257, doi:10.1051/0004-6361:20041468.">BrusaComastriDaddi+05</a>]</span>, ,:cite:t:<cite>Brusa2007</cite>) have modified the
 likelihood ratio coming from the angular distance <span class="math notranslate nohighlight">\(f(r)\)</span>
 information (likelihood ratio method,
-<span id="id12">Sutherland and Saunders [<a class="reference internal" href="matching.html#id21" title="W. Sutherland and W. Saunders. On the likelihood ratio for source identification. \mnras , 259:413-420, December 1992. URL: http://adsabs.harvard.edu/cgi-bin/nph-data_query?bibcode=1992MNRAS.259..413S&amp;link_type=ARTICLE&amp;db_key=AST&amp;high=.">SutherlandSaunders92</a>]</span>) by a factor:</p>
+<span id="id11">Sutherland and Saunders [<a class="reference internal" href="matching.html#id21" title="W. Sutherland and W. Saunders. On the likelihood ratio for source identification. \mnras , 259:413-420, December 1992. URL: http://adsabs.harvard.edu/cgi-bin/nph-data_query?bibcode=1992MNRAS.259..413S&amp;link_type=ARTICLE&amp;db_key=AST&amp;high=.">SutherlandSaunders92</a>]</span>) by a factor:</p>
 <div class="math notranslate nohighlight">
 \[LR=\frac{q(m)}{n(m)}\times f(r)\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(q(m)\)</span> and <span class="math notranslate nohighlight">\(n(m)\)</span> are associated with the magnitude
@@ -532,7 +532,7 @@ well. The program proceeds in four steps.</p>
 to consider all theoretical possibilities (complexity
 <span class="math notranslate nohighlight">\(O(\prod_{i=1}^{k}N_{i})\)</span>), so the sky is split first to cluster
 nearby objects. For this, a hashing procedure puts each object into
-HEALPix bins <span id="id13">[<a class="reference internal" href="matching.html#id14" title="K. M. Górski, E. Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelmann. HEALPix: A Framework for High-Resolution Discretization and Fast Analysis of Data Distributed on the Sphere. \apj , 622:759-771, April 2005. arXiv:arXiv:astro-ph/0409513, doi:10.1086/427976.">GorskiHivonBanday+05</a>]</span>. The bin width <span class="math notranslate nohighlight">\(w\)</span> is
+HEALPix bins <span id="id12">[<a class="reference internal" href="matching.html#id14" title="K. M. Górski, E. Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelmann. HEALPix: A Framework for High-Resolution Discretization and Fast Analysis of Data Distributed on the Sphere. \apj , 622:759-771, April 2005. arXiv:arXiv:astro-ph/0409513, doi:10.1086/427976.">GorskiHivonBanday+05</a>]</span>. The bin width <span class="math notranslate nohighlight">\(w\)</span> is
 chosen so that any association of distance <span class="math notranslate nohighlight">\(w\)</span> are improbable and
 negligible in practice, i.e. much larger than the largest positional
 error. An object with coordinates <span class="math notranslate nohighlight">\(\phi,\,\theta\)</span> is placed in the
@@ -553,7 +553,7 @@ user-supplied prior incompleteness factor. The posterior for each
 association based on the distances only is calculated. These posteriors
 have to be modified (“correcting for unrelated associations”), to
 consider associations unrelated to primary catalogue sources (described
-in the paper, <span id="id14">Salvato <em>et al.</em> [<a class="reference internal" href="matching.html#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span>, in the appendix
+in the paper, <span id="id13">Salvato <em>et al.</em> [<a class="reference internal" href="matching.html#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span>, in the appendix
 section “Computing all possible matches”).</p>
 <p>In the third step the magnitudes are considered, and the posteriors
 modified. An arbitrary number of magnitude columns in the input

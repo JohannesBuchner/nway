@@ -94,7 +94,7 @@ comparison:
 
 The output column ``dist_bayesfactor`` stores :math:`\log B`, while the
 output column ``dist_post`` is the result of equation
-`[eq:assocPost] <eq:assocPost>`_. The output column ``p_single`` gives
+:ref:`eq:assocPost`. The output column ``p_single`` gives
 ``dist_post`` but modified if any additional information is specified
 (see Section `5.2 <sec:mag-priors>`__). As mentioned several times in
 the literature, the :cite:t:`Budavari2008` approach does not
