@@ -28,4 +28,4 @@ doc = [
 [project.urls]
 Repository = "https://github.com/JohannesBuchner/nway/"
 homepage = "https://github.com/JohannesBuchner/nway/"
-documentation = "https://raw.githubusercontent.com/JohannesBuchner/nway/master/doc/nway-manual.pdf"
+documentation = "https://johannesbuchner.github.io/nway/"
