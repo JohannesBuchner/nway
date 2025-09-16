@@ -31,10 +31,10 @@ you through the process.
 .. _pip: https://pip.pypa.io
 .. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
 
-Upgrading from older Nway  versions
+Upgrading from older Nway versions
 '''''''''''''''''''''''''''''''''''
 
-To upgrade, uninstall the older Nway  version first:
+To upgrade, uninstall the older Nway version first:
 
 ``$ pip uninstall nway``
 

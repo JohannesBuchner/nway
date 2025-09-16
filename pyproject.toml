@@ -20,6 +20,11 @@ test = [
     "pytest"
 ]
 
+doc = [
+    "sphinx_bootstrap_theme",
+    "sphinxcontrib.bibtex",
+]
+
 [project.urls]
 Repository = "https://github.com/JohannesBuchner/nway/"
 homepage = "https://github.com/JohannesBuchner/nway/"

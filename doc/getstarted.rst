@@ -6,16 +6,16 @@ Getting started
 ===============
 
 This documentation walks you through the installation and usage. It is best to
-try out the examples as you read, because they illustrate how Nway 
+try out the examples as you read, because they illustrate how Nway
 works.
 
 Code boxes indicate text about the illustrative examples and their
 explanations.
 
-.. container::
+.. note::
 
    Useful explanation for users on how to prepare files or how to run
-   Nway  are found in blue boxes.
+   Nway are found in blue boxes.
 
    Sometimes there are ``commands`` you can copy-paste.
 

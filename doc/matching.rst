@@ -2,8 +2,8 @@ User guide: Matching catalogs
 =============================
 
 To achieve reliable results, we recommend that you run matching with
-increasing amount of information (first `distance-based matching <chap:distance-based-matching>`)
-then `adding priors on source properties <chap:additional-priors>`_
+increasing amount of information (first :ref:`distance-based matching <chap-distance-based-matching>`)
+then :ref:`adding priors on source properties <chap-additional-priors>`
 and understand how each influences
 the results.
 
@@ -15,20 +15,20 @@ shift the source catalogues by a distance much larger than the
 positional errors to simulate the results for chance alignment. This
 fake catalogue should not coincide with original positions (tool
 ``nway-create-fake-catalogue.py`` may help). For the matching run with
-this fake catalogue, use Nway  with the same settings and from the
+this fake catalogue, use Nway with the same settings and from the
 output, choose cut-off limits (``p_any``) that correspond to the desired
 false selection fraction (tool ``nway-calibrate-cutoff.py`` may help).
-The output of your first Nway  run advises how to use these tools to
+The output of your first Nway run advises how to use these tools to
 characterise false selection rates and to find an appropriate ``p_any``
 threshold.
 
-Then the Nway  output on the real data can be truncated based on this
+Then the Nway output on the real data can be truncated based on this
 criterion (``p_any>cutoff``), and made into a best match catalogue
 (``match_flag==1``). It may be worth noting ambiguous cases with
 multiple solutions and to store these secondary solutions with similar
 probabilities in another catalogue (``match_flag==2``).
 
-.. _`chap:distance-based-matching`:
+.. _chap-distance-based-matching:
 
 Simple distance-based matching
 ------------------------------
@@ -81,10 +81,8 @@ In Nway, only the first catalogue (**the primary catalogue**) plays a
 special role. For each entry of it, counterparts are sought from the
 other catalogues.
 
-.. container::
-
-   .. rubric:: Example - Preparing input files
-      :name: example---preparing-input-files
+.. admonition:: Example - Preparing input files
+   :class: note
 
    Note these points about preparing a catalogue input file:
 
@@ -139,12 +137,10 @@ largest distance in degrees to consider by setting ``--radius``. This
 speeds up the computation. But use a value that is much larger than the
 largest positional error.
 
-.. container::
+.. admonition:: Example - Matching two catalogues
+   :class: note
 
-   .. rubric:: Example - Matching two catalogues
-      :name: example---matching-two-catalogues
-
-   Lets try the simplest example and match the XMM X-ray catalogue to an
+   Let's try the simplest example and match the XMM X-ray catalogue to an
    optical catalogue. The XMM catalogue has a pos_err column with the
    positional error in arcseconds. For the optical catalogue we will
    assume a fixed error of 0.1 arcseconds.
@@ -155,7 +151,7 @@ largest positional error.
 
       ``python ../nway.py COSMOS_XMM.fits :pos_err COSMOS_OPTICAL.fits 0.1 --out=example1.fits --radius 15 --prior-completeness 0.9``
 
-   Lets understand what we put in:
+   Let's understand what we put in:
 
    #. We passed two catalogue files: COSMOS_XMM.fits and
       COSMOS_OPTICAL.fits. For the first one, we told Nway\ to use the
@@ -177,7 +173,7 @@ largest positional error.
 
    .. container::
 
-      Lets understand what Nway  did:
+      Let's understand what Nway did:
 
    #. ::
 
@@ -239,18 +235,18 @@ largest positional error.
       columns from the input catalogues and the computed probabilities
       (see below for their meaning).
 
-So how does Nway  deal with a particular, possible association and
+So how does Nway deal with a particular, possible association and
 compute its probability?
 
 The probability of a given association is computed by comparing the
 probability of a random chance alignment of unrelated sources (prior) to
 the likelihood that the source is the same. The gory mathematical
-details are laid out in 'Mathematical details <math>`_, but from a user
+details are laid out in :doc:`Mathematical details <math>`, but from a user
 point of view the following is important:
 
 #. The chance of a random alignment depends on the source sky density of
    the various catalogues. **So each catalogue needs to have a FITS
-   header entry** **``SKYAREA``** **which tells the area covered by the
+   header entry** ``SKYAREA`` **which tells the area covered by the
    catalogue in square degrees.** The source density on the sky is then
    computed by the number of entries divided by that area. You can use
    the tool
@@ -273,32 +269,32 @@ all columns of the input catalogues:
    :cite:t:`Budavari2008`.
 
 #. ``p_single``: Same as ``dist_post`` unless additional information was
-   added, see the `section on additional priors <chap:additional-priors>`__.
+   added, see the :ref:`section on additional priors <chap-additional-priors>`.
 
-#. **``p_any``**: For each entry in the primary catalogue (e.g. A) the
+#. ``p_any``: For each entry in the primary catalogue (e.g. A) the
    probability that one of the association is the correct one is
    computed. Because every catalogue is limited by its depth, it is
    possible that the true counterpart has not been found yet. Our
    testing suggest that the **threshold for a secure catalogue depends
    on the application.**
-   The `Best practice section <sec:Best-practice-matching>`__
+   The :ref:`Best practice section <chap-distance-based-matching>`
    explains how to calibrate a threshold.
 
-#. | **``p_i``**: For each possible association for each entry in the
+#. | ``p_i``: For each possible association for each entry in the
      primary catalogue (e.g. A), the relative probability is computed.
      Our testing suggest that secure, pure catalogue **should keep only
-     associations where ``p_i>=0.1``. Secondary solutions down to 0.1
-     may be interesting. These thresholds may depend on the application
-     – please report what your testing gives.**
+     associations where** ``p_i>=0.1``. **Secondary solutions down to 0.1
+     may be interesting. These thresholds may depend on the application -
+     please report what your testing gives.**
 
-   .. container::
+   .. warning::
 
       Low ``p_any`` and ``p_i`` values by themselves do not necessarily
       mean that the counterpart is ruled out. It can also mean that
       there is not enough evidence/information to declare it a
       counterpart.
 
-#. **``match_flag``**: The most probable match is indicated with ``1``
+#. ``match_flag``: The most probable match is indicated with ``1``
    for each primary catalogue entry. Secondary, almost as good solutions
    are marked with ``2``. By default, the maximum allowed ratio is at
    most 0.5, but the user can modify this threshold via the
@@ -307,16 +303,14 @@ all columns of the input catalogues:
 
 Use the last three columns to identify sources with one solution,
 possible secondary solutions, and to build final catalogues. 
-'Mathematical details <math>`_ explains how these quantities are computed. To
+:doc:`Mathematical details <math>` explains how these quantities are computed. To
 filter out low-probability associations (low ``p_i``) from the output
 catalogue, the ``--min-prob`` parameter can be used.
 
-.. container::
+.. admonition:: Example - Output of matching two catalogues
+   :class: note
 
-   .. rubric:: Example - Output of matching two catalogues
-      :name: example---output-of-matching-two-catalogues
-
-   Lets understand the output fits file and the associations found for a
+   Let's understand the output fits file and the associations found for a
    particular X-ray source.
 
    .. container::
@@ -333,7 +327,7 @@ catalogue, the ``--min-prob`` parameter can be used.
    is similar. The slightly higher one is marked as match_flag=1
    (orange), the other with 2 (yellow).
 
-   `The next section <chap:additional-priors>`_ solves this by adding more
+   :ref:`The next section <chap-additional-priors>` solves this by adding more
    information (the magnitude distribution). But we can also solve this
    another way. We know AGN (the X-ray source) emit in the infrared, so
    you can also match with an IRAC catalogue.
@@ -350,7 +344,7 @@ catalogue, the ``--min-prob`` parameter can be used.
 .. figure:: example1.fits_explain_60388.png
    :alt: Visualisation of match geometry
 
-.. _`chap:additional-priors`:
+.. _chap-additional-priors:
 
 Matching with additional information
 ------------------------------------
@@ -359,18 +353,16 @@ For many classes of sources, the Spectral Energy Distribution (SED)
 provides additional hints, which associations are likely real. For
 instance, bright X-ray sources have a different color distribution in
 the WISE bands than non-X-ray emitting objects. A powerful feature of
-Nway  is to take advantage of this additional information to improve the
-matching. The `magnitude prior section <sec:mag-priors>`__ has the mathematical details
+Nway is to take advantage of this additional information to improve the
+matching. The :ref:`magnitude prior section <sec-mag-priors>` has the mathematical details
 and a comparison to the Likelihood Ratio method.
 
-.. container::
-
-   .. rubric:: Example - Using magnitude information
-      :name: example---using-magnitude-information
+.. admonition:: Example - Using magnitude information
+   :class: note
 
    X-ray sources (which we are looking for in our example) have a
    different optical magnitude distribution than non-X-ray emitting
-   objects. Lets take advantage of this information:
+   objects. Let's take advantage of this information:
 
    .. container::
 
@@ -410,16 +402,16 @@ several times.
 #. “Bayesian auto-mode”: Bayesian distance probabilities (``dist_post``)
    will be used if you leave out ``--mag-radius``. This is in general
    safer and recommended. In small catalogues the histogram may not be
-   sufficiently filled, in which case Nway  will give a warning (more
+   sufficiently filled, in which case Nway will give a warning (more
    details below ).
 
-.. container::
+.. admonition:: Let's look at the histograms it computed
+   :class: note
 
    .. container::
 
-      Lets look at the histograms it computed. Nway  created
-      ``OPT_MAG_fit.pdf``, and also ``OPT_MAG_fit.txt`` as a histogram
-      file:
+      Nway created ``OPT_MAG_fit.pdf``, and also ``OPT_MAG_fit.txt`` 
+      as a histogram file:
 
       .. image:: OPT_MAG_fit.png
          :alt: histogram of optical magnitudes for target and field population
@@ -453,7 +445,7 @@ Providing a prior as a file
 
 In the paper we demonstrate the use of a WISE magnitude of X-ray
 sources. If such prior information comes from previous studies, the
-distributions can be passed to Nway  as a ASCII table histogram. This
+distributions can be passed to Nway as a ASCII table histogram. This
 table contains the histogram of the sources of interest (X-ray sources)
 and a histogram of other sources (non-X-ray sources). The file
 ``OPT_MAG_fit.txt`` is an example of such a input file, and can be used
@@ -469,7 +461,7 @@ this (# indicates comments):
      18.98571   20.27286    0.05562    0.01448
      ...
 
-.. container::
+.. warning::
 
    Keep in mind that a prior created from a different data set can only
    be used if it is applicable to the present data set. For example, in
@@ -483,7 +475,7 @@ A general approach
 
 Providing priors is not limited to magnitude distributions, you can use
 colors or any other information you want (e.g. morphology, variability,
-etc.). The approach is very general, Nway  just looks at the
+etc.). The approach is very general, Nway just looks at the
 corresponding bin and reweighs the probabilities. For example, in
 :cite:t:`2018MNRAS.473.4937S`, the counterparts to ROSAT
 sources where found using WISE. The prior was build by using the
@@ -508,7 +500,7 @@ uses the Bayesian distance matching for discovering the histogram of
 
 This is in general more cautious, and recommended for large catalogues
 
-.. container::
+.. warning::
 
    However, if you only have a small catalogue you may build a poorly
    sampled histogram, potentially leading to biases. Nway  will warn you
