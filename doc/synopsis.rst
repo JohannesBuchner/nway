@@ -49,15 +49,15 @@ Input file specifications and units
 
 #. The data table needs to have a extension name.
 
-#. The header of the data table needs the keyword SKYAREA, which
+#. The header of the data table needs the keyword ``SKYAREA``, which
    specifies the area covered by the catalogue in **square degrees**.
 
 #. Each catalogue needs to have a column RA and DEC **in degrees**. To
-   make your life easier, Nway  tries to be a bit fuzzy and detect the
+   make your life easier, Nway tries to be a bit fuzzy and detect the
    columns named RA_something etc.
 
 #. The primary catalogue needs to have a ID column. To make your life
-   easier, Nway  tries to be a bit fuzzy and detect the columns named
+   easier, Nway tries to be a bit fuzzy and detect the columns named
    ID_something etc.
 
 #. Positional error columns, if used, need to be **in arcseconds**.

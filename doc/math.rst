@@ -29,13 +29,14 @@ the sky of physically unrelated objects can then be written
 (:cite:t:`Budavari2008`, eq. 25), as
 
 .. math:: P(H)=N_{1}/\prod_{i=1}^{k}N_{i}=1/\prod_{i=2}^{k}N_{i}=1/\prod_{i=2}^{k}\nu_{i}\Omega_{i}.
+   :label: chance-alignment
 
 Thus :math:`P(H)` is the prior probability of an association. The
 posterior should strongly exceed this prior probability, to avoid false
 positives.
 
 To account for non-uniform coverage, :math:`P(H)` is modified by a
-“prior completeness factor” :math:`c`, which gives the expected fraction
+"prior completeness factor" :math:`c`, which gives the expected fraction
 of sources with reliable counterpart (due to only partial coverage of
 the matching catalogues :math:`\Omega_{i>1}\neq\Omega_{1}`, depth of the
 catalogues and/or systematic errors in the coordinates). Our prior can
@@ -44,7 +45,7 @@ thus be written as
 .. math:: P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.\label{eq:prior}
    :label: prior
 
-Bayes’ theorem connects the prior probability :math:`P(H)` to the
+Bayes' theorem connects the prior probability :math:`P(H)` to the
 posterior probability :math:`P(H|D)`, by incorporating information
 gained from the observation data :math:`D` via
 
@@ -93,7 +94,7 @@ The output column ``dist_bayesfactor`` stores :math:`\log B`, while the
 output column ``dist_post`` is the result of equation
 :eq:`assocPost`. The output column ``p_single`` gives
 ``dist_post`` but modified if any additional information is specified
-(see `magnitude prior <sec:mag-priors>`__). As mentioned several times in
+(see :ref:`magnitude prior <sec-mag-priors>`). As mentioned several times in
 the literature, the :cite:t:`Budavari2008` approach does not
 include sources absent in some of the catalogues, while the formulae we
 develop below incorporate absent sources. This is similar in spirit to
@@ -138,7 +139,7 @@ A “very secure” counterpart could be defined by the requirement
 useful to run simulations to understand the rate of false positives.
 Typically, much lower thresholds are acceptable.
 
-.. _`sec:mag-priors`:
+.. _sec-mag-priors:
 
 Magnitudes, Colors and other additional information
 ---------------------------------------------------
@@ -147,7 +148,7 @@ Astronomical objects of various classes often show distinct color and
 magnitude distributions. Because most bright X-ray point-sources in deep
 images are also optically bright compared to generic sources, this
 information can be exploited. Previous works
-(e.g., :cite:t:`Brusa2005`, ,:cite:t:`Brusa2007`) have modified the
+(e.g., :cite:t:`Brusa2005`, :cite:t:`Brusa2007`) have modified the
 likelihood ratio coming from the angular distance :math:`f(r)`
 information (likelihood ratio method,
 :cite:t:`SutherlandSaunders1992`) by a factor:
@@ -175,7 +176,7 @@ likelihood thus becomes
 with :math:`\bar{q}(m)` and :math:`\bar{n}(m)` being the probability
 that a X-ray (target) source or a generic (field) source has magnitude
 :math:`m` respectively. Nway\ stores the modifying factor,
-:math:`P(D_{m}|H)`, in ``bias_``\ ``*`` output columns, one for each
+:math:`P(D_{m}|H)`, in ``bias_*`` output columns, one for each
 column giving a magnitude, color, or other distribution. This modifying
 factor is however renormalized so that
 :math:`P(D_{m}|H)=\frac{\bar{q}(m)}{\bar{n}(m)}/\int\frac{\bar{q}(m')}{\bar{n}(m')}\bar{n}(m')dm'`,
@@ -200,7 +201,7 @@ are not yet implemented in Nway. Instead, we recommend removing
 magnitude values with large uncertainties (setting them to -99).
 
 
-.. _`sec:Auto-calibration`:
+.. _auto-calibration:
 
 Auto-calibration
 ----------------
@@ -270,8 +271,8 @@ In the third step the magnitudes are considered, and the posteriors
 modified. An arbitrary number of magnitude columns in the input
 catalogues can be specified. It is possible to use external magnitude
 histograms (e.g. for sparse matching with few objects) as well as
-computing the histograms from the data itself (see Section
-`[subsec:Auto-calibration] <subsec:Auto-calibration>`__). The breaks of
+computing the histograms from the data itself (see
+:ref:`Auto-calibration section <auto-calibration>`). The breaks of
 the histogram bins are computed adaptively based on the empirical
 cumulative distribution found. Because the histogram bins are usually
 larger than the magnitude measurement uncertainty, the latter is
