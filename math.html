@@ -359,8 +359,8 @@ following for simplicity, but handled in the code.</p>
 source density <span class="math notranslate nohighlight">\(\nu_{i}\)</span>, the probability of a chance alignment on
 the sky of physically unrelated objects can then be written
 (<span id="id1">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>, eq. 25), as</p>
-<div class="math notranslate nohighlight">
-\[P(H)=N_{1}/\prod_{i=1}^{k}N_{i}=1/\prod_{i=2}^{k}N_{i}=1/\prod_{i=2}^{k}\nu_{i}\Omega_{i}.\]</div>
+<div class="math notranslate nohighlight" id="equation-chance-alignment">
+<span class="eqno">(1)<a class="headerlink" href="#equation-chance-alignment" title="Link to this equation">#</a></span>\[P(H)=N_{1}/\prod_{i=1}^{k}N_{i}=1/\prod_{i=2}^{k}N_{i}=1/\prod_{i=2}^{k}\nu_{i}\Omega_{i}.\]</div>
 <p>Thus <span class="math notranslate nohighlight">\(P(H)\)</span> is the prior probability of an association. The
 posterior should strongly exceed this prior probability, to avoid false
 positives.</p>
@@ -370,21 +370,21 @@ of sources with reliable counterpart (due to only partial coverage of
 the matching catalogues <span class="math notranslate nohighlight">\(\Omega_{i&gt;1}\neq\Omega_{1}\)</span>, depth of the
 catalogues and/or systematic errors in the coordinates). Our prior can
 thus be written as</p>
-<div class="math notranslate nohighlight" id="eq-prior">
-\[P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.\label{eq:prior}\]</div>
+<div class="math notranslate nohighlight" id="equation-prior">
+<span class="eqno">(2)<a class="headerlink" href="#equation-prior" title="Link to this equation">#</a></span>\[P(H)=c/\prod_{i=2}^{k}\nu_{i}\Omega_{1}.\label{eq:prior}\]</div>
 <p>Bayes’ theorem connects the prior probability <span class="math notranslate nohighlight">\(P(H)\)</span> to the
 posterior probability <span class="math notranslate nohighlight">\(P(H|D)\)</span>, by incorporating information
 gained from the observation data <span class="math notranslate nohighlight">\(D\)</span> via</p>
-<div class="math notranslate nohighlight" id="eq-bayes">
-\[P(H|D)\propto P(H)\times P(D|H).\label{eq:bayes}\]</div>
+<div class="math notranslate nohighlight" id="equation-bayes">
+<span class="eqno">(3)<a class="headerlink" href="#equation-bayes" title="Link to this equation">#</a></span>\[P(H|D)\propto P(H)\times P(D|H).\label{eq:bayes}\]</div>
 <p>We now extend the approach of <span id="id2">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>, to
 allow matches where some catalogues do not participate in a match.
 Comparing A12 and A14 in <span id="id3">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>, assuming
 that positions lie on the celestial sphere and adopting the expansions
 developed in their Appendix B, we can write down likelihoods. For a
 counterpart across <span class="math notranslate nohighlight">\(k\)</span> catalogues, we obtain:</p>
-<div class="math notranslate nohighlight" id="eq-nwaylikelihood">
-\[P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-2}}{\sum\sigma_{i}^{-2}}\exp\left\{ -\frac{\sum_{i&lt;j}\psi_{ij}^{2}\sigma_{j}^{-2}\sigma_{i}^{-2}}{2\sum\sigma_{i}^{-2}}\right\} \label{eq:nwaylikelihood}\]</div>
+<div class="math notranslate nohighlight" id="equation-nwaylikelihood">
+<span class="eqno">(4)<a class="headerlink" href="#equation-nwaylikelihood" title="Link to this equation">#</a></span>\[P(D|H)=2^{k-1}\frac{\prod\sigma_{i}^{-2}}{\sum\sigma_{i}^{-2}}\exp\left\{ -\frac{\sum_{i&lt;j}\psi_{ij}^{2}\sigma_{j}^{-2}\sigma_{i}^{-2}}{2\sum\sigma_{i}^{-2}}\right\} \label{eq:nwaylikelihood}\]</div>
 <p>For a given association with participating members from <span class="math notranslate nohighlight">\(k\)</span>
 catalogues, the pairwise angular separation, <span class="math notranslate nohighlight">\(\psi_{ij}\)</span>, between
 catalogue <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> is judged with the relevant position
@@ -401,17 +401,17 @@ this computation each hypothesis test is run in isolation, and relative
 match probabilities for a given source are not considered. For
 completeness, we also compute the posterior of this simpler model
 comparison:</p>
-<div class="math notranslate nohighlight" id="eq-assocpost">
-\[\begin{split}\begin{aligned}
+<div class="math notranslate nohighlight" id="equation-assocpost">
+<span class="eqno">(5)<a class="headerlink" href="#equation-assocpost" title="Link to this equation">#</a></span>\[\begin{split}\begin{aligned}
 \frac{P(H_{1}|D)}{P(H_{0}|D)} &amp; \propto &amp; \frac{P(H_{1})}{P(H_{0})}\times\frac{P(D|H_{1})}{P(D|H_{0})}\\
 B &amp; = &amp; \frac{P(D|H_{1})}{P(D|H_{0})}\\
 P(H_{1}|D) &amp; = &amp; \left[1+\frac{1-P(H_{1})}{B\cdot P(H_{1})}\right]^{-1}\label{eq:assocPost}
 \end{aligned}\end{split}\]</div>
 <p>The output column <code class="docutils literal notranslate"><span class="pre">dist_bayesfactor</span></code> stores <span class="math notranslate nohighlight">\(\log B\)</span>, while the
 output column <code class="docutils literal notranslate"><span class="pre">dist_post</span></code> is the result of equation
-<span class="xref std std-ref">eq-assocPost</span>. The output column <code class="docutils literal notranslate"><span class="pre">p_single</span></code> gives
+<a class="reference internal" href="#equation-assocpost">(5)</a>. The output column <code class="docutils literal notranslate"><span class="pre">p_single</span></code> gives
 <code class="docutils literal notranslate"><span class="pre">dist_post</span></code> but modified if any additional information is specified
-(see Section <a class="reference external" href="sec:mag-priors">5.2</a>). As mentioned several times in
+(see <a class="reference internal" href="#sec-mag-priors"><span class="std std-ref">magnitude prior</span></a>). As mentioned several times in
 the literature, the <span id="id5">Budavári and Szalay [<a class="reference internal" href="matching.html#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span> approach does not
 include sources absent in some of the catalogues, while the formulae we
 develop below incorporate absent sources. This is similar in spirit to
@@ -420,30 +420,30 @@ different. We now go further and develop counterpart probabilities.</p>
 <p>The first step in catalogue inference is whether the source has any
 counterpart (<span class="math notranslate nohighlight">\(p_{\mathrm{any}}\)</span>). The posterior probabilities
 <span class="math notranslate nohighlight">\(P(H|D)\)</span> are computed using Bayes theorem (eq.
-<a class="reference external" href="eq:bayes">[eq:bayes]</a>) with the likelihood (eq.
-<a class="reference external" href="eq:nwaylikelihood">[eq:nwaylikelihood]</a>) and prior (eq.
-<a class="reference external" href="eq:prior">[eq:prior]</a>) appropriately adopted for the number of
+<a class="reference internal" href="#equation-bayes">(3)</a>) with the likelihood (eq.
+<a class="reference internal" href="#equation-nwaylikelihood">(4)</a>) and prior (eq.
+<a class="reference internal" href="#equation-prior">(2)</a>) appropriately adopted for the number of
 catalogues the particular association draws from. For each entry in the
 primary catalogue, the posteriors of all possible associations are
 normalised to unity, and <span class="math notranslate nohighlight">\(P(H_{0}|D)\)</span>, the posterior probability
 of the no-counterpart hypothesis, i.e., no catalogue participates,
 computed. From this we compute:</p>
-<div class="math notranslate nohighlight" id="eq-post-any">
-\[p_{\mathrm{any}}=1-P(H_{0}|D)/\sum_{i}P(H_{i}|D)\label{eq:post-any}\]</div>
+<div class="math notranslate nohighlight" id="equation-post-any">
+<span class="eqno">(6)<a class="headerlink" href="#equation-post-any" title="Link to this equation">#</a></span>\[p_{\mathrm{any}}=1-P(H_{0}|D)/\sum_{i}P(H_{i}|D)\label{eq:post-any}\]</div>
 <p>If <span class="math notranslate nohighlight">\(p_{\mathrm{any}}\)</span> is low, this indicates that there is little
 evidence for any of the considered, combinatorically possible
 associations, except for the no-association case. The output column
-<code class="docutils literal notranslate"><span class="pre">p_any</span></code> is the result of equation <a class="reference external" href="eq:post-any">[eq:post-any]</a>.</p>
+<code class="docutils literal notranslate"><span class="pre">p_any</span></code> is the result of equation <a class="reference internal" href="#equation-post-any">(6)</a>.</p>
 <p>If <span class="math notranslate nohighlight">\(p_{\mathrm{any}}\approx1\)</span>, there is strong evidence for at
 least one of the associations to another catalogue. To compute the
 relative posterior probabilities of the options, we re-normalize with
 the no-counterpart hypothesis, <span class="math notranslate nohighlight">\(H_{0}\)</span>, excluded:</p>
-<div class="math notranslate nohighlight" id="eq-post-assoc">
-\[p_{i}=P(H_{i}|D)/\sum_{i&gt;0}P(H_{i}|D)\label{eq:post-assoc}\]</div>
+<div class="math notranslate nohighlight" id="equation-post-assoc">
+<span class="eqno">(7)<a class="headerlink" href="#equation-post-assoc" title="Link to this equation">#</a></span>\[p_{i}=P(H_{i}|D)/\sum_{i&gt;0}P(H_{i}|D)\label{eq:post-assoc}\]</div>
 <p>If a particular association has a high <span class="math notranslate nohighlight">\(p_{i}\)</span>, there is strong
 evidence that it is the true one, out of all present options. The output
 column <code class="docutils literal notranslate"><span class="pre">p_i</span></code> is the result of equation
-<a class="reference external" href="eq:post-assoc">[eq:post-assoc]</a>.</p>
+<a class="reference internal" href="#equation-post-assoc">(7)</a>.</p>
 <p>A “very secure” counterpart could be defined by the requirement
 <span class="math notranslate nohighlight">\(p_{any}&gt;95\%\)</span> and <span class="math notranslate nohighlight">\(p_{i}&gt;95\%\)</span>, for example. However, it is
 useful to run simulations to understand the rate of false positives.
@@ -455,10 +455,10 @@ Typically, much lower thresholds are acceptable.</p>
 magnitude distributions. Because most bright X-ray point-sources in deep
 images are also optically bright compared to generic sources, this
 information can be exploited. Previous works
-(e.g., <span id="id10">Brusa <em>et al.</em> [<a class="reference internal" href="matching.html#id11" title="M. Brusa, A. Comastri, E. Daddi, L. Pozzetti, G. Zamorani, C. Vignali, A. Cimatti, F. Fiore, M. Mignoli, P. Ciliegi, and H. J. A. Röttgering. XMM-Newton observations of Extremely Red Objects and the link with luminous, X-ray obscured quasars. \aap , 432:69-81, March 2005. arXiv:arXiv:astro-ph/0409257, doi:10.1051/0004-6361:20041468.">BrusaComastriDaddi+05</a>]</span>, ,:cite:t:<cite>Brusa2007</cite>) have modified the
+(e.g., <span id="id7">Brusa <em>et al.</em> [<a class="reference internal" href="matching.html#id11" title="M. Brusa, A. Comastri, E. Daddi, L. Pozzetti, G. Zamorani, C. Vignali, A. Cimatti, F. Fiore, M. Mignoli, P. Ciliegi, and H. J. A. Röttgering. XMM-Newton observations of Extremely Red Objects and the link with luminous, X-ray obscured quasars. \aap , 432:69-81, March 2005. arXiv:arXiv:astro-ph/0409257, doi:10.1051/0004-6361:20041468.">BrusaComastriDaddi+05</a>]</span>, <span id="id8">Brusa <em>et al.</em> [<a class="reference internal" href="matching.html#id12" title="M. Brusa, G. Zamorani, A. Comastri, G. Hasinger, N. Cappelluti, F. Civano, A. Finoguenov, V. Mainieri, M. Salvato, C. Vignali, M. Elvis, F. Fiore, R. Gilli, C. D. Impey, S. J. Lilly, M. Mignoli, J. Silverman, J. Trump, C. M. Urry, R. Bender, P. Capak, J. P. Huchra, J. P. Kneib, A. Koekemoer, A. Leauthaud, I. Lehmann, R. Massey, I. Matute, P. J. McCarthy, H. J. McCracken, J. Rhodes, N. Z. Scoville, Y. Taniguchi, and D. Thompson. The XMM-Newton Wide-Field Survey in the COSMOS Field. III. Optical Identification and Multiwavelength Properties of a Large Sample of X-Ray-Selected Sources. \apjs , 172:353-367, September 2007. arXiv:arXiv:astro-ph/0612358, doi:10.1086/516575.">BrusaZamoraniComastri+07</a>]</span>) have modified the
 likelihood ratio coming from the angular distance <span class="math notranslate nohighlight">\(f(r)\)</span>
 information (likelihood ratio method,
-<span id="id11">Sutherland and Saunders [<a class="reference internal" href="matching.html#id21" title="W. Sutherland and W. Saunders. On the likelihood ratio for source identification. \mnras , 259:413-420, December 1992. URL: http://adsabs.harvard.edu/cgi-bin/nph-data_query?bibcode=1992MNRAS.259..413S&amp;link_type=ARTICLE&amp;db_key=AST&amp;high=.">SutherlandSaunders92</a>]</span>) by a factor:</p>
+<span id="id9">Sutherland and Saunders [<a class="reference internal" href="matching.html#id21" title="W. Sutherland and W. Saunders. On the likelihood ratio for source identification. \mnras , 259:413-420, December 1992. URL: http://adsabs.harvard.edu/cgi-bin/nph-data_query?bibcode=1992MNRAS.259..413S&amp;link_type=ARTICLE&amp;db_key=AST&amp;high=.">SutherlandSaunders92</a>]</span>) by a factor:</p>
 <div class="math notranslate nohighlight">
 \[LR=\frac{q(m)}{n(m)}\times f(r)\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(q(m)\)</span> and <span class="math notranslate nohighlight">\(n(m)\)</span> are associated with the magnitude
@@ -478,7 +478,7 @@ P(D|H) &amp; = &amp; P(D_{\phi}|H)\times P(D_{m}|H)\\
 <p>with <span class="math notranslate nohighlight">\(\bar{q}(m)\)</span> and <span class="math notranslate nohighlight">\(\bar{n}(m)\)</span> being the probability
 that a X-ray (target) source or a generic (field) source has magnitude
 <span class="math notranslate nohighlight">\(m\)</span> respectively. Nwaystores the modifying factor,
-<span class="math notranslate nohighlight">\(P(D_{m}|H)\)</span>, in <code class="docutils literal notranslate"><span class="pre">bias_</span></code><code class="docutils literal notranslate"><span class="pre">*</span></code> output columns, one for each
+<span class="math notranslate nohighlight">\(P(D_{m}|H)\)</span>, in <code class="docutils literal notranslate"><span class="pre">bias_*</span></code> output columns, one for each
 column giving a magnitude, color, or other distribution. This modifying
 factor is however renormalized so that
 <span class="math notranslate nohighlight">\(P(D_{m}|H)=\frac{\bar{q}(m)}{\bar{n}(m)}/\int\frac{\bar{q}(m')}{\bar{n}(m')}\bar{n}(m')dm'\)</span>,
@@ -501,7 +501,7 @@ are not yet implemented in Nway. Instead, we recommend removing
 magnitude values with large uncertainties (setting them to -99).</p>
 </section>
 <section id="auto-calibration">
-<span id="sec-auto-calibration"></span><h2>Auto-calibration<a class="headerlink" href="#auto-calibration" title="Link to this heading">#</a></h2>
+<span id="id10"></span><h2>Auto-calibration<a class="headerlink" href="#auto-calibration" title="Link to this heading">#</a></h2>
 <p>The probability distributions <span class="math notranslate nohighlight">\(\bar{n}(m)\)</span> and <span class="math notranslate nohighlight">\(\bar{q}(m)\)</span>
 can be taken from other observations by computing the magnitude
 histograms of the overall population and the target sub-population (e.g.
@@ -532,7 +532,7 @@ well. The program proceeds in four steps.</p>
 to consider all theoretical possibilities (complexity
 <span class="math notranslate nohighlight">\(O(\prod_{i=1}^{k}N_{i})\)</span>), so the sky is split first to cluster
 nearby objects. For this, a hashing procedure puts each object into
-HEALPix bins <span id="id12">[<a class="reference internal" href="matching.html#id14" title="K. M. Górski, E. Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelmann. HEALPix: A Framework for High-Resolution Discretization and Fast Analysis of Data Distributed on the Sphere. \apj , 622:759-771, April 2005. arXiv:arXiv:astro-ph/0409513, doi:10.1086/427976.">GorskiHivonBanday+05</a>]</span>. The bin width <span class="math notranslate nohighlight">\(w\)</span> is
+HEALPix bins <span id="id11">[<a class="reference internal" href="matching.html#id14" title="K. M. Górski, E. Hivon, A. J. Banday, B. D. Wandelt, F. K. Hansen, M. Reinecke, and M. Bartelmann. HEALPix: A Framework for High-Resolution Discretization and Fast Analysis of Data Distributed on the Sphere. \apj , 622:759-771, April 2005. arXiv:arXiv:astro-ph/0409513, doi:10.1086/427976.">GorskiHivonBanday+05</a>]</span>. The bin width <span class="math notranslate nohighlight">\(w\)</span> is
 chosen so that any association of distance <span class="math notranslate nohighlight">\(w\)</span> are improbable and
 negligible in practice, i.e. much larger than the largest positional
 error. An object with coordinates <span class="math notranslate nohighlight">\(\phi,\,\theta\)</span> is placed in the
@@ -553,14 +553,14 @@ user-supplied prior incompleteness factor. The posterior for each
 association based on the distances only is calculated. These posteriors
 have to be modified (“correcting for unrelated associations”), to
 consider associations unrelated to primary catalogue sources (described
-in the paper, <span id="id13">Salvato <em>et al.</em> [<a class="reference internal" href="matching.html#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span>, in the appendix
+in the paper, <span id="id12">Salvato <em>et al.</em> [<a class="reference internal" href="matching.html#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span>, in the appendix
 section “Computing all possible matches”).</p>
 <p>In the third step the magnitudes are considered, and the posteriors
 modified. An arbitrary number of magnitude columns in the input
 catalogues can be specified. It is possible to use external magnitude
 histograms (e.g. for sparse matching with few objects) as well as
-computing the histograms from the data itself (see Section
-<a class="reference external" href="subsec:Auto-calibration">[subsec:Auto-calibration]</a>). The breaks of
+computing the histograms from the data itself (see
+<a class="reference internal" href="#auto-calibration"><span class="std std-ref">Auto-calibration section</span></a>). The breaks of
 the histogram bins are computed adaptively based on the empirical
 cumulative distribution found. Because the histogram bins are usually
 larger than the magnitude measurement uncertainty, the latter is

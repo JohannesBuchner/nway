@@ -347,8 +347,8 @@ document.write(`
   <section id="user-guide-matching-catalogs">
 <h1>User guide: Matching catalogs<a class="headerlink" href="#user-guide-matching-catalogs" title="Link to this heading">#</a></h1>
 <p>To achieve reliable results, we recommend that you run matching with
-increasing amount of information (first <cite>distance-based matching &lt;chap:distance-based-matching&gt;</cite>)
-then <a class="reference external" href="chap:additional-priors">adding priors on source properties</a>
+increasing amount of information (first <a class="reference internal" href="#chap-distance-based-matching"><span class="std std-ref">distance-based matching</span></a>)
+then <a class="reference internal" href="#chap-additional-priors"><span class="std std-ref">adding priors on source properties</span></a>
 and understand how each influences
 the results.</p>
 <p>Typically, the goal is a compilation of “best matches”, i.e. choosing
@@ -359,13 +359,13 @@ shift the source catalogues by a distance much larger than the
 positional errors to simulate the results for chance alignment. This
 fake catalogue should not coincide with original positions (tool
 <code class="docutils literal notranslate"><span class="pre">nway-create-fake-catalogue.py</span></code> may help). For the matching run with
-this fake catalogue, use Nway  with the same settings and from the
+this fake catalogue, use Nway with the same settings and from the
 output, choose cut-off limits (<code class="docutils literal notranslate"><span class="pre">p_any</span></code>) that correspond to the desired
 false selection fraction (tool <code class="docutils literal notranslate"><span class="pre">nway-calibrate-cutoff.py</span></code> may help).
-The output of your first Nway  run advises how to use these tools to
+The output of your first Nway run advises how to use these tools to
 characterise false selection rates and to find an appropriate <code class="docutils literal notranslate"><span class="pre">p_any</span></code>
 threshold.</p>
-<p>Then the Nway  output on the real data can be truncated based on this
+<p>Then the Nway output on the real data can be truncated based on this
 criterion (<code class="docutils literal notranslate"><span class="pre">p_any&gt;cutoff</span></code>), and made into a best match catalogue
 (<code class="docutils literal notranslate"><span class="pre">match_flag==1</span></code>). It may be worth noting ambiguous cases with
 multiple solutions and to store these secondary solutions with similar
@@ -483,8 +483,8 @@ Entry</p></th>
 <p>In Nway, only the first catalogue (<strong>the primary catalogue</strong>) plays a
 special role. For each entry of it, counterparts are sought from the
 other catalogues.</p>
-<div class="docutils container">
-<p class="rubric" id="example-preparing-input-files">Example - Preparing input files</p>
+<div class="note admonition">
+<p class="admonition-title">Example - Preparing input files</p>
 <p>Note these points about preparing a catalogue input file:</p>
 <ol class="arabic">
 <li><div class="line-block">
@@ -540,9 +540,9 @@ extremely distant, unlikely to be physically associated. You can set the
 largest distance in degrees to consider by setting <code class="docutils literal notranslate"><span class="pre">--radius</span></code>. This
 speeds up the computation. But use a value that is much larger than the
 largest positional error.</p>
-<div class="docutils container">
-<p class="rubric" id="example-matching-two-catalogues">Example - Matching two catalogues</p>
-<p>Lets try the simplest example and match the XMM X-ray catalogue to an
+<div class="note admonition">
+<p class="admonition-title">Example - Matching two catalogues</p>
+<p>Let’s try the simplest example and match the XMM X-ray catalogue to an
 optical catalogue. The XMM catalogue has a pos_err column with the
 positional error in arcseconds. For the optical catalogue we will
 assume a fixed error of 0.1 arcseconds.</p>
@@ -550,7 +550,7 @@ assume a fixed error of 0.1 arcseconds.</p>
 <p>Run this command in the doc/ folder:</p>
 <p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">../nway.py</span> <span class="pre">COSMOS_XMM.fits</span> <span class="pre">:pos_err</span> <span class="pre">COSMOS_OPTICAL.fits</span> <span class="pre">0.1</span> <span class="pre">--out=example1.fits</span> <span class="pre">--radius</span> <span class="pre">15</span> <span class="pre">--prior-completeness</span> <span class="pre">0.9</span></code></p>
 </div>
-<p>Lets understand what we put in:</p>
+<p>Let’s understand what we put in:</p>
 <ol class="arabic simple">
 <li><p>We passed two catalogue files: COSMOS_XMM.fits and
 COSMOS_OPTICAL.fits. For the first one, we told Nwayto use the
@@ -568,7 +568,7 @@ combinations to consider rises exponentially.</p></li>
 </div>
 <div class="float docutils container">
 <div class="docutils container">
-<p>Lets understand what Nway  did:</p>
+<p>Let’s understand what Nway did:</p>
 </div>
 <ol class="arabic">
 <li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NWAY</span> <span class="n">arguments</span><span class="p">:</span>
@@ -628,17 +628,17 @@ columns from the input catalogues and the computed probabilities
 </li>
 </ol>
 </div>
-<p>So how does Nway  deal with a particular, possible association and
+<p>So how does Nway deal with a particular, possible association and
 compute its probability?</p>
 <p>The probability of a given association is computed by comparing the
 probability of a random chance alignment of unrelated sources (prior) to
 the likelihood that the source is the same. The gory mathematical
-details are laid out in ‘Mathematical details &lt;math&gt;`_, but from a user
+details are laid out in <a class="reference internal" href="math.html"><span class="doc">Mathematical details</span></a>, but from a user
 point of view the following is important:</p>
 <ol class="arabic simple">
 <li><p>The chance of a random alignment depends on the source sky density of
 the various catalogues. <strong>So each catalogue needs to have a FITS
-header entry</strong> <strong>``SKYAREA``</strong> <strong>which tells the area covered by the
+header entry</strong> <code class="docutils literal notranslate"><span class="pre">SKYAREA</span></code> <strong>which tells the area covered by the
 catalogue in square degrees.</strong> The source density on the sky is then
 computed by the number of entries divided by that area. You can use
 the tool
@@ -658,31 +658,32 @@ from distance matching</p></li>
 association vs. no association, as in
 <span id="id6">Budavári and Szalay [<a class="reference internal" href="#id13" title="T. Budavári and A. S. Szalay. Probabilistic Cross-Identification of Astronomical Sources. \apj , 679:301-309, May 2008. arXiv:0707.1611, doi:10.1086/587156.">BudavariSzalay08</a>]</span>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">p_single</span></code>: Same as <code class="docutils literal notranslate"><span class="pre">dist_post</span></code> unless additional information was
-added, see the <a class="reference external" href="chap:additional-priors">section on additional priors</a>.</p></li>
-<li><p><strong>``p_any``</strong>: For each entry in the primary catalogue (e.g. A) the
+added, see the <a class="reference internal" href="#chap-additional-priors"><span class="std std-ref">section on additional priors</span></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_any</span></code>: For each entry in the primary catalogue (e.g. A) the
 probability that one of the association is the correct one is
 computed. Because every catalogue is limited by its depth, it is
 possible that the true counterpart has not been found yet. Our
 testing suggest that the <strong>threshold for a secure catalogue depends
 on the application.</strong>
-The <a class="reference external" href="sec:Best-practice-matching">Best practice section</a>
+The <a class="reference internal" href="#chap-distance-based-matching"><span class="std std-ref">Best practice section</span></a>
 explains how to calibrate a threshold.</p></li>
 <li><div class="line-block">
-<div class="line"><strong>``p_i``</strong>: For each possible association for each entry in the
+<div class="line"><code class="docutils literal notranslate"><span class="pre">p_i</span></code>: For each possible association for each entry in the
 primary catalogue (e.g. A), the relative probability is computed.
 Our testing suggest that secure, pure catalogue <strong>should keep only
-associations where ``p_i&gt;=0.1``. Secondary solutions down to 0.1
-may be interesting. These thresholds may depend on the application
-– please report what your testing gives.</strong></div>
+associations where</strong> <code class="docutils literal notranslate"><span class="pre">p_i&gt;=0.1</span></code>. <strong>Secondary solutions down to 0.1
+may be interesting. These thresholds may depend on the application -
+please report what your testing gives.</strong></div>
 </div>
-<div class="docutils container">
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>Low <code class="docutils literal notranslate"><span class="pre">p_any</span></code> and <code class="docutils literal notranslate"><span class="pre">p_i</span></code> values by themselves do not necessarily
 mean that the counterpart is ruled out. It can also mean that
 there is not enough evidence/information to declare it a
 counterpart.</p>
 </div>
 </li>
-<li><p><strong>``match_flag``</strong>: The most probable match is indicated with <code class="docutils literal notranslate"><span class="pre">1</span></code>
+<li><p><code class="docutils literal notranslate"><span class="pre">match_flag</span></code>: The most probable match is indicated with <code class="docutils literal notranslate"><span class="pre">1</span></code>
 for each primary catalogue entry. Secondary, almost as good solutions
 are marked with <code class="docutils literal notranslate"><span class="pre">2</span></code>. By default, the maximum allowed ratio is at
 most 0.5, but the user can modify this threshold via the
@@ -691,12 +692,12 @@ with <code class="docutils literal notranslate"><span class="pre">0</span></code
 </ol>
 <p>Use the last three columns to identify sources with one solution,
 possible secondary solutions, and to build final catalogues.
-‘Mathematical details &lt;math&gt;`_ explains how these quantities are computed. To
+<a class="reference internal" href="math.html"><span class="doc">Mathematical details</span></a> explains how these quantities are computed. To
 filter out low-probability associations (low <code class="docutils literal notranslate"><span class="pre">p_i</span></code>) from the output
 catalogue, the <code class="docutils literal notranslate"><span class="pre">--min-prob</span></code> parameter can be used.</p>
-<div class="docutils container">
-<p class="rubric" id="example-output-of-matching-two-catalogues">Example - Output of matching two catalogues</p>
-<p>Lets understand the output fits file and the associations found for a
+<div class="note admonition">
+<p class="admonition-title">Example - Output of matching two catalogues</p>
+<p>Let’s understand the output fits file and the associations found for a
 particular X-ray source.</p>
 <div class="docutils container">
 <p>Open the fits file and find XMM_ID=60388. As you can see from the
@@ -709,7 +710,7 @@ optical counterpart is possible.</p>
 with error circle). Therefore their association probability (<code class="docutils literal notranslate"><span class="pre">p_i</span></code>)
 is similar. The slightly higher one is marked as match_flag=1
 (orange), the other with 2 (yellow).</p>
-<p><a class="reference external" href="chap:additional-priors">The next section</a> solves this by adding more
+<p><a class="reference internal" href="#chap-additional-priors"><span class="std std-ref">The next section</span></a> solves this by adding more
 information (the magnitude distribution). But we can also solve this
 another way. We know AGN (the X-ray source) emit in the infrared, so
 you can also match with an IRAC catalogue.</p>
@@ -730,14 +731,14 @@ that probably neither of the two candidates is the counterpart.</p>
 provides additional hints, which associations are likely real. For
 instance, bright X-ray sources have a different color distribution in
 the WISE bands than non-X-ray emitting objects. A powerful feature of
-Nway  is to take advantage of this additional information to improve the
-matching. The <a class="reference external" href="sec:mag-priors">magnitude prior section</a> has the mathematical details
+Nway is to take advantage of this additional information to improve the
+matching. The <a class="reference internal" href="math.html#sec-mag-priors"><span class="std std-ref">magnitude prior section</span></a> has the mathematical details
 and a comparison to the Likelihood Ratio method.</p>
-<div class="docutils container">
-<p class="rubric" id="example-using-magnitude-information">Example - Using magnitude information</p>
+<div class="note admonition">
+<p class="admonition-title">Example - Using magnitude information</p>
 <p>X-ray sources (which we are looking for in our example) have a
 different optical magnitude distribution than non-X-ray emitting
-objects. Lets take advantage of this information:</p>
+objects. Let’s take advantage of this information:</p>
 <div class="docutils container">
 <p>Run this command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">../nway.py</span> <span class="pre">COSMOS_XMM.fits</span> <span class="pre">:pos_err</span> <span class="pre">COSMOS_OPTICAL.fits</span> <span class="pre">0.1</span> <span class="pre">--out=example2.fits</span> <span class="pre">--radius</span> <span class="pre">15</span> <span class="pre">--prior-completeness</span> <span class="pre">0.9</span> <span class="pre">--mag</span> <span class="pre">OPT:MAG</span> <span class="pre">auto</span> <span class="pre">--mag-radius</span> <span class="pre">3.5</span></code></p>
@@ -769,14 +770,14 @@ others into another histogram.</p></li>
 <li><p>“Bayesian auto-mode”: Bayesian distance probabilities (<code class="docutils literal notranslate"><span class="pre">dist_post</span></code>)
 will be used if you leave out <code class="docutils literal notranslate"><span class="pre">--mag-radius</span></code>. This is in general
 safer and recommended. In small catalogues the histogram may not be
-sufficiently filled, in which case Nway  will give a warning (more
+sufficiently filled, in which case Nway will give a warning (more
 details below ).</p></li>
 </ol>
+<div class="note admonition">
+<p class="admonition-title">Let’s look at the histograms it computed</p>
 <div class="docutils container">
-<div class="docutils container">
-<p>Lets look at the histograms it computed. Nway  created
-<code class="docutils literal notranslate"><span class="pre">OPT_MAG_fit.pdf</span></code>, and also <code class="docutils literal notranslate"><span class="pre">OPT_MAG_fit.txt</span></code> as a histogram
-file:</p>
+<p>Nway created <code class="docutils literal notranslate"><span class="pre">OPT_MAG_fit.pdf</span></code>, and also <code class="docutils literal notranslate"><span class="pre">OPT_MAG_fit.txt</span></code>
+as a histogram file:</p>
 <img alt="histogram of optical magnitudes for target and field population" src="_images/OPT_MAG_fit.png" />
 <p>They are clearly different: Lower magnitude (bright) sources are
 more likely associated to X-ray sources. This will help our
@@ -802,7 +803,7 @@ performed.
 <h3>Providing a prior as a file<a class="headerlink" href="#providing-a-prior-as-a-file" title="Link to this heading">#</a></h3>
 <p>In the paper we demonstrate the use of a WISE magnitude of X-ray
 sources. If such prior information comes from previous studies, the
-distributions can be passed to Nway  as a ASCII table histogram. This
+distributions can be passed to Nway as a ASCII table histogram. This
 table contains the histogram of the sources of interest (X-ray sources)
 and a histogram of other sources (non-X-ray sources). The file
 <code class="docutils literal notranslate"><span class="pre">OPT_MAG_fit.txt</span></code> is an example of such a input file, and can be used
@@ -816,7 +817,8 @@ this (# indicates comments):</p>
   <span class="o">...</span>
 </pre></div>
 </div>
-<div class="docutils container">
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>Keep in mind that a prior created from a different data set can only
 be used if it is applicable to the present data set. For example, in
 the introduction of the paper
@@ -829,7 +831,7 @@ distributions.</p>
 <h3>A general approach<a class="headerlink" href="#a-general-approach" title="Link to this heading">#</a></h3>
 <p>Providing priors is not limited to magnitude distributions, you can use
 colors or any other information you want (e.g. morphology, variability,
-etc.). The approach is very general, Nway  just looks at the
+etc.). The approach is very general, Nway just looks at the
 corresponding bin and reweighs the probabilities. For example, in
 <span id="id8">Salvato <em>et al.</em> [<a class="reference internal" href="#id19" title="M. Salvato, J. Buchner, T. Budavári, T. Dwelly, A. Merloni, M. Brusa, A. Rau, S. Fotopoulou, and K. Nandra. Finding counterparts for all-sky X-ray surveys with NWAY: a Bayesian algorithm for cross-matching multiple catalogues. \mnras , 473:4937-4955, February 2018. arXiv:1705.10711, doi:10.1093/mnras/stx2651.">SalvatoBuchnerBudavari+18</a>]</span>, the counterparts to ROSAT
 sources where found using WISE. The prior was build by using the
@@ -850,7 +852,8 @@ used for the “others” histogram.</p></li>
 where the magnitude error is large, to get cleaner histograms.</p></li>
 </ol>
 <p>This is in general more cautious, and recommended for large catalogues</p>
-<div class="docutils container">
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
 <p>However, if you only have a small catalogue you may build a poorly
 sampled histogram, potentially leading to biases. Nway  will warn you
 when only few sources were selected.</p>
@@ -864,6 +867,10 @@ when only few sources were selected.</p>
 <div class="citation" id="id11" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>BrusaComastriDaddi+05<span class="fn-bracket">]</span></span>
 <p>M. Brusa, A. Comastri, E. Daddi, L. Pozzetti, G. Zamorani, C. Vignali, A. Cimatti, F. Fiore, M. Mignoli, P. Ciliegi, and H. J. A. Röttgering. XMM-Newton observations of Extremely Red Objects and the link with luminous, X-ray obscured quasars. <em>\aap </em>, 432:69–81, March 2005. <a class="reference external" href="https://arxiv.org/abs/arXiv:astro-ph/0409257">arXiv:arXiv:astro-ph/0409257</a>, <a class="reference external" href="https://doi.org/10.1051/0004-6361:20041468">doi:10.1051/0004-6361:20041468</a>.</p>
+</div>
+<div class="citation" id="id12" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>BrusaZamoraniComastri+07<span class="fn-bracket">]</span></span>
+<p>M. Brusa, G. Zamorani, A. Comastri, G. Hasinger, N. Cappelluti, F. Civano, A. Finoguenov, V. Mainieri, M. Salvato, C. Vignali, M. Elvis, F. Fiore, R. Gilli, C. D. Impey, S. J. Lilly, M. Mignoli, J. Silverman, J. Trump, C. M. Urry, R. Bender, P. Capak, J. P. Huchra, J. P. Kneib, A. Koekemoer, A. Leauthaud, I. Lehmann, R. Massey, I. Matute, P. J. McCarthy, H. J. McCracken, J. Rhodes, N. Z. Scoville, Y. Taniguchi, and D. Thompson. The XMM-Newton Wide-Field Survey in the COSMOS Field. III. Optical Identification and Multiwavelength Properties of a Large Sample of X-Ray-Selected Sources. <em>\apjs </em>, 172:353–367, September 2007. <a class="reference external" href="https://arxiv.org/abs/arXiv:astro-ph/0612358">arXiv:arXiv:astro-ph/0612358</a>, <a class="reference external" href="https://doi.org/10.1086/516575">doi:10.1086/516575</a>.</p>
 </div>
 <div class="citation" id="id13" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">BudavariSzalay08</a><span class="fn-bracket">]</span></span>
