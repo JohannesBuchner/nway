@@ -409,7 +409,7 @@ if args.consider_unrelated_associations:
 						log_bf_j = bayesdist.log_bf_elliptical(numpy.array(separations_selected_ra),
 							 numpy.array(separations_selected_dec),
 							 numpy.array(errors_selected))
-					logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)
+					logpost_j = bayesdist.unnormalised_log_posterior(prior_j, log_bf_j, n_augmented_cats)[0]
 					if logpost_j > best_logpost:
 						#print('post:', logpost_j, log_bf_j, prior_j)
 						best_logpost = logpost_j

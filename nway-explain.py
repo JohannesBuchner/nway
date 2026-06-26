@@ -233,8 +233,8 @@ ras = []
 decs = []
 first = True
 for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
-	ra = float(data[col_ra][mask2])
-	dec = float(data[col_dec][mask2])
+	ra = float(data[col_ra][mask2][0])
+	dec = float(data[col_dec][mask2][0])
 	if ra == -99:
 		continue
 	if not first:
@@ -244,7 +244,7 @@ for col_ra, col_dec, marker in zip(cols_ra, cols_dec, markers):
 		continue
 	ras.append(ra)
 	decs.append(dec)
-plt.plot(convx(ras), convy(decs), '-', lw=1.7, label='p_i=%.2f (match_flag=1)' % (float(data['p_i'][mask2])), color='orange')
+plt.plot(convx(ras), convy(decs), '-', lw=1.7, label='p_i=%.2f (match_flag=1)' % (float(data['p_i'][mask2][0])), color='orange')
 
 mask2 = numpy.logical_and(mask, data['match_flag'] == 2)
 for i in numpy.where(mask2)[0]:
