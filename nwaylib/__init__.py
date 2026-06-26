@@ -382,7 +382,8 @@ def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclud
 				magnitudeweights.plot_fit(bins, hist_sel, hist_all, func, mag)
 			magcol = magvals[res]
 			magcol[~numpy.logical_and(res_defined, numpy.isfinite(magcol))] = -99
-			weights = log10(func(magcol))
+			with numpy.errstate(divide='ignore'):
+				weights = log10(func(magcol))
 			# undefined magnitudes do not contribute
 			weights[numpy.isnan(weights)] = 0
 			biases[col] = weights
@@ -422,7 +423,7 @@ def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prio
 	def compute_group_statistics(group):
 		# group
 		# compute no-match probability
-		values = group['log_post_weight'].values
+		values = group['log_post_weight'].values.copy()
 		#values = grpvalues.values
 		offset = values.max()
 		bfsum = log10((10**(values - offset)).sum()) + offset
@@ -449,6 +450,7 @@ def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prio
 		match_flag = numpy.where(best_val == p_i, 1,
 			numpy.where(p_i > prob_ratio_secondary * best_val, 2, 0))
 
+		group['log_post_weight'] = values
 		group['prob_has_match'] = p_any
 		group['prob_this_match'] = p_i
 		group['match_flag'] = match_flag
