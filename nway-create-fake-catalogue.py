@@ -40,6 +40,8 @@ parser = HelpfulParser(description=__doc__,
 
 parser.add_argument('--radius', type=float, required=True,
 	help='Remove sources which are near original sources, within this radius (arcsec).')
+parser.add_argument('--seed', type=int, default=0,
+	help='Seed for deterministic output.')
 
 parser.add_argument('inputfile', type=str, help="input catalogue fits file")
 parser.add_argument('outputfile', help='output catalogue fits file')
@@ -67,7 +69,11 @@ ra = ra_orig + 0
 dec = dec_orig + 0
 n = len(ra_orig)
 
-i_select = numpy.random.randint(0, n, size=400)
+if args.seed > 0:
+	rng = numpy.random.RandomState(args.seed)
+else:
+	rng = numpy.random
+i_select = rng.randint(0, n, size=400)
 ra_test = ra[i_select]
 dec_test = dec[i_select]
 phi_test = ra_test / 180 * pi

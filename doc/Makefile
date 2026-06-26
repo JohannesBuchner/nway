@@ -38,7 +38,7 @@ runprep:
 	nway-write-header.py COSMOS_XMM.fits     XMM  2 | tee logs/prep-XMM
 
 COSMOS_XMM-fake.fits: COSMOS_XMM.fits
-	nway-create-fake-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits | tee logs/XMM-fake
+	nway-create-fake-catalogue.py --radius 20 --seed 123 COSMOS_XMM.fits COSMOS_XMM-fake.fits | tee logs/XMM-fake
 COSMOS_XMM-shift.fits: COSMOS_XMM.fits
 	nway-create-shifted-catalogue.py --radius 40 --shift-ra 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits | tee logs/XMM-shift
 

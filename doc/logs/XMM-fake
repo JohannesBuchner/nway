@@ -1,14 +1,21 @@
-opening COSMOS_XMM.fits
-    using RA  column: RA
-    using DEC column: DEC
-finding good pixelation...
-  nside=4: the 400 test objects have a total of 718800 neighbors
-  nside=8: the 400 test objects have a total of 692110 neighbors
-  nside=16: the 400 test objects have a total of 601538 neighbors
-  nside=32: the 400 test objects have a total of 601538 neighbors
-  nside=64: the 400 test objects have a total of 210404 neighbors
-  nside=128: the 400 test objects have a total of 67569 neighbors
-  nside=256: the 400 test objects have a total of 18810 neighbors
-  nside=512: the 400 test objects have a total of 5320 neighbors
-    accepting.
-writing "COSMOS_XMM-fake.fits" (1797 rows)
+usage: nway-create-fake-catalogue.py [-h] --radius RADIUS inputfile outputfile
+
+Create a fake, random-position catalogue for testing the false association
+rate. For each source, tries to find a new position, by choosing randomly one
+of its K nearest neighbors and picking a random location between them. If the
+new location is within --radius (arcsec) of an old or new source, the random
+process is repeated. With 2/3 probability K=10, with 1/3 probability K=100,
+giving a good balance between reproducing local structures and filling the
+field. Example: nway-create-fake-catalogue.py --radius 20 COSMOS-XMM.fits
+fake-COSMOS-XMM.fits
+
+positional arguments:
+  inputfile        input catalogue fits file
+  outputfile       output catalogue fits file
+
+options:
+  -h, --help       show this help message and exit
+  --radius RADIUS  Remove sources which are near original sources, within this
+                   radius (arcsec). (default: None)
+
+Johannes Buchner (C) 2013-2025 <johannes.buchner.acad@gmx.com>
