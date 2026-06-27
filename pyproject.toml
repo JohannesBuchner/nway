@@ -10,7 +10,10 @@ description = "Probabilistic Cross-Identification of Astronomical Sources"
 readme = "README.rst"
 requires-python = ">=3.8"
 dependencies = ["numpy", "scipy", "astropy", "tqdm", "healpy", "joblib", "matplotlib", "pandas"]
-license = {file = "LICENSE"}
+license = "AGPL-3.0-or-later"
+license-files = [
+    "LICENSE",
+]
 authors = [
     { name = "Johannes Buchner", email = "johannes.buchner.acad@gmx.com" },
 ]
