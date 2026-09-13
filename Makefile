@@ -29,3 +29,9 @@ test:
 	cd tests/elltest && nway-explain.py random_elltest.fits 95
 	cd tests/elltest && nway.py --radius=10.0 randomcatX.fits :a:b:phi randomcatR.fits :a:b:phi randomcatO.fits 0.1 --out=random3_elltest.fits --min-prob=0.01
 	cd tests/elltest && nway-explain.py random3_elltest.fits 95
+
+release: dist ## package and upload a release
+	twine upload --verbose dist/*.tar.gz
+
+install: clean ## install the package to the active Python's site-packages
+	$(PYTHON) -m pip install .
