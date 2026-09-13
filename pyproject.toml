@@ -26,9 +26,9 @@ doc = [
 ]
 
 [project.urls]
+Homepage = "https://github.com/JohannesBuchner/nway/"
+Documentation = "https://johannesbuchner.github.io/nway/"
 Repository = "https://github.com/JohannesBuchner/nway/"
-homepage = "https://github.com/JohannesBuchner/nway/"
-documentation = "https://johannesbuchner.github.io/nway/"
 
 [flake8]
 style = "numpy"
