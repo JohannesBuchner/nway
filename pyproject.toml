@@ -30,13 +30,6 @@ Homepage = "https://github.com/JohannesBuchner/nway/"
 Documentation = "https://johannesbuchner.github.io/nway/"
 Repository = "https://github.com/JohannesBuchner/nway/"
 
-[flake8]
-style = "numpy"
-check-return-types = false
-exclude = "docs"
-extend-ignore = "W191,E251,E101,E117,E122,E261,B007,E265,E203,W503,E501,F401,E128,E231,E124,SIM114,DOC105,DOC106,DOC107,DOC301,DOC501,DOC503,DOC203,B006,SIM102,SIM113,DOC202,DOC403,DOC404"
-max-line-length = 160
-
 [tool.pycodestyle]
 count = false
 ignore = "W191,W291,W293,E231"
