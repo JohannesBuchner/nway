@@ -1,0 +1,15 @@
+numpy
+scipy
+astropy
+tqdm
+healpy
+joblib
+matplotlib
+pandas
+
+[doc]
+sphinx_bootstrap_theme
+sphinxcontrib.bibtex
+
+[test]
+pytest
