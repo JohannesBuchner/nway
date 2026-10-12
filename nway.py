@@ -648,6 +648,6 @@ hdulist[0].header.update(match_header)
 print('    writing "%s" (%d rows, %d columns) ...' % (outfile, len(tbhdu.data), len(columns)))
 hdulist.writeto(outfile, **progress.kwargs_overwrite_true)
 
-import nwaylib.checkupdates
+import nwaylib.checkupdates  # noqa: E402
 
 nwaylib.checkupdates.checkupdates()

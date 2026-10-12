@@ -1,4 +1,8 @@
-.PHONY: test clean dist
+.PHONY: test clean dist lint
+
+lint:
+	flake8 nway.py nwaylib/*.py
+	pycodestyle nway.py nwaylib/*.py
 
 clean:
 	rm -rf dist/
