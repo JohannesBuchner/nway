@@ -1,13 +1,10 @@
-.PHONY: test clean
-
-PYTHON := python3
+.PHONY: test clean dist
 
 clean:
-	rm -fr build/ dist/ .eggs/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
+	rm -rf dist/
+
+dist:
+	python -m build
 
 test:
 	echo "backend: Agg" > matplotlibrc
