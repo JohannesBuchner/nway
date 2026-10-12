@@ -33,6 +33,7 @@ def nway_match(match_tables, match_radius, prior_completeness,
 	prob_ratio_secondary = 0.5,
 	min_prob=0., consider_unrelated_associations=True,
 	store_mag_hists=True,
+	prior_callback=None,
 	logger=default_logger):
 	"""
 	match_tables: list of catalogues, each a dict with entries:
@@ -77,6 +78,18 @@ def nway_match(match_tables, match_radius, prior_completeness,
 
 	store_mag_hists: Write constructed mag hists to file (filename based on table name and mags).
 
+	prior_callback: callback function that computes an additional prior
+		probability for each candidate combination. It is called with the
+		match table (a pandas.DataFrame with one row per combination; the
+		first columns are named after the catalogues and contain the row
+		index in each catalogue, -1 if it does not participate; other
+		columns are Separation_*, ncat, dist_bayesfactor, dist_post and the
+		bias_* factors). It has to return an array with one probability per
+		row, which is multiplied into the evidence like the per-catalogue
+		magnitude priors, and is thus ingested into p_single, p_any and p_i.
+		A probability of 0 excludes a combination from the matching.
+		Default: None (no additional prior).
+
 	logger: NormalLogger for stderr output and progress bars, NullOutputLogger if silent
 	"""
 	if mag_exclude_radius is None:
@@ -112,6 +125,9 @@ def nway_match(match_tables, match_radius, prior_completeness,
 
 	# find magnitude biasing functions
 	table, total = _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclude_radius, magauto_post_single_minvalue, store_mag_hists, logger=logger)
+
+	if prior_callback is not None:
+		table, total = _apply_prior_callback(table, total, prior_callback, logger)
 
 	table = _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prior, total, logger=logger)
 
@@ -396,6 +412,26 @@ def _apply_magnitude_biasing(match_tables, table, mag_include_radius, mag_exclud
 	return table, total
 
 
+def _apply_prior_callback(table, total, prior_callback, logger):
+	"""
+	Queries the user-provided prior_callback with the match table and
+	ingests the returned probabilities into the total evidence, like the
+	magnitude priors.
+	"""
+	logger.log('Incorporating prior_callback ...')
+	probs = numpy.asarray(prior_callback(table), dtype=float)
+	assert probs.shape == (len(table),), \
+		'prior_callback has to return one probability per combination (received shape %s for %d rows).' % (probs.shape, len(table))
+	assert numpy.isfinite(probs).all() and (probs >= 0).all(), \
+		'prior_callback has to return finite, non-negative probabilities.'
+	with numpy.errstate(divide='ignore'):
+		log_probs = log10(probs)
+	# combinations with probability 0 are excluded from the matching
+	table = table.assign(bias_prior_callback=probs)
+	total = total + log_probs
+	return table, total
+
+
 def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prior, total, logger):
 	logger.log('')
 	logger.log('Computing final probabilities ...')
@@ -425,30 +461,51 @@ def _compute_final_probabilities(match_tables, table, prob_ratio_secondary, prio
 		# compute no-match probability
 		values = group['log_post_weight'].values.copy()
 		#values = grpvalues.values
+		# log-sum-exp, robust against solutions with zero probability (-inf)
 		offset = values.max()
-		bfsum = log10((10**(values - offset)).sum()) + offset
+		if numpy.isfinite(offset):
+			bfsum = log10((10**(values - offset)).sum()) + offset
+		else:
+			# all solutions have zero probability
+			bfsum = offset
 		if len(values) > 1:
 			offset = values[1:].max()
-			bfsum1 = log10((10**(values[1:] - offset)).sum()) + offset
+			if numpy.isfinite(offset):
+				bfsum1 = log10((10**(values[1:] - offset)).sum()) + offset
+			else:
+				# all candidate solutions have zero probability
+				bfsum1 = offset
 		else:
 			bfsum1 = 0
 		assert group['ncat'].values[0] == 1, group['ncat']
 		#print(group['ncat'].values[0])
 		# for p_any, find the one without counterparts
 		p_none = values[0]
-		p_any = 1 - 10**(p_none - bfsum)
+		with numpy.errstate(invalid='ignore'):
+			p_any = 1 - 10**(p_none - bfsum)
+		if not numpy.isfinite(p_any):
+			# the no-counterpart and all candidate solutions are impossible
+			p_any = 0
 		# this avoids overflows in the no-counterpart solution,
 		# which we want to set to 0
 		values[0] = bfsum1
-		p_i = 10**(values - bfsum1)
+		if numpy.isfinite(bfsum1):
+			p_i = 10**(values - bfsum1)
+		else:
+			# no candidate solution is possible
+			p_i = numpy.zeros(len(values))
 		p_i[0] = 0
 
 		best_val = p_i.max()
 
 		# flag best & second best
 		# ignore very poor solutions
-		match_flag = numpy.where(best_val == p_i, 1,
-			numpy.where(p_i > prob_ratio_secondary * best_val, 2, 0))
+		if best_val > 0:
+			match_flag = numpy.where(best_val == p_i, 1,
+				numpy.where(p_i > prob_ratio_secondary * best_val, 2, 0))
+		else:
+			# no candidate solution is possible
+			match_flag = numpy.zeros(len(values), dtype=int)
 
 		group['log_post_weight'] = values
 		group['prob_has_match'] = p_any
