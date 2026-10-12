@@ -28,8 +28,15 @@ def posterior(prior, log_bf):
 	Returns posterior probability normalised against alternative hypothesis
 	that the sources are unrelated (Budavari+08)
 	"""
-	with numpy.errstate(over='ignore'):
-		return 1. / (1 + (1 - prior) * 10**(-log_bf - log10(prior)))
+	prior = numpy.asarray(prior, dtype=float)
+	log_bf = numpy.asarray(log_bf, dtype=float)
+	with numpy.errstate(over='ignore', invalid='ignore'):
+		post = 1. / (1 + (1 - prior) * 10**(-log_bf - log10(prior)))
+	# the no-counterpart solutions have prior==1, so that for
+	# log_bf==-inf the product 0 * inf gives nan.
+	# The continuous limit of the formula is 1.
+	degenerate = numpy.isnan(post) & (prior == 1) & (log_bf == -numpy.inf)
+	return numpy.where(degenerate, 1., post)
 
 
 def unnormalised_log_posterior(prior, log_bf, ncat):
