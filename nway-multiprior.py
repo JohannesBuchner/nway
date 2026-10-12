@@ -30,21 +30,7 @@ from matplotlib.lines import Line2D
 import nwaylib
 import nwaylib.logger as logger
 
-
-# mock properties and catalogue parameters
-
-COLORS = ['green', 'blue', 'orange', 'red', 'brown']
-
-RA0, DEC0 = 250.0, 10.0 # field centre in degrees
-FIELD_SIDE = 120.0 # arcsec
-N_PRIMARY = 15 # a few primary sources
-PRIMARY_ERROR = 10.0 # arcsec
-SECONDARY_ERROR = 1.0 # arcsec
-# secondary source density: on average 2 sources within a 10 arcsec radius
-SECONDARY_DENSITY = 2.0 / (numpy.pi * 10.0**2) # per square arcsec
-MATCH_RADIUS = 30.0 # arcsec, >> the largest positional error
-PRIMARY_FILENAME = 'mock_primary_catalog.fits'
-SECONDARY_FILENAME = 'mock_secondary_catalog.fits'
+# some helper functions ...
 
 
 def write_mock_catalogue(filename, name, ra, dec, error, colors, area):
@@ -65,6 +51,19 @@ def write_mock_catalogue(filename, name, ra, dec, error, colors, area):
 	print('wrote "%s" (%d sources)' % (filename, len(table)))
 
 
+def table_from_fits(fitsname):
+	"""
+	Builds a match table dict (see nwaylib.nway_match) from a mock
+	catalogue FITS file.
+	"""
+	fits_table = pyfits.open(fitsname)[1]
+	data = fits_table.data
+	return dict(name=fits_table.name,
+		ra=data['RA'], dec=data['DEC'], error=data['pos_err'],
+		area=fits_table.header['SKYAREA'], # square degrees
+		mags=[], maghists=[], magnames=[])
+
+
 def read_colors(fitsname):
 	"""
 	Reads the color column of a mock catalogue as array of strings.
@@ -73,76 +72,61 @@ def read_colors(fitsname):
 	return numpy.array([c.decode() if isinstance(c, bytes) else str(c) for c in colors])
 
 
-# create the mock catalogues
+# create the catalogues
+
+# constants
+
+# we assume each object has some property, here color
+# this property has to match across catalogs
+COLORS = ['green', 'blue', 'orange', 'red', 'brown']
+
+RA0, DEC0 = 250.0, 10.0 # field centre in degrees
+FIELD_SIDE = 120.0 # arcsec
+# SKYAREA: area covered by the catalogues, in square degrees
+field_area = FIELD_SIDE**2 / 3600.0**2
+N_PRIMARY = 15 # a few primary sources
+MATCH_RADIUS = 30.0 # arcsec, >> the largest positional error
+PRIMARY_FILENAME = 'mock_primary_catalog.fits'
+SECONDARY_FILENAME = 'mock_secondary_catalog.fits'
 
 rng = numpy.random.RandomState(42)
 
-# SKYAREA: area covered by the catalogues, in square degrees
-field_area = FIELD_SIDE**2 / 3600.0**2
-
-# primary sources, placed away from the field edges (by more than
-# the match radius), so that each has the full candidate coverage
+# primary sources with 10 arcsec positional errors, placed away from the
+# field edges (by more than the match radius), so that each has the full
+# candidate coverage
 half = FIELD_SIDE / 2.0
-margin = MATCH_RADIUS
-prim_ra_off = rng.uniform(-half + margin, half - margin, N_PRIMARY)
-prim_dec_off = rng.uniform(-half + margin, half - margin, N_PRIMARY)
+prim_ra_off = rng.uniform(-half + MATCH_RADIUS, half - MATCH_RADIUS, N_PRIMARY)
+prim_dec_off = rng.uniform(-half + MATCH_RADIUS, half - MATCH_RADIUS, N_PRIMARY)
 prim_colors = rng.choice(COLORS, N_PRIMARY)
-write_mock_catalogue(PRIMARY_FILENAME, 'primary',
+write_mock_catalogue(PRIMARY_FILENAME, 'XRAY',
 	RA0 + prim_ra_off / 3600.0, DEC0 + prim_dec_off / 3600.0,
-	numpy.full(N_PRIMARY, PRIMARY_ERROR), prim_colors, field_area)
+	numpy.full(N_PRIMARY, 10.0), prim_colors, field_area)
 
-# dense secondary catalogue with randomly assigned colors
-n_secondary = rng.poisson(SECONDARY_DENSITY * FIELD_SIDE**2)
+# dense secondary catalogue (on average 2 sources within a 10 arcsec radius,
+# i.e. a density of 2/(pi * 10^2) per square arcsec) with 1 arcsec
+# positional errors and randomly assigned colors
+n_secondary = rng.poisson(2.0 / (numpy.pi * 10.0**2) * FIELD_SIDE**2)
 sec_ra_off = rng.uniform(-half, half, n_secondary)
 sec_dec_off = rng.uniform(-half, half, n_secondary)
 sec_colors = rng.choice(COLORS, n_secondary)
-write_mock_catalogue(SECONDARY_FILENAME, 'secondary',
+write_mock_catalogue(SECONDARY_FILENAME, 'OPT',
 	RA0 + sec_ra_off / 3600.0, DEC0 + sec_dec_off / 3600.0,
-	numpy.full(n_secondary, SECONDARY_ERROR), sec_colors, field_area)
-
+	numpy.full(n_secondary, 1.0), sec_colors, field_area)
 
 # load the mock catalogues and match them
-
-def table_from_fits(fitsname):
-	"""
-	Builds a match table dict (see nwaylib.nway_match) from a mock
-	catalogue FITS file.
-	"""
-	fits_table = pyfits.open(fitsname)[1]
-	return dict(name=fits_table.name,
-		ra=fits_table.data['RA'], dec=fits_table.data['DEC'],
-		error=fits_table.data['pos_err'],
-		area=fits_table.header['SKYAREA'], # square degrees
-		mags=[], maghists=[], magnames=[])
-
-
 prim_colors = read_colors(PRIMARY_FILENAME)
 sec_colors = read_colors(SECONDARY_FILENAME)
 
 # the catalogues are named after the FITS extensions (upper-cased
 # per the FITS standard); the match table columns are named after them
-primary_name = pyfits.open(PRIMARY_FILENAME)[1].name
-secondary_name = pyfits.open(SECONDARY_FILENAME)[1].name
-
-
-def prior_callback(table):
-	"""
-	Prior probability for each candidate combination:
-	1 when the colors of the primary and secondary entries are identical,
-	0 otherwise. Combinations without a secondary entry (the
-	no-counterpart solutions) are neutral.
-	"""
-	prob = numpy.ones(len(table))
-	has_candidate = table[secondary_name].values >= 0
-	same = (prim_colors[table[primary_name].values[has_candidate]]
-		== sec_colors[table[secondary_name].values[has_candidate]])
-	prob[has_candidate] = same.astype(float)
-	return prob
-
+primary_name = 'XRAY'
+secondary_name = 'OPT'
 
 match_tables = [table_from_fits(PRIMARY_FILENAME), table_from_fits(SECONDARY_FILENAME)]
 
-# for comparison: distance-only matching, without prior_callback
+
+# first: distance-only matching, without color information
+
 result_nocallback = nwaylib.nway_match(match_tables,
 	match_radius=MATCH_RADIUS, prior_completeness=0.9,
 	logger=logger.NullOutputLogger())
@@ -154,6 +138,27 @@ n_diff_nocallback = (prim_colors[result_nocallback.index.get_level_values(primar
 print()
 print('without prior_callback: %d matches with p_i > 0.2, %d of them connect different colors' % (
 	sel_nocallback.sum(), n_diff_nocallback))
+
+
+# now we enforce that the colors have to be consistent in the matches
+# we define a function which looks at each match table row and returns a probability for the combination of colors:
+
+def prior_callback(table):
+	"""
+	Prior probability for each candidate combination:
+	1 when the colors of the primary and secondary entries are identical,
+	0 otherwise. Combinations without a secondary entry (the
+	no-counterpart solutions) are neutral.
+	"""
+	prob = numpy.ones(len(table))
+	# only compute a probability for matched rows:
+	has_candidate = table['OPT'].values >= 0
+	# extract the colors here
+	same = (prim_colors[table['XRAY'].values[has_candidate]]
+		== sec_colors[table['OPT'].values[has_candidate]])
+	prob[has_candidate] = same.astype(float)
+	return prob
+
 
 result = nwaylib.nway_match(match_tables,
 	match_radius=MATCH_RADIUS, prior_completeness=0.9,
