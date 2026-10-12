@@ -1,4 +1,10 @@
-.PHONY: test
+.PHONY: test clean dist
+
+clean:
+	rm -rf dist/
+
+dist:
+	python -m build
 
 test:
 	echo "backend: Agg" > matplotlibrc
