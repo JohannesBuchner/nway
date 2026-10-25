@@ -13,9 +13,9 @@ dist:
 test:
 	echo "backend: Agg" > matplotlibrc
 	cd doc && echo "backend: Agg" > matplotlibrc
-	python3 nway-write-header.py doc/COSMOS_OPTICAL.fits OPT  2
-	python3 nway-write-header.py doc/COSMOS_IRAC.fits    IRAC 2
-	python3 nway-write-header.py doc/COSMOS_XMM.fits     XMM  2
+	nway-write-header.py doc/COSMOS_OPTICAL.fits OPT  2
+	nway-write-header.py doc/COSMOS_IRAC.fits    IRAC 2
+	nway-write-header.py doc/COSMOS_XMM.fits     XMM  2
 	cd doc && nway-create-fake-catalogue.py --radius 20 COSMOS_XMM.fits COSMOS_XMM-fake.fits
 	cd doc && nway-create-shifted-catalogue.py --radius 40 --shift-ra 60 COSMOS_XMM.fits COSMOS_XMM-shift.fits
 	cd doc && rm -f COSMOS_XMM-shift.fits
