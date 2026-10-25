@@ -1,3 +1,4 @@
+PYTHON := python3
 .PHONY: test clean dist lint
 
 lint:
