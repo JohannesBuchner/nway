@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nwaylib &#8212; nway 4.7.0 documentation</title>
+    <title>nwaylib &#8212; nway 4.8.0 documentation</title>
   
   
   
@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -37,7 +37,7 @@
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../_static/documentation_options.js?v=3a5dd307"></script>
+    <script src="../_static/documentation_options.js?v=2adde624"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -140,8 +140,8 @@
       
     
     
-    <img src="../_static/logo.png" class="logo__image only-light" alt="nway 4.7.0 documentation - Home"/>
-    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="nway 4.7.0 documentation - Home"/>`);</script>
+    <img src="../_static/logo.png" class="logo__image only-light" alt="nway 4.8.0 documentation - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="nway 4.8.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -278,34 +278,34 @@ document.write(`
                   
   <h1>Source code for nwaylib</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Multiway association between astrometric catalogues&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">pandas</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">log10</span><span class="p">,</span> <span class="n">pi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">log10</span><span class="p">,</span> <span class="n">pi</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">bayesdistance</span> <span class="k">as</span> <span class="n">bayesdist</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fastskymatch</span> <span class="k">as</span> <span class="n">match</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">magnitudeweights</span> <span class="k">as</span> <span class="n">magnitudeweights</span>
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">NormalLogger</span><span class="p">,</span> <span class="n">NullOutputLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">bayesdistance</span> <span class="k">as</span> <span class="n">bayesdist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">fastskymatch</span> <span class="k">as</span> <span class="n">match</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">magnitudeweights</span> <span class="k">as</span> <span class="n">magnitudeweights</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">NormalLogger</span><span class="p">,</span> <span class="n">NullOutputLogger</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Johannes Buchner&quot;&quot;&quot;</span>
 <span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;johannes.buchner.acad@gmx.com&#39;</span>
-<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;4.7.0&#39;</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">&#39;4.8.0&#39;</span>
 
 
 <div class="viewcode-block" id="UndersampledException">
 <a class="viewcode-back" href="../nwaylib.html#nwaylib.UndersampledException">[docs]</a>
-<span class="k">class</span> <span class="nc">UndersampledException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">UndersampledException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 	<span class="k">pass</span></div>
 
 
 
 <div class="viewcode-block" id="EmptyResultException">
 <a class="viewcode-back" href="../nwaylib.html#nwaylib.EmptyResultException">[docs]</a>
-<span class="k">class</span> <span class="nc">EmptyResultException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EmptyResultException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 	<span class="k">pass</span></div>
 
 
@@ -315,11 +315,12 @@ document.write(`
 
 <div class="viewcode-block" id="nway_match">
 <a class="viewcode-back" href="../nwaylib.html#nwaylib.nway_match">[docs]</a>
-<span class="k">def</span> <span class="nf">nway_match</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">match_radius</span><span class="p">,</span> <span class="n">prior_completeness</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">nway_match</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">match_radius</span><span class="p">,</span> <span class="n">prior_completeness</span><span class="p">,</span>
 	<span class="n">mag_include_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mag_exclude_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magauto_post_single_minvalue</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
 	<span class="n">prob_ratio_secondary</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
 	<span class="n">min_prob</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">consider_unrelated_associations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 	<span class="n">store_mag_hists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+	<span class="n">prior_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 	<span class="n">logger</span><span class="o">=</span><span class="n">default_logger</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	match_tables: list of catalogues, each a dict with entries:</span>
@@ -364,6 +365,18 @@ document.write(`
 
 <span class="sd">	store_mag_hists: Write constructed mag hists to file (filename based on table name and mags).</span>
 
+<span class="sd">	prior_callback: callback function that computes an additional prior</span>
+<span class="sd">		probability for each candidate combination. It is called with the</span>
+<span class="sd">		match table (a pandas.DataFrame with one row per combination; the</span>
+<span class="sd">		first columns are named after the catalogues and contain the row</span>
+<span class="sd">		index in each catalogue, -1 if it does not participate; other</span>
+<span class="sd">		columns are Separation_*, ncat, dist_bayesfactor, dist_post and the</span>
+<span class="sd">		bias_* factors). It has to return an array with one probability per</span>
+<span class="sd">		row, which is multiplied into the evidence like the per-catalogue</span>
+<span class="sd">		magnitude priors, and is thus ingested into p_single, p_any and p_i.</span>
+<span class="sd">		A probability of 0 excludes a combination from the matching.</span>
+<span class="sd">		Default: None (no additional prior).</span>
+
 <span class="sd">	logger: NormalLogger for stderr output and progress bars, NullOutputLogger if silent</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="k">if</span> <span class="n">mag_exclude_radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -400,6 +413,9 @@ document.write(`
 	<span class="c1"># find magnitude biasing functions</span>
 	<span class="n">table</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="n">_apply_magnitude_biasing</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">mag_include_radius</span><span class="p">,</span> <span class="n">mag_exclude_radius</span><span class="p">,</span> <span class="n">magauto_post_single_minvalue</span><span class="p">,</span> <span class="n">store_mag_hists</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
 
+	<span class="k">if</span> <span class="n">prior_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="n">table</span><span class="p">,</span> <span class="n">total</span> <span class="o">=</span> <span class="n">_apply_prior_callback</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">prior_callback</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span>
+
 	<span class="n">table</span> <span class="o">=</span> <span class="n">_compute_final_probabilities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">prob_ratio_secondary</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
 
 	<span class="n">table</span> <span class="o">=</span> <span class="n">_truncate_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">min_prob</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
@@ -408,7 +424,7 @@ document.write(`
 
 
 
-<span class="k">def</span> <span class="nf">_create_match_table</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">match_radius</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_match_table</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">match_radius</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
 	<span class="c1"># first match input catalogues, compute possible combinations in match_radius</span>
 	<span class="n">ratables</span> <span class="o">=</span> <span class="p">[(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;dec&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">match_tables</span><span class="p">]</span>
 	<span class="n">table_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">match_tables</span><span class="p">]</span>
@@ -484,7 +500,7 @@ document.write(`
 	<span class="k">return</span> <span class="n">table</span><span class="p">,</span> <span class="n">resultstable</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_source_densities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_source_densities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
 	<span class="n">source_densities</span> <span class="o">=</span> <span class="p">[]</span>
 	<span class="n">source_densities_plus</span> <span class="o">=</span> <span class="p">[]</span>
 	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">match_table</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">match_tables</span><span class="p">):</span>
@@ -505,7 +521,7 @@ document.write(`
 	<span class="k">return</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_single_log_bf</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">prior_completeness</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_single_log_bf</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">prior_completeness</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
 	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Computing distance-based probabilities ...&#39;</span><span class="p">)</span>
 	<span class="n">ncats</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">match_tables</span><span class="p">)</span>
 
@@ -547,7 +563,7 @@ document.write(`
 	<span class="k">return</span> <span class="n">prior</span><span class="p">,</span> <span class="n">log_bf</span>
 
 
-<span class="k">def</span> <span class="nf">_correct_unrelated_associations</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">ncats</span><span class="p">,</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_correct_unrelated_associations</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">separations</span><span class="p">,</span> <span class="n">errors</span><span class="p">,</span> <span class="n">ncats</span><span class="p">,</span> <span class="n">source_densities</span><span class="p">,</span> <span class="n">source_densities_plus</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
 	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    correcting for unrelated associations ...&#39;</span><span class="p">)</span>
 	<span class="c1"># correct for unrelated associations</span>
 	<span class="c1"># identify those in need of correction</span>
@@ -589,7 +605,7 @@ document.write(`
 			<span class="n">group</span><span class="p">[</span><span class="s1">&#39;dist_bayesfactor&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">best_logpost</span>
 
 
-<span class="k">def</span> <span class="nf">_apply_magnitude_biasing</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">mag_include_radius</span><span class="p">,</span> <span class="n">mag_exclude_radius</span><span class="p">,</span> <span class="n">magauto_post_single_minvalue</span><span class="p">,</span> <span class="n">store_mag_hists</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_magnitude_biasing</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">mag_include_radius</span><span class="p">,</span> <span class="n">mag_exclude_radius</span><span class="p">,</span> <span class="n">magauto_post_single_minvalue</span><span class="p">,</span> <span class="n">store_mag_hists</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
 	<span class="n">biases</span> <span class="o">=</span> <span class="p">{}</span>
 	<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">match_tables</span><span class="p">):</span>
 		<span class="n">table_name</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
@@ -670,7 +686,8 @@ document.write(`
 				<span class="n">magnitudeweights</span><span class="o">.</span><span class="n">plot_fit</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">mag</span><span class="p">)</span>
 			<span class="n">magcol</span> <span class="o">=</span> <span class="n">magvals</span><span class="p">[</span><span class="n">res</span><span class="p">]</span>
 			<span class="n">magcol</span><span class="p">[</span><span class="o">~</span><span class="n">numpy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">res_defined</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">magcol</span><span class="p">))]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99</span>
-			<span class="n">weights</span> <span class="o">=</span> <span class="n">log10</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">magcol</span><span class="p">))</span>
+			<span class="k">with</span> <span class="n">numpy</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+				<span class="n">weights</span> <span class="o">=</span> <span class="n">log10</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">magcol</span><span class="p">))</span>
 			<span class="c1"># undefined magnitudes do not contribute</span>
 			<span class="n">weights</span><span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">weights</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
 			<span class="n">biases</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span>
@@ -683,7 +700,27 @@ document.write(`
 	<span class="k">return</span> <span class="n">table</span><span class="p">,</span> <span class="n">total</span>
 
 
-<span class="k">def</span> <span class="nf">_compute_final_probabilities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">prob_ratio_secondary</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_prior_callback</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">prior_callback</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Queries the user-provided prior_callback with the match table and</span>
+<span class="sd">	ingests the returned probabilities into the total evidence, like the</span>
+<span class="sd">	magnitude priors.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Incorporating prior_callback ...&#39;</span><span class="p">)</span>
+	<span class="n">probs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">prior_callback</span><span class="p">(</span><span class="n">table</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+	<span class="k">assert</span> <span class="n">probs</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">),),</span> \
+		<span class="s1">&#39;prior_callback has to return one probability per combination (received shape </span><span class="si">%s</span><span class="s1"> for </span><span class="si">%d</span><span class="s1"> rows).&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">probs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
+	<span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">probs</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> \
+		<span class="s1">&#39;prior_callback has to return finite, non-negative probabilities.&#39;</span>
+	<span class="k">with</span> <span class="n">numpy</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+		<span class="n">log_probs</span> <span class="o">=</span> <span class="n">log10</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>
+	<span class="c1"># combinations with probability 0 are excluded from the matching</span>
+	<span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">bias_prior_callback</span><span class="o">=</span><span class="n">probs</span><span class="p">)</span>
+	<span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">log_probs</span>
+	<span class="k">return</span> <span class="n">table</span><span class="p">,</span> <span class="n">total</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_final_probabilities</span><span class="p">(</span><span class="n">match_tables</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">prob_ratio_secondary</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
 	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;Computing final probabilities ...&#39;</span><span class="p">)</span>
 
@@ -707,36 +744,58 @@ document.write(`
 
 	<span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;    grouping by primary catalogue ID and flagging ...&#39;</span><span class="p">)</span>
 
-	<span class="k">def</span> <span class="nf">compute_group_statistics</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">compute_group_statistics</span><span class="p">(</span><span class="n">group</span><span class="p">):</span>
 		<span class="c1"># group</span>
 		<span class="c1"># compute no-match probability</span>
-		<span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;log_post_weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+		<span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;log_post_weight&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 		<span class="c1">#values = grpvalues.values</span>
+		<span class="c1"># log-sum-exp, robust against solutions with zero probability (-inf)</span>
 		<span class="n">offset</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-		<span class="n">bfsum</span> <span class="o">=</span> <span class="n">log10</span><span class="p">((</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="n">offset</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">+</span> <span class="n">offset</span>
+		<span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">offset</span><span class="p">):</span>
+			<span class="n">bfsum</span> <span class="o">=</span> <span class="n">log10</span><span class="p">((</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="n">offset</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">+</span> <span class="n">offset</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c1"># all solutions have zero probability</span>
+			<span class="n">bfsum</span> <span class="o">=</span> <span class="n">offset</span>
 		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="n">offset</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-			<span class="n">bfsum1</span> <span class="o">=</span> <span class="n">log10</span><span class="p">((</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">+</span> <span class="n">offset</span>
+			<span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">offset</span><span class="p">):</span>
+				<span class="n">bfsum1</span> <span class="o">=</span> <span class="n">log10</span><span class="p">((</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">+</span> <span class="n">offset</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="c1"># all candidate solutions have zero probability</span>
+				<span class="n">bfsum1</span> <span class="o">=</span> <span class="n">offset</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">bfsum1</span> <span class="o">=</span> <span class="mi">0</span>
 		<span class="k">assert</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;ncat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">group</span><span class="p">[</span><span class="s1">&#39;ncat&#39;</span><span class="p">]</span>
 		<span class="c1">#print(group[&#39;ncat&#39;].values[0])</span>
 		<span class="c1"># for p_any, find the one without counterparts</span>
 		<span class="n">p_none</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-		<span class="n">p_any</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">p_none</span> <span class="o">-</span> <span class="n">bfsum</span><span class="p">)</span>
+		<span class="k">with</span> <span class="n">numpy</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+			<span class="n">p_any</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">p_none</span> <span class="o">-</span> <span class="n">bfsum</span><span class="p">)</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">p_any</span><span class="p">):</span>
+			<span class="c1"># the no-counterpart and all candidate solutions are impossible</span>
+			<span class="n">p_any</span> <span class="o">=</span> <span class="mi">0</span>
 		<span class="c1"># this avoids overflows in the no-counterpart solution,</span>
 		<span class="c1"># which we want to set to 0</span>
 		<span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bfsum1</span>
-		<span class="n">p_i</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="n">bfsum1</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">numpy</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">bfsum1</span><span class="p">):</span>
+			<span class="n">p_i</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="n">bfsum1</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c1"># no candidate solution is possible</span>
+			<span class="n">p_i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
 		<span class="n">p_i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
 		<span class="n">best_val</span> <span class="o">=</span> <span class="n">p_i</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
 		<span class="c1"># flag best &amp; second best</span>
 		<span class="c1"># ignore very poor solutions</span>
-		<span class="n">match_flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">best_val</span> <span class="o">==</span> <span class="n">p_i</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
-			<span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">p_i</span> <span class="o">&gt;</span> <span class="n">prob_ratio_secondary</span> <span class="o">*</span> <span class="n">best_val</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+		<span class="k">if</span> <span class="n">best_val</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">match_flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">best_val</span> <span class="o">==</span> <span class="n">p_i</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+				<span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">p_i</span> <span class="o">&gt;</span> <span class="n">prob_ratio_secondary</span> <span class="o">*</span> <span class="n">best_val</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c1"># no candidate solution is possible</span>
+			<span class="n">match_flag</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
+		<span class="n">group</span><span class="p">[</span><span class="s1">&#39;log_post_weight&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
 		<span class="n">group</span><span class="p">[</span><span class="s1">&#39;prob_has_match&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_any</span>
 		<span class="n">group</span><span class="p">[</span><span class="s1">&#39;prob_this_match&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">p_i</span>
 		<span class="n">group</span><span class="p">[</span><span class="s1">&#39;match_flag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">match_flag</span>
@@ -747,7 +806,7 @@ document.write(`
 	<span class="k">return</span> <span class="n">table</span>
 
 
-<span class="k">def</span> <span class="nf">_truncate_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">min_prob</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_truncate_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">min_prob</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
 	<span class="c1"># cut away poor posteriors if requested</span>
 	<span class="k">if</span> <span class="n">min_prob</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 		<span class="n">mask</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s1">&#39;prob_this_match&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">min_prob</span><span class="p">)</span>

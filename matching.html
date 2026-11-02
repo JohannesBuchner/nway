@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User guide: Matching catalogs &#8212; nway 4.7.0 documentation</title>
+    <title>User guide: Matching catalogs &#8212; nway 4.8.0 documentation</title>
   
   
   
@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,7 +38,7 @@
 
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=3a5dd307"></script>
+    <script src="_static/documentation_options.js?v=2adde624"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -143,8 +143,8 @@
       
     
     
-    <img src="_static/logo.png" class="logo__image only-light" alt="nway 4.7.0 documentation - Home"/>
-    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="nway 4.7.0 documentation - Home"/>`);</script>
+    <img src="_static/logo.png" class="logo__image only-light" alt="nway 4.8.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="nway 4.8.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -574,8 +574,8 @@ combinations to consider rises exponentially.</p></li>
 <li><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NWAY</span> <span class="n">arguments</span><span class="p">:</span>
     <span class="n">catalogues</span><span class="p">:</span>  <span class="n">COSMOS_XMM</span><span class="o">.</span><span class="n">fits</span><span class="p">,</span> <span class="n">COSMOS_OPTICAL</span><span class="o">.</span><span class="n">fits</span>
     <span class="n">position</span> <span class="n">errors</span><span class="o">/</span><span class="n">columns</span><span class="p">:</span>  <span class="p">:</span><span class="n">pos_err</span><span class="p">,</span> <span class="mf">0.1</span>
-      <span class="kn">from</span> <span class="nn">catalogue</span> <span class="s2">&quot;XMM&quot;</span> <span class="p">(</span><span class="mi">1797</span><span class="p">),</span> <span class="n">density</span> <span class="ow">is</span> <span class="mf">3.706579e+07</span>
-      <span class="kn">from</span> <span class="nn">catalogue</span> <span class="s2">&quot;OPT&quot;</span> <span class="p">(</span><span class="mi">560536</span><span class="p">),</span> <span class="n">density</span> <span class="ow">is</span> <span class="mf">1.156188e+10</span>
+      <span class="kn">from</span><span class="w"> </span><span class="nn">catalogue</span> <span class="s2">&quot;XMM&quot;</span> <span class="p">(</span><span class="mi">1797</span><span class="p">),</span> <span class="n">density</span> <span class="ow">is</span> <span class="mf">3.706579e+07</span>
+      <span class="kn">from</span><span class="w"> </span><span class="nn">catalogue</span> <span class="s2">&quot;OPT&quot;</span> <span class="p">(</span><span class="mi">560536</span><span class="p">),</span> <span class="n">density</span> <span class="ow">is</span> <span class="mf">1.156188e+10</span>
     <span class="n">magnitude</span> <span class="n">columns</span><span class="p">:</span>
 </pre></div>
 </div>
@@ -588,10 +588,10 @@ combinations to consider rises exponentially.</p></li>
     <span class="n">using</span> <span class="n">DEC</span> <span class="n">columns</span><span class="p">:</span> <span class="n">DEC</span><span class="p">,</span> <span class="n">DEC</span>
 <span class="n">matching</span><span class="p">:</span> <span class="n">healpix</span> <span class="n">hashing</span> <span class="n">on</span> <span class="n">pixel</span> <span class="n">resolution</span> <span class="o">~</span> <span class="mf">18.036304</span> <span class="n">arcsec</span> <span class="p">(</span><span class="n">nside</span><span class="o">=</span><span class="mi">8192</span><span class="p">)</span>
 <span class="mi">100</span><span class="o">%</span> <span class="o">|</span> <span class="mi">562333</span><span class="o">|</span><span class="c1">############################################|Time: 0:00:13</span>
-<span class="n">matching</span><span class="p">:</span> <span class="n">collecting</span> <span class="kn">from</span> <span class="mi">61787</span> <span class="n">buckets</span><span class="p">,</span> <span class="n">creating</span> <span class="n">cartesian</span> <span class="n">products</span> <span class="o">...</span>
+<span class="n">matching</span><span class="p">:</span> <span class="n">collecting</span> <span class="kn">from</span><span class="w"> </span><span class="mi">61787</span> <span class="n">buckets</span><span class="p">,</span> <span class="n">creating</span> <span class="n">cartesian</span> <span class="n">products</span> <span class="o">...</span>
 <span class="mi">100</span><span class="o">%|</span><span class="mi">61787</span><span class="o">|</span><span class="c1">###############################################|Time: 0:00:02</span>
-<span class="n">matching</span><span class="p">:</span> <span class="mi">462267</span> <span class="n">unique</span> <span class="n">matches</span> <span class="kn">from</span> <span class="nn">cartesian</span> <span class="n">product</span><span class="o">.</span> <span class="n">sorting</span> <span class="o">...</span>
-<span class="n">merging</span> <span class="ow">in</span> <span class="mi">10</span> <span class="n">columns</span> <span class="kn">from</span> <span class="nn">input</span> <span class="n">catalogues</span> <span class="o">...</span>
+<span class="n">matching</span><span class="p">:</span> <span class="mi">462267</span> <span class="n">unique</span> <span class="n">matches</span> <span class="kn">from</span><span class="w"> </span><span class="nn">cartesian</span> <span class="n">product</span><span class="o">.</span> <span class="n">sorting</span> <span class="o">...</span>
+<span class="n">merging</span> <span class="ow">in</span> <span class="mi">10</span> <span class="n">columns</span> <span class="kn">from</span><span class="w"> </span><span class="nn">input</span> <span class="n">catalogues</span> <span class="o">...</span>
 <span class="mi">100</span><span class="o">%</span> <span class="mi">10</span><span class="o">|</span><span class="c1">##################################################|Time: 0:00:00</span>
     <span class="n">adding</span> <span class="n">angular</span> <span class="n">separation</span> <span class="n">columns</span>
 <span class="n">matching</span><span class="p">:</span>  <span class="mi">22435</span> <span class="n">matches</span> <span class="n">after</span> <span class="n">filtering</span> <span class="n">by</span> <span class="n">search</span> <span class="n">radius</span>

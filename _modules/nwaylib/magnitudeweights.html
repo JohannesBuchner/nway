@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nwaylib.magnitudeweights &#8212; nway 4.7.0 documentation</title>
+    <title>nwaylib.magnitudeweights &#8212; nway 4.8.0 documentation</title>
   
   
   
@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -37,7 +37,7 @@
 
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=3a5dd307"></script>
+    <script src="../../_static/documentation_options.js?v=2adde624"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -140,8 +140,8 @@
       
     
     
-    <img src="../../_static/logo.png" class="logo__image only-light" alt="nway 4.7.0 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="nway 4.7.0 documentation - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="nway 4.8.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="nway 4.8.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -285,18 +285,18 @@ document.write(`
 <span class="sd">This is not specific for magnitudes, it can be any provided property.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">scipy.integrate</span>
-<span class="kn">import</span> <span class="nn">scipy.interpolate</span>
-<span class="kn">import</span> <span class="nn">scipy.signal</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">exp</span><span class="p">,</span> <span class="n">log10</span><span class="p">,</span> <span class="n">logical_and</span><span class="p">,</span> <span class="n">pi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.integrate</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.interpolate</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.signal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">exp</span><span class="p">,</span> <span class="n">log10</span><span class="p">,</span> <span class="n">logical_and</span><span class="p">,</span> <span class="n">pi</span>
 
 
 <div class="viewcode-block" id="ratio">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.ratio">[docs]</a>
-<span class="k">def</span> <span class="nf">ratio</span><span class="p">(</span><span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ratio</span><span class="p">(</span><span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	ratio between the two histograms. Minor offsets to avoid zero and inf.</span>
 <span class="sd">	&quot;&quot;&quot;</span>
@@ -307,7 +307,7 @@ document.write(`
 
 <div class="viewcode-block" id="fraction">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.fraction">[docs]</a>
-<span class="k">def</span> <span class="nf">fraction</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fraction</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	fraction of selected</span>
 <span class="sd">	&quot;&quot;&quot;</span>
@@ -330,7 +330,7 @@ document.write(`
 
 <div class="viewcode-block" id="plot_fit">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.plot_fit">[docs]</a>
-<span class="k">def</span> <span class="nf">plot_fit</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_fit</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Plotting</span>
 <span class="sd">	&quot;&quot;&quot;</span>
@@ -361,7 +361,7 @@ document.write(`
 
 <div class="viewcode-block" id="fitfunc_histogram">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.fitfunc_histogram">[docs]</a>
-<span class="k">def</span> <span class="nf">fitfunc_histogram</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fitfunc_histogram</span><span class="p">(</span><span class="n">bin_mag</span><span class="p">,</span> <span class="n">hist_sel</span><span class="p">,</span> <span class="n">hist_all</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	creates the biasing functions</span>
 <span class="sd">	&quot;&quot;&quot;</span>
@@ -380,7 +380,7 @@ document.write(`
 
 <div class="viewcode-block" id="adaptive_histograms">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.magnitudeweights.adaptive_histograms">[docs]</a>
-<span class="k">def</span> <span class="nf">adaptive_histograms</span><span class="p">(</span><span class="n">mag_all</span><span class="p">,</span> <span class="n">mag_sel</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">adaptive_histograms</span><span class="p">(</span><span class="n">mag_all</span><span class="p">,</span> <span class="n">mag_sel</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	creates the histograms for the two columns in an adaptive way (based on mag_sel)</span>
 <span class="sd">	with the same binning.</span>

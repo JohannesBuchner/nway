@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nwaylib.fastskymatch &#8212; nway 4.7.0 documentation</title>
+    <title>nwaylib.fastskymatch &#8212; nway 4.8.0 documentation</title>
   
   
   
@@ -27,7 +27,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -37,7 +37,7 @@
 
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=3a5dd307"></script>
+    <script src="../../_static/documentation_options.js?v=2adde624"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -140,8 +140,8 @@
       
     
     
-    <img src="../../_static/logo.png" class="logo__image only-light" alt="nway 4.7.0 documentation - Home"/>
-    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="nway 4.7.0 documentation - Home"/>`);</script>
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="nway 4.8.0 documentation - Home"/>
+    <script>document.write(`<img src="../../_static/logo.png" class="logo__image only-dark" alt="nway 4.8.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -282,20 +282,20 @@ document.write(`
 
 <span class="sd">Very fast method based on hashing.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
 
-<span class="kn">import</span> <span class="nn">astropy.io.fits</span> <span class="k">as</span> <span class="nn">pyfits</span>
-<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
-<span class="kn">import</span> <span class="nn">healpy</span>
-<span class="kn">import</span> <span class="nn">joblib</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">tqdm</span>
-<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span><span class="p">,</span> <span class="n">SkyOffsetFrame</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">arccos</span><span class="p">,</span> <span class="n">arcsin</span><span class="p">,</span> <span class="n">arctan2</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">hypot</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.io.fits</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pyfits</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">healpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">joblib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tqdm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span><span class="p">,</span> <span class="n">SkyOffsetFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">arccos</span><span class="p">,</span> <span class="n">arcsin</span><span class="p">,</span> <span class="n">arctan2</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">hypot</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span>
 
 <span class="n">cachedir</span> <span class="o">=</span> <span class="s1">&#39;cache&#39;</span>
 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -304,7 +304,7 @@ document.write(`
 
 <div class="viewcode-block" id="dist">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.dist">[docs]</a>
-<span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="n">apos</span><span class="p">,</span> <span class="n">bpos</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dist</span><span class="p">(</span><span class="n">apos</span><span class="p">,</span> <span class="n">bpos</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Angular separation (in degrees) between two points on a sphere.</span>
 <span class="sd">	http://en.wikipedia.org/wiki/Great-circle_distance</span>
@@ -331,7 +331,7 @@ document.write(`
 
 <div class="viewcode-block" id="dist3d">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.dist3d">[docs]</a>
-<span class="k">def</span> <span class="nf">dist3d</span><span class="p">(</span><span class="n">apos</span><span class="p">,</span> <span class="n">bpos</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dist3d</span><span class="p">(</span><span class="n">apos</span><span class="p">,</span> <span class="n">bpos</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Angular separation in ra &amp; dec between two points on a sphere.</span>
 <span class="sd">	&quot;&quot;&quot;</span>
@@ -361,7 +361,7 @@ document.write(`
 
 <div class="viewcode-block" id="get_tablekeys">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.get_tablekeys">[docs]</a>
-<span class="k">def</span> <span class="nf">get_tablekeys</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tablekeys</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tablename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 	<span class="n">keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">name</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">else</span> <span class="mi">2</span><span class="p">)</span>
 	<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="s1">&#39;ERROR: No &quot;</span><span class="si">%s</span><span class="s1">&quot; column found in input catalogue &quot;</span><span class="si">%s</span><span class="s1">&quot;. Only have: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">tablename</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">))</span>
 	<span class="k">return</span> <span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
@@ -370,7 +370,7 @@ document.write(`
 
 <div class="viewcode-block" id="get_healpix_resolution_degrees">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.get_healpix_resolution_degrees">[docs]</a>
-<span class="k">def</span> <span class="nf">get_healpix_resolution_degrees</span><span class="p">(</span><span class="n">nside</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_healpix_resolution_degrees</span><span class="p">(</span><span class="n">nside</span><span class="p">):</span>
 	<span class="n">resol</span> <span class="o">=</span> <span class="n">healpy</span><span class="o">.</span><span class="n">pixelfunc</span><span class="o">.</span><span class="n">nside2resol</span><span class="p">(</span><span class="n">nside</span><span class="p">)</span> <span class="o">/</span> <span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span>
 	<span class="c1"># according to monte carlo simulations, distances up to this factor</span>
 	<span class="c1"># are completely contained within the pixel and its neighbors</span>
@@ -380,7 +380,7 @@ document.write(`
 
 
 <span class="nd">@mem</span><span class="o">.</span><span class="n">cache</span><span class="p">(</span><span class="n">ignore</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;logger&#39;</span><span class="p">])</span>
-<span class="k">def</span> <span class="nf">crossproduct</span><span class="p">(</span><span class="n">radectables</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">pairwise_errs</span><span class="o">=</span><span class="p">[]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">crossproduct</span><span class="p">(</span><span class="n">radectables</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">pairwise_errs</span><span class="o">=</span><span class="p">[]):</span>
 	<span class="c1"># check if away from the poles and RA=0</span>
 	<span class="n">use_flat_bins</span> <span class="o">=</span> <span class="kc">True</span>
 	<span class="k">for</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="ow">in</span> <span class="n">radectables</span><span class="p">:</span>
@@ -518,7 +518,7 @@ document.write(`
 
 <div class="viewcode-block" id="match_multiple">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.match_multiple">[docs]</a>
-<span class="k">def</span> <span class="nf">match_multiple</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">table_names</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">fits_formats</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pairwise_errs</span><span class="o">=</span><span class="p">[]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">match_multiple</span><span class="p">(</span><span class="n">tables</span><span class="p">,</span> <span class="n">table_names</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">fits_formats</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pairwise_errs</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	computes the cartesian product of all possible matches,</span>
 <span class="sd">	limited to a maximum distance of err (in degrees).</span>
@@ -638,11 +638,11 @@ document.write(`
 
 <div class="viewcode-block" id="wraptable2fits">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.wraptable2fits">[docs]</a>
-<span class="k">def</span> <span class="nf">wraptable2fits</span><span class="p">(</span><span class="n">cat_columns</span><span class="p">,</span> <span class="n">extname</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">wraptable2fits</span><span class="p">(</span><span class="n">cat_columns</span><span class="p">,</span> <span class="n">extname</span><span class="p">):</span>
 	<span class="n">tbhdu</span> <span class="o">=</span> <span class="n">fits_from_columns</span><span class="p">(</span><span class="n">pyfits</span><span class="o">.</span><span class="n">ColDefs</span><span class="p">(</span><span class="n">cat_columns</span><span class="p">))</span>
 	<span class="n">hdu</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">PrimaryHDU</span><span class="p">()</span>
-	<span class="kn">import</span> <span class="nn">datetime</span>
-	<span class="kn">import</span> <span class="nn">time</span>
+	<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+	<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 	<span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
 	<span class="n">nowstr</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
 	<span class="n">nowstr</span> <span class="o">=</span> <span class="n">nowstr</span><span class="p">[:</span><span class="n">nowstr</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)]</span>
@@ -656,7 +656,7 @@ document.write(`
 
 <div class="viewcode-block" id="array2fits">
 <a class="viewcode-back" href="../../nwaylib.html#nwaylib.fastskymatch.array2fits">[docs]</a>
-<span class="k">def</span> <span class="nf">array2fits</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">extname</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">array2fits</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">extname</span><span class="p">):</span>
 	<span class="n">cat_columns</span> <span class="o">=</span> <span class="n">pyfits</span><span class="o">.</span><span class="n">ColDefs</span><span class="p">([</span><span class="n">pyfits</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;E&#39;</span><span class="p">,</span><span class="n">array</span><span class="o">=</span><span class="n">table</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
 		<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">table</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">])</span>
 	<span class="k">return</span> <span class="n">wraptable2fits</span><span class="p">(</span><span class="n">cat_columns</span><span class="p">,</span> <span class="n">extname</span><span class="p">)</span></div>

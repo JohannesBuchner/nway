@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nwaylib package &#8212; nway 4.7.0 documentation</title>
+    <title>nwaylib package &#8212; nway 4.8.0 documentation</title>
   
   
   
@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -38,7 +38,7 @@
 
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=3a5dd307"></script>
+    <script src="_static/documentation_options.js?v=2adde624"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
@@ -141,8 +141,8 @@
       
     
     
-    <img src="_static/logo.png" class="logo__image only-light" alt="nway 4.7.0 documentation - Home"/>
-    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="nway 4.7.0 documentation - Home"/>`);</script>
+    <img src="_static/logo.png" class="logo__image only-light" alt="nway 4.8.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="nway 4.8.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -744,7 +744,7 @@ with the same binning.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nwaylib.nway_match">
-<span class="sig-prename descclassname"><span class="pre">nwaylib.</span></span><span class="sig-name descname"><span class="pre">nway_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match_tables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_completeness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_include_radius=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_exclude_radius=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magauto_post_single_minvalue=0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_ratio_secondary=0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_prob=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consider_unrelated_associations=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_mag_hists=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger=&lt;nwaylib.logger.NormalLogger</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib.html#nway_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.nway_match" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nwaylib.</span></span><span class="sig-name descname"><span class="pre">nway_match</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">match_tables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_completeness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_include_radius=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_exclude_radius=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magauto_post_single_minvalue=0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob_ratio_secondary=0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_prob=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">consider_unrelated_associations=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">store_mag_hists=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_callback=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger=&lt;nwaylib.logger.NormalLogger</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/nwaylib.html#nway_match"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nwaylib.nway_match" title="Link to this definition">#</a></dt>
 <dd><dl class="simple">
 <dt>match_tables: list of catalogues, each a dict with entries:</dt><dd><ul class="simple">
 <li><p>name (short catalog name, no spaces, used in output columns)</p></li>
@@ -783,6 +783,19 @@ entry has to be 1.</p>
 </dd>
 </dl>
 <p>store_mag_hists: Write constructed mag hists to file (filename based on table name and mags).</p>
+<dl class="simple">
+<dt>prior_callback: callback function that computes an additional prior</dt><dd><p>probability for each candidate combination. It is called with the
+match table (a pandas.DataFrame with one row per combination; the
+first columns are named after the catalogues and contain the row
+index in each catalogue, -1 if it does not participate; other
+columns are Separation_*, ncat, dist_bayesfactor, dist_post and the
+bias_* factors). It has to return an array with one probability per
+row, which is multiplied into the evidence like the per-catalogue
+magnitude priors, and is thus ingested into p_single, p_any and p_i.
+A probability of 0 excludes a combination from the matching.
+Default: None (no additional prior).</p>
+</dd>
+</dl>
 <p>logger: NormalLogger for stderr output and progress bars, NullOutputLogger if silent</p>
 </dd></dl>
 
