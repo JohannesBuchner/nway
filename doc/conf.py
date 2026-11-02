@@ -23,9 +23,6 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('_ext'))
 
-import sphinx_bootstrap_theme
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
-
 import nwaylib
 
 # -- General configuration ---------------------------------------------
@@ -45,6 +42,7 @@ extensions = [
     'sphinx_rtd_theme',
     'sphinx.ext.napoleon',
     'edit_on_github',
+    'nbbinder',
     'sphinxcontrib.bibtex',
 ]
 
@@ -113,7 +111,12 @@ autoclass_content = 'both'
 edit_on_github_project = 'JohannesBuchner/nway'
 edit_on_github_branch = 'master'
 #edit_on_github_url
-edit_on_github_src = 'docs/'  # optional. default: ''
+edit_on_github_src_path = 'doc/'  # optional. default: ''
+
+binder_project = 'JohannesBuchner/nway'
+binder_branch = 'master'
+binder_org = 'mybinder.org'
+binder_src_path = 'doc/'
 
 # -- Options for HTML output -------------------------------------------
 
@@ -126,6 +129,14 @@ html_theme = "sphinx_book_theme"
 # theme further.  For a list of options available for each theme, see the
 # documentation.
 #
+html_theme_options = {
+    'repository_url': 'https://github.com/JohannesBuchner/nway',
+    'repository_branch': 'master',
+    'path_to_docs': 'doc',
+    'use_repository_button': True,
+    'use_edit_page_button': True,
+}
+
 html_baseurl = 'https://johannesbuchner.github.io/nway/'
 html_logo = "static/logo.png"
 html_show_sourcelink = False
